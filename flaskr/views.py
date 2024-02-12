@@ -1,31 +1,43 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 views = Blueprint("views", __name__)
 
 @views.route('/')
 def main_page():
-    return "<h1>Main reservation page</h1>"
+    return render_template("blog/reservation_page.html", active_page = "reservation_page")
 
 @views.route('/reservation-check')
 def reservation_check():
-    return "<h1>Reservation check page</h1>"
+    return render_template("blog/reservation_check.html")
 
 @views.route('/reservations-user')
 def reservations_user():
-    return "<h1>Reservations from user</h1>"
+    return render_template("blog/reservations_user.html")
 
 @views.route('/login-page-admin')
 def login_page_admin():
-    return "<h1>Login page admin</h1>"
+    return render_template("blog/login_admin.html")
 
 @views.route('/admin-page')
 def admin_page():
-    return "<h1>Admin page</h1>"
+    return render_template("blog/admin_page.html")
 
 @views.route('/lectures')
 def lectures():
-    return "<h1>Lectures page</h1>"
+    return render_template("blog/lectures.html")
 
 @views.route('/reservations-admin')
 def reservations_admin():
-    return "<h1>Reservations admin page</h1>"
+    return render_template("blog/reservations_admin.html")
+
+@views.route('/instructors')
+def instructors_page():
+    return render_template("blog/instructors.html", active_page = "instructors")
+
+@views.route('/school')
+def school_page():
+    return render_template("blog/school.html", active_page = "school")
+
+@views.route('prices')
+def prices_page():
+    return render_template("blog/prices.html", active_page = "prices")
