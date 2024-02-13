@@ -1,3 +1,38 @@
-.button-right-margin {
-    margin-right: 0px;
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header .col-md-3 {
+    display: flex;
+    align-items: center;
+    /* Align children vertically in the center */
+    justify-content: flex-start;
+    /* Align children to the start of the container */
+}
+
+/* Adjust the h3 styling to ensure it doesn't disrupt alignment */
+.header .col-md-3 h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    /* You might want to adjust the font size or other properties based on your design */
+}
+
+.nav-link.active {
+    background-color: #007bff;
+    /* Bootstrap primary color */
+    color: white !important;
+    /* Ensures text color is white */
+}
+
+body {
+    margin: 20px;
+    /* Adjust the value to your preference */
+}
+
+section {
+    padding: 20px;
+    /* This will add padding inside the sections */
 }
