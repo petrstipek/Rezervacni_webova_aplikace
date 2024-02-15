@@ -4,6 +4,15 @@ header {
     justify-content: space-between;
 }
 
+.header-no-margin {
+    margin-bottom: -8px !important;
+}
+
+.global-margin {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
 .header .col-md-3 {
     display: flex;
     align-items: center;
@@ -15,7 +24,6 @@ header {
 /* Adjust the h3 styling to ensure it doesn't disrupt alignment */
 .header .col-md-3 h3 {
     margin-top: 0;
-    margin-bottom: 0;
     padding: 0;
     /* You might want to adjust the font size or other properties based on your design */
 }
@@ -27,12 +35,11 @@ header {
     /* Ensures text color is white */
 }
 
-body {
-    margin: 20px;
-    /* Adjust the value to your preference */
-}
-
 section {
     padding: 20px;
     /* This will add padding inside the sections */
+}
+
+.section_blue {
+    background-color: rgb(0, 205, 136);
 }
