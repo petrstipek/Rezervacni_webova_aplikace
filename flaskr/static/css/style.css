@@ -85,3 +85,91 @@ section {
     margin-bottom: 10px;
     /* Spacing between date entries */
 }
+
+.ui-datepicker {
+    border: none;
+    background: none;
+    box-shadow: none;
+}
+
+/* Style the header */
+.ui-datepicker .ui-datepicker-header {
+    background-color: #e6f4ff;
+    /* Soft blue background */
+    color: #000;
+    /* Black text */
+    padding: 0.6em 1em;
+    /* Adjust padding as needed */
+    border: none;
+    /* No borders */
+}
+
+/* Style the prev/next buttons */
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+    background: none;
+    border: none;
+    font-weight: bold;
+    color: #007bff;
+    /* Color similar to the image provided */
+}
+
+/* Replace icons with text */
+.ui-datepicker .ui-icon {
+    text-indent: 0;
+    margin-top: -8px;
+    /* Align text vertically */
+}
+
+/* Style the month and year */
+.ui-datepicker .ui-datepicker-title {
+    font-weight: bold;
+    /* Bold text for month and year */
+}
+
+/* Style the table of days */
+.ui-datepicker table {
+    background-color: #e6f4ff;
+    width: 100%;
+    /* Full width */
+    font-size: 0.9em;
+    /* Adjust font size as needed */
+}
+
+/* Style table cells */
+.ui-datepicker td {
+    padding: 0.7em;
+    /* Adjust cell padding as needed */
+    border: none;
+    /* Remove borders */
+}
+
+/* Style individual day cells */
+.ui-datepicker td span,
+.ui-datepicker td a {
+    text-align: center;
+    display: block;
+    color: #000;
+    /* Black text for days */
+    background-color: #e6f4ff;
+    /* Soft blue background for day cells */
+    /* Round corners for day cells */
+    padding: 0.5em;
+    /* Adjust padding as needed */
+}
+
+/* Style the current day */
+.ui-datepicker td.ui-datepicker-today a {
+    background-color: #0056b3;
+    /* Darker blue for the selected day */
+    color: white;
+    /* White text for the selected day */
+}
+
+/* Style hover state */
+.ui-datepicker td a:hover {
+    background-color: #cce0ff;
+    /* Lighter blue for hover state */
+    color: #0056b3;
+    /* Dark blue text for hover state */
+}
