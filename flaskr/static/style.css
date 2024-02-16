@@ -41,5 +41,47 @@ section {
 }
 
 .section_blue {
-    background-color: rgb(0, 205, 136);
+    background-color: #E0F4FF;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+    /* Allow items to wrap onto the next line if needed */
+}
+
+.form-row label,
+.form-row input,
+.form-row .age-field,
+.form-row .selector-field {
+    margin: 5px 0;
+}
+
+.error-message {
+    color: red;
+    margin-left: 10px;
+}
+
+.container {
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+}
+
+.dates-container {
+    margin-left: 20px;
+    max-height: 200px;
+    /* Maximum height before scrolling */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    width: 200px;
+    /* Set a fixed width if desired */
+}
+
+.selected-date {
+    margin-bottom: 10px;
+    /* Spacing between date entries */
 }
