@@ -16,11 +16,13 @@
     <section class="section_blue" id="date_picker">
         <h3 class="global-margin">Výběr termínu rezervace</h3>
         <div class="container">
-            <div id="datepicker"></div>
+            <div id="datepicker" data-available-times="{{ available_times }}"></div>
             <div class="times-container">
                 <!-- The selected dates will be appended here -->
             </div>
         </div>
+        <h2>POkusy</h2>
+        <div id="datepicker2" data-available-times="{{ available_times }}"></div>
     </section>
 
     <section class="section_white" id="contact_information">
@@ -111,66 +113,6 @@
         </div>
     </section>
 </form>
-<script>
-    $(document).ready(function(){
-        $('#same_as_student_checkbox').change(function(){
-            if(this.checked) {
-                $('#student_details_section').show();
-            } else {
-                $('#student_details_section').hide();
-            }
-        });
-    });
-    </script>
 
-<script>
-    $(document).ready(function(){
-        var availableTimes = JSON.parse('{{ available_times|safe }}');
-        var selectedDate = ''; // Store the selected date in a broader scope
-    
-        $('#datepicker').datepicker({
-            dateFormat: 'mm/dd/yy',
-            onSelect: function(dateText) {
-                selectedDate = dateText; // Update selectedDate when a date is picked
-                var times = availableTimes[dateText] || [];
-                var timesHtml = times.map(function(time) {
-                    return `<label><input type="checkbox" name="time" value="${time}" /> ${time}</label><br>`;
-                }).join('');
-    
-                $('.times-container').html(timesHtml);
-            }
-        });
-    
-        // Event delegation for dynamically added checkboxes
-        $('.times-container').on('change', 'input[name="time"]', function() {
-            if(this.checked) {
-                // Prepare the data to be sent to the server
-                var dataToSend = {
-                    date: selectedDate,
-                    time: $(this).val()
-                };
-                
-                // Send the data to the server using AJAX
-                $.ajax({
-                    type: "POST",
-                    url: "/submit-date-time",
-                    contentType: "application/json",
-                    data: JSON.stringify(dataToSend),
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", $("input[name='csrf_token']").val());
-                    },
-                    success: function(response) {
-                        console.log("Data sent successfully", response);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error sending data", error);
-                    }
-                });
-            }
-        });
-    });
-</script>
-
-
+<script src="{{ url_for('static', filename='js/reservation.js') }}"></script>
 {% endblock %}
-
