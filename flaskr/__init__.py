@@ -3,7 +3,7 @@ from flask import Flask
 from flaskr.views import views
 from flask_bootstrap import Bootstrap5
 from flaskr.forms import CSRFProtect
-
+from . import db
 
 def create_app(test_config=None):
     # create and configure the app
@@ -20,6 +20,8 @@ def create_app(test_config=None):
     app.secret_key = foo
 
     app.register_blueprint(views, url_prefix="/")
+
+    db.init_app(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
