@@ -18,9 +18,11 @@ def main_page():
     if form.validate_on_submit():
         name = form.name.data
         surname = form.surname.data
+        email = form.email.data
+        phone = form.tel_number.data
 
         db = get_db()
-        db.execute('INSERT INTO user (name, surname) VALUES (?, ?)', (name, surname))
+        db.execute('INSERT INTO osoba (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
         db.commit()
 
         flash('Reservation submitted successfully!', 'success')
