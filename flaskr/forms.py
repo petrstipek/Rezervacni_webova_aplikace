@@ -30,7 +30,7 @@ class PersonalInformationForm(FlaskForm):
     experience_client2 = SelectField('Choose Option', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
     experience_client3 = SelectField('Choose Option', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
 
-    lesson_type = SelectField('Choose Option', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
+    lesson_type = SelectField('Lesson type', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
     note = TextAreaField('Note')
 
     submit = SubmitField('Submit')

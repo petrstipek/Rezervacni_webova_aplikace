@@ -5,3 +5,4 @@ CREATE TABLE user (
     name TEXT UNIQUE NOT NULL,
     surname TEXT UNIQUE NOT NULL
 );
+
