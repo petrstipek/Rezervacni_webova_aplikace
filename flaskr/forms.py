@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField
+from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional
 
 class PersonalInformationForm(FlaskForm):
@@ -36,5 +36,8 @@ class PersonalInformationForm(FlaskForm):
     lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
 
     note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu"})
+
+    date = HiddenField("date")
+    time = HiddenField("time")
 
     submit = SubmitField('Submit')

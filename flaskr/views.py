@@ -5,9 +5,9 @@ from flaskr.db import get_db
 views = Blueprint("views", __name__)
 
 available_times = {
-    "02/16/2024": ["čas 14:00", "čas 15:00", "čas 16:00", "čas 17:00", "čas 18:00", "čas 19:00", "čas 20:00", "čas 21:00", "čas 22:00", "čas 23:00"],  # Added missing comma
-    "02/17/2024": ["čas 18:00", "čas 19:00", "čas 20:00", "čas 21:00", "čas 22:00", "čas 23:00"],
-    "02/18/2024": ["čas 11:00", "čas 12:00", "čas 18:00", "čas 19:00", "čas 20:00", "čas 21:00", "čas 22:00", "čas 23:00"]
+    "2024-02-16": ["13:00", "14:00", "15:00", " 16:00", " 17:00", " 18:00", " 19:00", " 20:00", " 21:00", " 22:00", " 23:00"],
+    "2024-02-17": [" 18:00", " 19:00", " 20:00", " 21:00", " 22:00", " 23:00"],
+    "2024-02-18": [" 11:00", " 12:00", " 18:00", " 19:00", " 20:00", " 21:00", " 22:00", " 23:00"]
 }
 
 
@@ -15,69 +15,68 @@ available_times = {
 def main_page():
     form = PersonalInformationForm()
 
-    ##reservation_date_time = request.json
-    ##print(reservation_date_time) 
-    if request.method == 'POST':
-        if request.is_json:
-            # Process JSON data
-            data = request.get_json()
-            print(data)
-            # Handle AJAX logic here
-            return jsonify({"status": "success"})
-        else:
-            if form.validate_on_submit():
-                db = get_db()
+    if form.validate_on_submit():
+        db = get_db()
 
-                name = form.name.data
-                surname = form.surname.data
-                email = form.email.data
-                phone = form.tel_number.data
-                lesson_type = form.lesson_type.data
-                reservation_note = form.note.data
-                
-                def get_or_create_klient(db, name, surname, email, phone):
-                    # Step 1: Check if the user already exists
-                    cursor = db.execute('SELECT ID_osoba FROM klient WHERE email = ?', (email,))
-                    result = cursor.fetchone()
-            
-                    if result:
-                        # User exists, return existing ID
-                        klient_id = result[0]
-                    else:
-                        # Step 2: Insert new user since it doesn't exist
-                        cursor = db.execute('INSERT INTO klient (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
-                        db.commit()  # Commit the insert to make sure the ID is generated
-                        klient_id = cursor.lastrowid  # Get the newly inserted user's ID
-            
-                    return klient_id
+        date = form.date.data
+        #print("daate from views " + date)
+        time = form.time.data
+        #print("timeform: view: " + time)
 
-                # Usage example
-                klient_id = get_or_create_klient(db, name, surname, email, phone)
-                student_count = 0
+        datetime_str = f"{date} {time}:00"
 
-                cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, "2023-01-15" , 2, "čeština", student_count, reservation_note))
-                reservation_id = cursor.lastrowid
+        name = form.name.data
+        surname = form.surname.data
+        email = form.email.data
+        phone = form.tel_number.data
+        lesson_type = form.lesson_type.data
+        reservation_note = form.note.data
 
-                if form.student_client.data:
+
+        
+        def get_or_create_klient(db, name, surname, email, phone):
+            # Step 1: Check if the user already exists
+            cursor = db.execute('SELECT ID_osoba FROM klient WHERE email = ?', (email,))
+            result = cursor.fetchone()
+    
+            if result:
+                # User exists, return existing ID
+                klient_id = result[0]
+            else:
+                # Step 2: Insert new user since it doesn't exist
+                cursor = db.execute('INSERT INTO klient (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
+                db.commit()  # Commit the insert to make sure the ID is generated
+                klient_id = cursor.lastrowid  # Get the newly inserted user's ID
+    
+            return klient_id
+
+        # Usage example
+        klient_id = get_or_create_klient(db, name, surname, email, phone)
+        student_count = 0
+
+        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, datetime_str , 1, "čeština", student_count, reservation_note))
+        reservation_id = cursor.lastrowid
+
+        if form.student_client.data:
+            student_count += 1
+            db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, name, surname, form.experience_client.data, form.age_client.data))
+        if form.more_students.data:
+            client_name_fields = [form.name_client1, form.name_client2]
+            client_surname_fields = [form.surname_client1, form.surname_client2]
+            client_age_fields = [form.age_client1, form.age_client2, form.age_client3]
+            client_experience_fields = [form.experience_client1, form.experience_client2]
+
+            for i in range(len(client_name_fields)):
+                if client_name_fields[i].data != '':  # Check if field is not empty
                     student_count += 1
-                    db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, name, surname, form.experience_client.data, form.age_client.data))
-                if form.more_students.data:
-                    client_name_fields = [form.name_client1, form.name_client2]
-                    client_surname_fields = [form.surname_client1, form.surname_client2]
-                    client_age_fields = [form.age_client1, form.age_client2, form.age_client3]
-                    client_experience_fields = [form.experience_client1, form.experience_client2]
+                    # Insert each additional student into Zak
+                    db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, client_name_fields[i].data, client_surname_fields[i].data, client_experience_fields[i].data, client_age_fields[i].data))
+        
+        db.execute('UPDATE rezervace SET pocet_zaku = ? WHERE ID_rezervace = ?', (student_count, reservation_id))
+        db.commit()
 
-                    for i in range(len(client_name_fields)):
-                        if client_name_fields[i].data != '':  # Check if field is not empty
-                            student_count += 1
-                            # Insert each additional student into Zak
-                            db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, client_name_fields[i].data, client_surname_fields[i].data, client_experience_fields[i].data, client_age_fields[i].data))
-                
-                db.execute('UPDATE rezervace SET pocet_zaku = ? WHERE ID_rezervace = ?', (student_count, reservation_id))
-                db.commit()
-
-                flash('Reservation submitted successfully!', 'success')
-                return redirect(url_for('views.main_page'))  # Redi
+        flash('Reservation submitted successfully!', 'success')
+        return redirect(url_for('views.main_page'))  # Redi
 
     return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form,  available_times=json.dumps(available_times))
 

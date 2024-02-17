@@ -17,7 +17,9 @@
         <h3 class="global-margin">Výběr termínu rezervace</h3>
         <div class="container">
             <div id="datepicker" data-available-times="{{ available_times }}"></div>
+            {{ form.date }}
             <div class="times-container">
+                {{ form.time }}
                 <!-- The selected dates will be appended here -->
             </div>
         </div>

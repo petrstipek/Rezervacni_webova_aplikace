@@ -124,9 +124,9 @@ ID_osoba ASC
 --==============================================================
 create table Rezervace (
 ID_rezervace         INTEGER              not null,
-ID_osoba            INTEGER              not null,
+ID_osoba            INTEGER               not null,
 typ_rezervace        VARCHAR(20)          not null,
-termin               DATE                 not null,
+termin               TIMESTAMP            not null,
 doba_vyuky           INTEGER              not null,
 jazyk                VARCHAR(20)          not null,
 pocet_zaku           INTEGER              not null,
