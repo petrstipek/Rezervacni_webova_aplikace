@@ -26,6 +26,14 @@ $(document).ready(function () {
         });
     });
 
+    $('#student_client_checkbox').change(function () {
+        if (this.checked) {
+            $('#client_student_details_section').show();
+        } else {
+            $('#client_student_details_section').hide();
+        }
+    })
+
     $('#more_students_checkbox').change(function () {
         if (this.checked) {
             $('#student_details_section').show();

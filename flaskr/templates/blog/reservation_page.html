@@ -37,12 +37,11 @@
 
     <section class="section_blue" id="students">
         <h3 class="global-margin">Žáci</h3>
-
-        <div class="form-row ">
+        <label for="student_client">{{ form.student_client.label }}</label>
+        {{ form.student_client(id="student_client_checkbox") }}
+        <div class="form-row" id="client_student_details_section" style="display: none;">
             <!--<input type="checkbox" id="same_as_student_client" name="same_as_client">
             <label for="same_as_student_client">Žák stejný jako klient</label>-->
-            <label for="student_client">{{ form.student_client.label }}</label>
-            {{ form.student_client }}
             {{ form.age_client.label }} <br>
             {{ form.age_client(class_="age-field") }} <br>
             {% for error in form.age_client.errors %}
@@ -57,6 +56,9 @@
             <br>
             <label for="lesson_type">{{ form.lesson_type.label }}</label>
             {{ form.lesson_type }}
+            <br>
+            <label for="lesson_length">{{ form.lesson_length.label }}</label>
+            {{ form.lesson_length }}
         </div>
         <br>
         <div>

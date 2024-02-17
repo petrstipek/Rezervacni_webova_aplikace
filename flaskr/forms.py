@@ -1,4 +1,3 @@
-
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional

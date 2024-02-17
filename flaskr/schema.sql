@@ -3,53 +3,54 @@
 -- Created on:     17.02.2024 10:56:40
 --==============================================================
 
- drop index Dostupne_hodiny_PK;
+--drop index Dostupne_hodiny_PK;
 
-drop index prirazeno_FK;
+--drop index prirazeno_FK;
 
-drop index Instruktor_PK;
+--drop index Instruktor_PK;
 
-drop index Klient_PK;
+--drop index Klient_PK;
 
-drop index Osoba_PK;
+--drop index Osoba_PK;
 
-drop index Rezervace_PK;
+--drop index Rezervace_PK;
 
-drop index ma_vytvorenu_FK;
+--drop index ma_vytvorenu_FK;
 
-drop index Spravce_skoly_PK;
+--drop index Spravce_skoly_PK;
 
-drop index je_soucasti_FK;
+--drop index je_soucasti_FK;
 
-drop index ma_vypsane2_FK;
+--drop index ma_vypsane2_FK;
 
-drop index ma_vypsane_FK;
+--drop index ma_vypsane_FK;
 
-drop index ma_vypsane_PK;
+--drop index ma_vypsane_PK;
 
-drop index ma_vyuku2_FK;
+--drop index ma_vyuku2_FK;
 
-drop index ma_vyuku_FK;
+--drop index ma_vyuku_FK;
 
-drop index ma_vyuku_PK;
+--drop index ma_vyuku_PK;
 
-drop table ma_vypsane cascade;
+--drop table ma_vypsane cascade;
 
-drop table Dostupne_hodiny cascade;
+--drop table Dostupne_hodiny cascade;
 
-drop table ma_vyuku cascade;
+--drop table ma_vyuku cascade;
 
-drop table Zak cascade;
+--drop table Zak cascade;
 
-drop table Instruktor cascade;
+--drop table Instruktor cascade;
 
-drop table Rezervace cascade;
+--drop table Rezervace cascade;
 
-drop table Klient cascade;
+--drop table Klient cascade;
 
-drop table Spravce_skoly cascade;
+--drop table Spravce_skoly cascade;
 
-drop table Osoba cascade;
+--drop table Osoba cascade;
+
 
 --==============================================================
 -- Table: Osoba
