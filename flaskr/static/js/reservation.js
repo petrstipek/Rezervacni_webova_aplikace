@@ -74,7 +74,7 @@ $(document).ready(function () {
             // Send the data to the server using AJAX
             $.ajax({
                 type: "POST",
-                url: "/submit-date-time",
+                url: "/",
                 contentType: "application/json",
                 data: JSON.stringify(dataToSend),
                 beforeSend: function (xhr) {
