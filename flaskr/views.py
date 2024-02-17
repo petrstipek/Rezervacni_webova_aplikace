@@ -111,9 +111,12 @@ def admin_page():
     #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-18", "12:00", "volno"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "13:00", "volno"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "13:00", "volno"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "14:00", "volno"))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 3))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 4))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 5))
 
     db.commit()
 
