@@ -9,16 +9,39 @@ views = Blueprint("views", __name__)
 def main_page():
     db = get_db()
 
-    query_result = db.execute('SELECT datum, cas_zacatku FROM Dostupne_hodiny WHERE stav = "volno" ORDER BY datum, cas_zacatku').fetchall()
+    #query_result = db.execute('SELECT datum, cas_zacatku FROM Dostupne_hodiny WHERE stav = "volno" ORDER BY datum, cas_zacatku').fetchall()
 
+    query_result = db.execute("""
+        SELECT datum, cas_zacatku, COUNT(*) as count
+        FROM dostupne_hodiny
+        WHERE stav = 'volno'
+        GROUP BY datum, cas_zacatku
+        ORDER BY datum, cas_zacatku;
+    """).fetchall()
+
+
+    print(query_result)
     # Organize the fetched times by date
+    #available_times = {}
+    #for row in query_result:
+    #    date_str = row['datum'].strftime('%Y-%m-%d')  # Assuming 'datum' is a date object
+    #    if date_str not in available_times:
+    #        available_times[date_str] = []
+    #    available_times[date_str].append(row['cas_zacatku'])  # Assuming 'cas_zacatku' is a time object
+
     available_times = {}
     for row in query_result:
-        date_str = row['datum'].strftime('%Y-%m-%d')  # Assuming 'datum' is a date object
+        date_str = row['datum'].strftime('%Y-%m-%d')  # Convert to string
+        time_str = row['cas_zacatku']  # Convert to string
+        count = row['count']
+        
         if date_str not in available_times:
             available_times[date_str] = []
-        available_times[date_str].append(row['cas_zacatku'])  # Assuming 'cas_zacatku' is a time object
+        
+        # Append a tuple of (time, count) for each cas_zacatku
+        available_times[date_str].append((time_str, count))
 
+    print(available_times)
     form = PersonalInformationForm()
 
     if form.validate_on_submit():
@@ -26,7 +49,9 @@ def main_page():
 
         date = form.date.data
         #print("daate from views " + date)
-        time = form.time.data
+        time_to_split = form.time.data
+        time_parts = time_to_split.split(",")
+        time = time_parts[0]
         #print("timeform: view: " + time)
 
         datetime_str = f"{date} {time}:00"
@@ -37,6 +62,10 @@ def main_page():
         phone = form.tel_number.data
         lesson_type = form.lesson_type.data
         reservation_note = form.note.data
+
+        print("tady")
+        print(time)
+        print(date)
 
 
         
@@ -63,7 +92,8 @@ def main_page():
         cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, datetime_str , 1, "čeština", student_count, reservation_note))
         reservation_id = cursor.lastrowid
 
-        query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ?', (date, time)).fetchone()
+        query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
+        print(query_result_id_lesson)
         db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],))
         query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
         db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result_id_instructor["ID_osoba"],reservation_id))
@@ -113,10 +143,11 @@ def admin_page():
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "13:00", "volno"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "13:00", "volno"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "14:00", "volno"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-18", "12:00", "volno"))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 3))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 4))
-    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 5))
+    #db.execu#te('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 5))
 
     db.commit()
 
