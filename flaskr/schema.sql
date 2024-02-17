@@ -3,7 +3,7 @@
 -- Created on:     17.02.2024 10:56:40
 --==============================================================
 
-drop index Dostupne_hodiny_PK;
+ drop index Dostupne_hodiny_PK;
 
 drop index prirazeno_FK;
 
@@ -55,67 +55,67 @@ drop table Osoba cascade;
 -- Table: Osoba
 --==============================================================
 create table Osoba (
-ID_ososba            INTEGER              not null,
+ID_osoba            INTEGER              not null,
 jmeno                VARCHAR(20)          not null,
 prijmeni             VARCHAR(30)          not null,
 email                VARCHAR(30)          not null,
 tel_cislo            VARCHAR(15)          not null,
 prihl_jmeno          VARCHAR(20),
 heslo                VARCHAR(20),
-primary key (ID_ososba)
+primary key (ID_osoba)
 );
 
 --==============================================================
 -- Index: Osoba_PK
 --==============================================================
 create unique index Osoba_PK on Osoba (
-ID_ososba ASC
+ID_osoba ASC
 );
 
 --==============================================================
 -- Table: Spravce_skoly
 --==============================================================
 create table Spravce_skoly (
-ID_ososba            INTEGER              not null,
+ID_osoba            INTEGER              not null,
 jmeno                VARCHAR(20)          not null,
 prijmeni             VARCHAR(30)          not null,
 email                VARCHAR(30)          not null,
 tel_cislo            VARCHAR(15)          not null,
 prihl_jmeno          VARCHAR(20),
 heslo                VARCHAR(20),
-primary key (ID_ososba),
-foreign key (ID_ososba)
-    references Osoba (ID_ososba)
+primary key (ID_osoba),
+foreign key (ID_osoba)
+    references Osoba (ID_osoba)
 );
 
 --==============================================================
 -- Index: Spravce_skoly_PK
 --==============================================================
 create unique index Spravce_skoly_PK on Spravce_skoly (
-ID_ososba ASC
+ID_osoba ASC
 );
 
 --==============================================================
 -- Table: Klient
 --==============================================================
 create table Klient (
-ID_ososba            INTEGER              not null,
+ID_osoba            INTEGER              not null,
 jmeno                VARCHAR(20)          not null,
 prijmeni             VARCHAR(30)          not null,
 email                VARCHAR(30)          not null,
 tel_cislo            VARCHAR(15)          not null,
 prihl_jmeno          VARCHAR(20),
 heslo                VARCHAR(20),
-primary key (ID_ososba),
-foreign key (ID_ososba)
-    references Osoba (ID_ososba)
+primary key (ID_osoba),
+foreign key (ID_osoba)
+    references Osoba (ID_osoba)
 );
 
 --==============================================================
 -- Index: Klient_PK
 --==============================================================
 create unique index Klient_PK on Klient (
-ID_ososba ASC
+ID_osoba ASC
 );
 
 --==============================================================
@@ -123,16 +123,16 @@ ID_ososba ASC
 --==============================================================
 create table Rezervace (
 ID_rezervace         INTEGER              not null,
-ID_ososba            INTEGER              not null,
+ID_osoba            INTEGER              not null,
 typ_rezervace        VARCHAR(20)          not null,
 termin               DATE                 not null,
-typ_vyuky            VARCHAR(20)          not null,
+doba_vyuky           INTEGER              not null,
 jazyk                VARCHAR(20)          not null,
 pocet_zaku           INTEGER              not null,
 poznamka             VARCHAR(100),
 primary key (ID_rezervace),
-foreign key (ID_ososba)
-    references Klient (ID_ososba)
+foreign key (ID_osoba)
+    references Klient (ID_osoba)
 );
 
 --==============================================================
@@ -146,14 +146,14 @@ ID_rezervace ASC
 -- Index: ma_vytvorenu_FK
 --==============================================================
 create  index ma_vytvorenu_FK on Rezervace (
-ID_ososba ASC
+ID_osoba ASC
 );
 
 --==============================================================
 -- Table: Instruktor
 --==============================================================
 create table Instruktor (
-ID_ososba            INTEGER              not null,
+ID_osoba            INTEGER              not null,
 jmeno                VARCHAR(20)          not null,
 prijmeni             VARCHAR(30)          not null,
 email                VARCHAR(30)          not null,
@@ -163,16 +163,16 @@ heslo                VARCHAR(20),
 seniorita            VARCHAR(10)          not null,
 datum_narozeni       DATE                 not null,
 datum_nastupu        DATE                 not null,
-primary key (ID_ososba),
-foreign key (ID_ososba)
-    references Osoba (ID_ososba)
+primary key (ID_osoba),
+foreign key (ID_osoba)
+    references Osoba (ID_osoba)
 );
 
 --==============================================================
 -- Index: Instruktor_PK
 --==============================================================
 create unique index Instruktor_PK on Instruktor (
-ID_ososba ASC
+ID_osoba ASC
 );
 
 --==============================================================
@@ -199,11 +199,11 @@ ID_rezervace ASC
 -- Table: ma_vyuku
 --==============================================================
 create table ma_vyuku (
-ID_ososba            INTEGER              not null,
+ID_osoba            INTEGER              not null,
 ID_rezervace         INTEGER              not null,
-primary key (ID_ososba, ID_rezervace),
-foreign key (ID_ososba)
-    references Instruktor (ID_ososba),
+primary key (ID_osoba, ID_rezervace),
+foreign key (ID_osoba)
+    references Instruktor (ID_osoba),
 foreign key (ID_rezervace)
     references Rezervace (ID_rezervace)
 );
@@ -212,7 +212,7 @@ foreign key (ID_rezervace)
 -- Index: ma_vyuku_PK
 --==============================================================
 create unique index ma_vyuku_PK on ma_vyuku (
-ID_ososba ASC,
+ID_osoba ASC,
 ID_rezervace ASC
 );
 
@@ -220,7 +220,7 @@ ID_rezervace ASC
 -- Index: ma_vyuku_FK
 --==============================================================
 create  index ma_vyuku_FK on ma_vyuku (
-ID_ososba ASC
+ID_osoba ASC
 );
 
 --==============================================================
@@ -262,11 +262,11 @@ ID_rezervace ASC
 -- Table: ma_vypsane
 --==============================================================
 create table ma_vypsane (
-ID_ososba            INTEGER              not null,
+ID_osoba            INTEGER              not null,
 ID_hodiny            INTEGER              not null,
-primary key (ID_ososba, ID_hodiny),
-foreign key (ID_ososba)
-    references Instruktor (ID_ososba),
+primary key (ID_osoba, ID_hodiny),
+foreign key (ID_osoba)
+    references Instruktor (ID_osoba),
 foreign key (ID_hodiny)
     references Dostupne_hodiny (ID_hodiny)
 );
@@ -275,7 +275,7 @@ foreign key (ID_hodiny)
 -- Index: ma_vypsane_PK
 --==============================================================
 create unique index ma_vypsane_PK on ma_vypsane (
-ID_ososba ASC,
+ID_osoba ASC,
 ID_hodiny ASC
 );
 
@@ -283,7 +283,7 @@ ID_hodiny ASC
 -- Index: ma_vypsane_FK
 --==============================================================
 create  index ma_vypsane_FK on ma_vypsane (
-ID_ososba ASC
+ID_osoba ASC
 );
 
 --==============================================================

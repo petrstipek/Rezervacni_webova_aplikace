@@ -1,6 +1,6 @@
 
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField
+from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional
 
 class PersonalInformationForm(FlaskForm):
@@ -12,8 +12,11 @@ class PersonalInformationForm(FlaskForm):
     ], render_kw={"type": "tel"})
     email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
     age_client = IntegerField('Age', validators=[DataRequired(), NumberRange(min=0, max=120)])
-    experience_client = SelectField('Choose Option', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[DataRequired()])
+    experience_client = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[DataRequired()])
     
+    student_client = BooleanField('Žák stejný jako klient', validators=[])
+    more_students = BooleanField("Objednat více žáků", validators=[])
+
     name_client1 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
     name_client2 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
     name_client3 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
@@ -26,11 +29,13 @@ class PersonalInformationForm(FlaskForm):
     age_client2 = IntegerField('Age', validators=[Optional(), NumberRange(min=0, max=120)])
     age_client3 = IntegerField('Age', validators=[Optional(), NumberRange(min=0, max=120)])
 
-    experience_client1 = SelectField('Choose Option', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
-    experience_client2 = SelectField('Choose Option', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
-    experience_client3 = SelectField('Choose Option', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
+    experience_client1 = SelectField('Choose Option', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
+    experience_client2 = SelectField('Choose Option', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
+    experience_client3 = SelectField('Choose Option', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
 
-    lesson_type = SelectField('Lesson type', choices=[('value1', 'Option 1'), ('value2', 'Option 2'), ('value3', 'Option 3')], validators=[Optional()])
-    note = TextAreaField('Note')
+    lesson_type = SelectField('Typ výuky', choices=[('value1', 'Individuální'), ('value2', 'Skupinová')], validators=[Optional()])
+    lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
+
+    note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu"})
 
     submit = SubmitField('Submit')

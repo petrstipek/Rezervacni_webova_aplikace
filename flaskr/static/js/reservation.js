@@ -26,7 +26,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#same_as_student_checkbox').change(function () {
+    $('#more_students_checkbox').change(function () {
         if (this.checked) {
             $('#student_details_section').show();
         } else {

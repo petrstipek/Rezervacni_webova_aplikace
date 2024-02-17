@@ -16,13 +16,42 @@ def main_page():
     form = PersonalInformationForm()
 
     if form.validate_on_submit():
+        db = get_db()
+
         name = form.name.data
         surname = form.surname.data
         email = form.email.data
         phone = form.tel_number.data
+        lesson_type = form.lesson_type.data
 
-        db = get_db()
-        db.execute('INSERT INTO osoba (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
+        if form.student_client:
+            name_student = name
+            surname_student = surname
+            experience_student = form.experience_client.data
+            age_student = form.age_client.data
+        
+        # Assuming `db` is your database connection object
+        def get_or_create_klient(db, name, surname, email, phone):
+            # Step 1: Check if the user already exists
+            cursor = db.execute('SELECT ID_osoba FROM osoba WHERE email = ?', (email,))
+            result = cursor.fetchone()
+    
+            if result:
+                # User exists, return existing ID
+                klient_id = result[0]
+            else:
+                # Step 2: Insert new user since it doesn't exist
+                cursor = db.execute('INSERT INTO osoba (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
+                db.commit()  # Commit the insert to make sure the ID is generated
+                klient_id = cursor.lastrowid  # Get the newly inserted user's ID
+    
+            return klient_id
+
+        # Usage example
+        klient_id = get_or_create_klient(db, name, surname, email, phone)    
+        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, "2023-01-15" , 2, "čeština", 2, "zkouska1"))
+        reservation_id = cursor.lastrowid
+        db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, name_student, surname_student, experience_student, age_student))
         db.commit()
 
         flash('Reservation submitted successfully!', 'success')
