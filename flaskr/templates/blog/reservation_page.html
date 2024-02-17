@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block body %}
-<form method="post">
+<form method="post" action="{{ url_for('views.main_page') }}">
     {{ form.hidden_tag() }}
     <section class="section_blue" id="date_picker">
         <h3 class="global-margin">Výběr termínu rezervace</h3>
@@ -107,6 +107,8 @@
         <h2 class="global-margin">Odeslání rezervace</h2>
         <div class="form-row">
             {{ form.note }}
+
+            
             {{ form.submit }}
         </div>
     </section>

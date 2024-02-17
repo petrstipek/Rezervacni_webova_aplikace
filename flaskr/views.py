@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, jsonify, json
+from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for
 from flaskr.forms import PersonalInformationForm
+from flaskr.db import get_db
 
 views = Blueprint("views", __name__)
 
@@ -13,6 +14,17 @@ available_times = {
 @views.route('/', methods=["GET", "POST"])
 def main_page():
     form = PersonalInformationForm()
+
+    if form.validate_on_submit():
+        name = form.name.data
+        surname = form.surname.data
+
+        db = get_db()
+        db.execute('INSERT INTO user (name, surname) VALUES (?, ?)', (name, surname))
+        db.commit()
+
+        flash('Reservation submitted successfully!', 'success')
+        return redirect(url_for('views.main_page'))  # Redi
 
     return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form,  available_times=json.dumps(available_times))
 
