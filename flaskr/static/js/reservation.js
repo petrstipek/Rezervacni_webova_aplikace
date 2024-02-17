@@ -1,4 +1,31 @@
 $(document).ready(function () {
+
+    function toggleRequired(clientNumber) {
+        const fields = [
+            $(`#surname_client${clientNumber}`),
+            $(`#age_client${clientNumber}`),
+            $(`#experience_client${clientNumber}`)
+        ];
+        // Check if the name field is filled out
+        const isNameFilled = $(`#name_client${clientNumber}`).val().trim() !== '';
+
+        // Set the required attribute based on if the name field is filled
+        fields.forEach($field => {
+            if (isNameFilled) {
+                $field.attr('required', 'required');
+            } else {
+                $field.removeAttr('required');
+            }
+        });
+    }
+
+    // Event listeners for each client name field
+    [1, 2, 3].forEach(clientNumber => {
+        $(`#name_client${clientNumber}`).on('input', function () {
+            toggleRequired(clientNumber);
+        });
+    });
+
     $('#same_as_student_checkbox').change(function () {
         if (this.checked) {
             $('#student_details_section').show();
