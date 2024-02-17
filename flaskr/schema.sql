@@ -236,7 +236,7 @@ ID_rezervace ASC
 --==============================================================
 create table Dostupne_hodiny (
 ID_hodiny            INTEGER              not null,
-ID_rezervace         INTEGER              not null,
+ID_rezervace         INTEGER,              
 datum                DATE,
 cas_zacatku          TIME,
 stav                 VARCHAR(10),

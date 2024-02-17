@@ -4,15 +4,21 @@ from flaskr.db import get_db
 
 views = Blueprint("views", __name__)
 
-available_times = {
-    "2024-02-16": ["13:00", "14:00", "15:00", " 16:00", " 17:00", " 18:00", " 19:00", " 20:00", " 21:00", " 22:00", " 23:00"],
-    "2024-02-17": [" 18:00", " 19:00", " 20:00", " 21:00", " 22:00", " 23:00"],
-    "2024-02-18": [" 11:00", " 12:00", " 18:00", " 19:00", " 20:00", " 21:00", " 22:00", " 23:00"]
-}
-
 
 @views.route('/', methods=["GET", "POST"])
 def main_page():
+    db = get_db()
+
+    query_result = db.execute('SELECT datum, cas_zacatku FROM Dostupne_hodiny WHERE stav = "volno" ORDER BY datum, cas_zacatku').fetchall()
+
+    # Organize the fetched times by date
+    available_times = {}
+    for row in query_result:
+        date_str = row['datum'].strftime('%Y-%m-%d')  # Assuming 'datum' is a date object
+        if date_str not in available_times:
+            available_times[date_str] = []
+        available_times[date_str].append(row['cas_zacatku'])  # Assuming 'cas_zacatku' is a time object
+
     form = PersonalInformationForm()
 
     if form.validate_on_submit():
@@ -57,6 +63,12 @@ def main_page():
         cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, datetime_str , 1, "čeština", student_count, reservation_note))
         reservation_id = cursor.lastrowid
 
+        query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ?', (date, time)).fetchone()
+        db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],))
+        query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
+        db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result_id_instructor["ID_osoba"],reservation_id))
+    
+
         if form.student_client.data:
             student_count += 1
             db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, name, surname, form.experience_client.data, form.age_client.data))
@@ -92,8 +104,19 @@ def reservations_user():
 def login_page_admin():
     return render_template("blog/login_admin.html")
 
-@views.route('/admin-page')
+@views.route('/admin-page', methods=["GET", "POST"])
 def admin_page():
+    db = get_db()
+
+    #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-18", "12:00", "volno"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "13:00", "volno"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "14:00", "volno"))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 3))
+
+    db.commit()
+
     return render_template("blog/admin_page.html")
 
 @views.route('/lectures')
