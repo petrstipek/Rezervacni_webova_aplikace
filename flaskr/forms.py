@@ -10,8 +10,8 @@ class PersonalInformationForm(FlaskForm):
         Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     ], render_kw={"type": "tel"})
     email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
-    age_client = IntegerField('Age', validators=[DataRequired(), NumberRange(min=0, max=120)])
-    experience_client = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[DataRequired()])
+    age_client = IntegerField('Age', validators=[Optional(), NumberRange(min=0, max=120)])
+    experience_client = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
     
     student_client = BooleanField('Žák stejný jako klient', validators=[])
     more_students = BooleanField("Objednat více žáků", validators=[])
