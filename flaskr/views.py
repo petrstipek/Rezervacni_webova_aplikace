@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for
 from flaskr.forms import PersonalInformationForm
 from flaskr.db import get_db
+from datetime import datetime, timedelta
 
 views = Blueprint("views", __name__)
 
@@ -62,10 +63,21 @@ def main_page():
         phone = form.tel_number.data
         lesson_type = form.lesson_type.data
         reservation_note = form.note.data
+        lesson_length = form.lesson_length.data
 
         print("tady")
         print(time)
         print(date)
+        print(lesson_length)
+
+        time_str = time
+
+        datetime_obj = datetime.strptime(time_str, '%H:%M')
+        datetime_obj_plus_one_hour = datetime_obj + timedelta(hours=1)
+        time_plus_one = datetime_obj_plus_one_hour.strftime('%H:%M')
+
+        print("Original time:", time_str)
+        print("Time plus one hour:", time_plus_one)
 
 
         
@@ -91,13 +103,19 @@ def main_page():
 
         cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, datetime_str , 1, "čeština", student_count, reservation_note))
         reservation_id = cursor.lastrowid
+        print("reservation id")
+        print(type(reservation_id))
 
-        query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
-        print(query_result_id_lesson)
-        db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],))
-        query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
-        db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result_id_instructor["ID_osoba"],reservation_id))
-    
+        if lesson_length == "1hodina":
+            query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
+            db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],))
+            query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
+            db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result_id_instructor["ID_osoba"],reservation_id))
+            db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, query_result_id_lesson["ID_hodiny"]))
+        else:
+
+            query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
+            query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
 
         if form.student_client.data:
             student_count += 1
@@ -139,22 +157,84 @@ def admin_page():
     db = get_db()
 
     #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
-    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-18", "12:00", "volno"))
-    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "13:00", "volno"))
-    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "13:00", "volno"))
-    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-19", "14:00", "volno"))
-    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav) VALUES (?, ?, ?)', ("2024-02-18", "12:00", "volno"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-20", "13:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-20", "14:00", "volno", "ind"))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 1))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
+
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "16:00", "volno", "ind"))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 3))
+
+    #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Natálie", "Dlouhá", "Natalie@Dlouha.cz", "111111111", "senior", "2001-03-31", "2020-01-01"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "16:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "17:00", "volno", "ind"))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 4))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 5))
+
+    db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Lucie", "Krátká", "lucie@kratka.cz", "111111111", "senior", "2005-03-31", "2020-01-01"))
+    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "16:00", "volno", "ind"))
+    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "17:00", "volno", "ind"))
+    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (3, 6))
+    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (3, 7))
+
+    #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-18", "12:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-19", "13:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-19", "14:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-18", "12:00", "volno", "ind"))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 3))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 4))
-    #db.execu#te('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 5))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 5))
 
+    #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Natálie", "Dlouhá", "Natalie@Dlouha.cz", "111111111", "senior", "2001-03-31", "2020-01-01"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-20", "12:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-20", "13:00", "volno", "ind"))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 6))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 7))
+
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, obsazenost, kapacita) VALUES (?, ?, ?, ?, ?, ?)', ("2024-02-21", "9:00", "volno", "skup", 0, 10))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, obsazenost, kapacita) VALUES (?, ?, ?, ?, ?, ?)', ("2024-02-21", "12:00", "volno", "skup", 0, 10))
+    
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 8))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 9))
+
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 8))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 9))
+    
     db.commit()
 
     return render_template("blog/admin_page.html")
 
 @views.route('/lectures')
 def lectures():
+    db = get_db()
+
+    unique_ids = db.execute('SELECT DISTINCT ID_osoba FROM ma_vypsane').fetchall()
+    unique_ids = [row['ID_osoba'] for row in unique_ids]
+
+    found = False
+    for id_osoba in unique_ids:
+        query_result = db.execute('select ID_osoba from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = "2024-02-21" and cas_zacatku = "16:00" AND ID_osoba = ? order by ID_osoba', (id_osoba,)).fetchone()    
+        if query_result == None:
+            continue
+        
+        query_result2 = db.execute('select * from ma_vypsane left  join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = "2024-02-21" and cas_zacatku = "17:00"', (id_osoba,)).fetchone()        
+        if query_result2 == None:
+            continue
+        found = True
+        print("id found ")
+        print(query_result["ID_osoba"])
+        print(query_result2["ID_osoba"]) 
+        break
+    if not found:
+        print("Nothing was found for the given conditions.")           
+
+    #print("query result")
+    #query_result = db.execute('select ID_osoba from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = "2024-02-19" and cas_zacatku = "13:00" order by ID_osoba').fetchone()
+    #print(query_result["ID_osoba"])
+    #query_resutl2 = db.execute('select * from ma_vypsane left  join Dostupne_hodiny using (ID_hodiny) where ID_osoba = 1 and cas_zacatku = "14:00"').fetchone()
+
     return render_template("blog/lectures.html")
 
 @views.route('/reservations-admin')
