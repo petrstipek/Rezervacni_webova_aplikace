@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for, session
 from flaskr.forms import PersonalInformationForm
 from flaskr.db import get_db
 from datetime import datetime, timedelta
 
 views = Blueprint("views", __name__)
+
 
 
 @views.route('/', methods=["GET", "POST"])
@@ -13,28 +14,51 @@ def main_page():
 
     #query_result = db.execute('SELECT datum, cas_zacatku FROM Dostupne_hodiny WHERE stav = "volno" ORDER BY datum, cas_zacatku').fetchall()
 
-    query_result = db.execute("""
+    query_result_ind = db.execute("""
         SELECT datum, cas_zacatku, COUNT(*) as count
         FROM dostupne_hodiny
-        WHERE stav = 'volno'
+        WHERE stav = 'volno' AND typ_hodiny = 'ind'
         GROUP BY datum, cas_zacatku
         ORDER BY datum, cas_zacatku;
     """).fetchall()
 
-    available_times = {}
-    for row in query_result:
-        date_str = row['datum'].strftime('%Y-%m-%d')  # Convert to string
-        time_str = row['cas_zacatku']  # Convert to string
+    available_times_ind = {}
+    for row in query_result_ind:
+        date_str = row['datum'].strftime('%Y-%m-%d')
+        time_str = row['cas_zacatku'] 
         count = row['count']
         
-        if date_str not in available_times:
-            available_times[date_str] = []
+        if date_str not in available_times_ind:
+            available_times_ind[date_str] = []
         
         # Append a tuple of (time, count) for each cas_zacatku
-        available_times[date_str].append((time_str, count))
+        available_times_ind[date_str].append((time_str, count))
 
-    print("available times")
-    print(available_times)
+    query_result_group = db.execute("""
+        SELECT datum, cas_zacatku, COUNT(*) as count
+        FROM dostupne_hodiny
+        WHERE stav = 'volno' AND typ_hodiny = 'group'
+        GROUP BY datum, cas_zacatku
+        ORDER BY datum, cas_zacatku;
+    """).fetchall()
+
+    available_times_group = {}
+
+    for row in query_result_group:
+        date_str = row['datum'].strftime('%Y-%m-%d')
+        time_str = row['cas_zacatku'] 
+        count = row['count']
+
+        if date_str not in available_times_group:
+            available_times_group[date_str] = []
+
+        available_times_group[date_str].append((time_str, count))
+
+    print("ind")
+    print(available_times_ind)
+
+    print("group")
+    print(available_times_group)
     
 
     if form.validate_on_submit():
@@ -57,20 +81,11 @@ def main_page():
         reservation_note = form.note.data
         lesson_length = form.lesson_length.data
 
-        print("tady")
-        print(time)
-        print(date)
-        print(lesson_length)
-
         time_str = time
 
         datetime_obj = datetime.strptime(time_str, '%H:%M')
         datetime_obj_plus_one_hour = datetime_obj + timedelta(hours=1)
         time_plus_one = datetime_obj_plus_one_hour.strftime('%H:%M')
-
-        print("Original time:", time_str)
-        print("Time plus one hour:", time_plus_one)
-
 
         
         def get_or_create_klient(db, name, surname, email, phone):
@@ -95,9 +110,6 @@ def main_page():
 
         cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, datetime_str , lesson_length, "čeština", student_count, reservation_note))
         reservation_id = cursor.lastrowid
-        print("reservation id")
-        print(type(reservation_id))
-
 
         if form.student_client.data:
             student_count += 1
@@ -119,13 +131,10 @@ def main_page():
 
         if lesson_length == "1hodina":
             for student in range(student_count):
-                print("student loop")
                 print(student)
                 query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
-                print(query_result_id_lesson["ID_hodiny"])
                 db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],))
                 query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
-                print(query_result_id_instructor["ID_osoba"])
                 db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result_id_instructor["ID_osoba"],reservation_id))
                 db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, query_result_id_lesson["ID_hodiny"]))
         else:
@@ -133,37 +142,18 @@ def main_page():
             unique_ids = db.execute('SELECT DISTINCT ID_osoba FROM ma_vypsane').fetchall()
             unique_ids = [row['ID_osoba'] for row in unique_ids]
             found = False
-            print(unique_ids)
-            print("student count")
-            print(student_count)
             for student in range(student_count):
-                print("student count 2 hour: ")
-                print(student)
                 for id_osoba in unique_ids:
-                    print(id_osoba)
-                    print("tady")
-                    print(date)
-                    print(time)
                     query_result = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = ? and cas_zacatku = ? AND ID_osoba = ? order by ID_osoba', (date, time, id_osoba,)).fetchone()    
-                    print("qeury result")
-                    print(query_result)
                     if query_result is None:
                         continue
-                    print("pokracujeme")
                     query_result2 = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = ? and cas_zacatku = ?', (id_osoba, date, time_plus_one)).fetchone()        
-                    print("query result2")
-                    print("-----------")
                     if query_result2 is None:
                         continue
                     found = True
                     id_instructor = query_result["ID_osoba"]
                     id_lessons = (query_result["ID_hodiny"], query_result2["ID_hodiny"])
-                    print("id found ")
-                    print("id osoby")
-                    print(id_instructor)
-                    print("ID dostupne hodiny")
-                    print(id_lessons[0])
-                    print(id_lessons[1])
+
                     db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (id_lessons[0],))
                     db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (id_lessons[1],))
                     db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (id_instructor,reservation_id))
@@ -182,7 +172,7 @@ def main_page():
         flash('Reservation submitted successfully!', category="success")
         return redirect(url_for('views.main_page'))  # Redi
 
-    return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form,  available_times=json.dumps(available_times))
+    return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form,  available_times=json.dumps(available_times_ind), option_number2=json.dumps(available_times_group))
 
 @views.route('/reservation-check')
 def reservation_check():
@@ -302,21 +292,11 @@ def admin_page():
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 44))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (3, 45))
 
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-26", "16:00", "volno", "ind"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-26", "16:00", "volno", "ind"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-26", "16:00", "volno", "ind"))
+    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-14", "11:00", "volno", "group"))
+    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-14", "13:00", "volno", "group"))
 
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-26", "17:00", "volno", "ind"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-26", "17:00", "volno", "ind"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-26", "17:00", "volno", "ind"))
-
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 82))
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 83))
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (3, 84))
-
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 85))
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 86))
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (3, 87))
+    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 92))
+    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 93))
 
 
     #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
@@ -401,3 +381,11 @@ def prices_page():
     return render_template("blog/prices.html", active_page = "prices")
 
 
+@views.route('/handle_selection', methods=['POST'])
+def handle_selection():
+    selected_option = request.json['selectedOption']
+    print(selected_option)
+    # Process the selected option as needed
+    #print(selected_option)  # Just for demonstration
+    # You can return a response, such as confirmation or additional data
+    return jsonify({"message": "Option processed successfully"})

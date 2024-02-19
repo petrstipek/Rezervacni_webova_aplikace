@@ -6,10 +6,9 @@ $(document).ready(function () {
             $(`#age_client${clientNumber}`),
             $(`#experience_client${clientNumber}`)
         ];
-        // Check if the name field is filled out
+
         const isNameFilled = $(`#name_client${clientNumber}`).val().trim() !== '';
 
-        // Set the required attribute based on if the name field is filled
         fields.forEach($field => {
             if (isNameFilled) {
                 $field.attr('required', 'required');
@@ -19,7 +18,6 @@ $(document).ready(function () {
         });
     }
 
-    // Event listeners for each client name field
     [1, 2, 3].forEach(clientNumber => {
         $(`#name_client${clientNumber}`).on('input', function () {
             toggleRequired(clientNumber);
@@ -43,21 +41,56 @@ $(document).ready(function () {
     });
 
 
-    var availableTimes = ($('#datepicker').data('available-times'));
+    var availableTimesInd = ($('#datepicker').data('available-times'));
+    var availableTimesGroup = ($('#test_container').data('test'));
     var selectedDate = '';
+
+    function updateAvailableTimes() {
+        if (!selectedDate) {
+            return;
+        }
+
+        var lessonType = $('#lesson_type').val();
+
+        var times = lessonType === 'individual' ? availableTimesInd[selectedDate] : availableTimesGroup[selectedDate];
+        console.log(times)
+        times = times || [];
+
+        var timesHtml = times.map(function (time) {
+            return `<label><input type="checkbox" name="time" value="${time}" /> ${time}</label><br>`;
+        }).join('');
+
+        $('.times-container').html(timesHtml);
+    };
 
     $('#datepicker').datepicker({
         dateFormat: 'yy-mm-dd',
         onSelect: function (dateText) {
+            selectedDate = dateText; // Store the selected date
+            $("input[name='date']").val(dateText); // Optional: Update any form inputs if needed
+            updateAvailableTimes(); // Update available times based on the new date and current lesson type
+        }
+    });
+
+    /*
+    $('#datepicker').datepicker({
+        dateFormat: 'yy-mm-dd',
+        onSelect: function (dateText) {
             selectedDate = dateText;
+            console.log(availableTimesGroup)
             $("input[name='date']").val(dateText);
-            var times = availableTimes[dateText] || [];
+            var times = availableTimesInd[dateText] || [];
             var timesHtml = times.map(function (time) {
                 return `<label><input type="checkbox" name="time" value="${time}" /> ${time}</label><br>`;
             }).join('');
 
             $('.times-container').html(timesHtml);
         }
+    });
+    */
+
+    $('#lesson_type').change(function () {
+        updateAvailableTimes(); // Update available times based on the current date and new lesson type
     });
 
     // Event delegation for dynamically added checkboxes
@@ -66,5 +99,26 @@ $(document).ready(function () {
             // Prepare the data to be sent to the server
             $("input[name='time']").val($(this).val());
         }
+    });
+
+    $('#lesson_type').change(function () {
+        var selectedOption = $(this).val();
+        $.ajax({
+            url: '/handle_selection',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ selectedOption: selectedOption }),
+            dataType: 'json',
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", $("#csrf_token").val());
+            },
+            success: function (response) {
+                console.log(response.message);
+                // You can also update the UI based on the response
+            },
+            error: function (xhr, status, error) {
+                console.error("Error: " + error);
+            }
+        });
     });
 });

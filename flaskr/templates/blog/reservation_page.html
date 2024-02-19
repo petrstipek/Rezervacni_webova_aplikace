@@ -22,7 +22,15 @@
                 {{ form.time }}
                 <!-- The selected dates will be appended here -->
             </div>
+            <div id="test_container" data-test="{{ option_number2 }}">
+
+            </div>
         </div>
+        <label for="lesson_type">{{ form.lesson_type.label }}</label>
+        {{ form.lesson_type(id="lesson_type") }}
+        <br>
+        <label for="lesson_length">{{ form.lesson_length.label }}</label>
+        {{ form.lesson_length }}
     </section>
 
     <section class="section_white" id="contact_information">
@@ -55,12 +63,6 @@
             {% for error in form.experience_client.errors %}
                 <span style="color: red;">{{ error }}</span>
             {% endfor %}
-            <br>
-            <label for="lesson_type">{{ form.lesson_type.label }}</label>
-            {{ form.lesson_type }}
-            <br>
-            <label for="lesson_length">{{ form.lesson_length.label }}</label>
-            {{ form.lesson_length }}
         </div>
         <br>
         <div>
@@ -128,4 +130,5 @@
 </form>
 
 <script src="{{ url_for('static', filename='js/reservation.js') }}"></script>
+
 {% endblock %}

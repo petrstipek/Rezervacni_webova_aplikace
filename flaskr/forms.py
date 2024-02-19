@@ -32,7 +32,7 @@ class PersonalInformationForm(FlaskForm):
     experience_client2 = SelectField('Choose Option', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
     experience_client3 = SelectField('Choose Option', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
 
-    lesson_type = SelectField('Typ výuky', choices=[('value1', 'Individuální'), ('value2', 'Skupinová')], validators=[Optional()])
+    lesson_type = SelectField('Typ výuky', choices=[('individual', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
 
     note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu"})
