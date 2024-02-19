@@ -414,3 +414,33 @@ def get_available_times(instructor_id):
     
     print(available_times_instructor)
     return json.dumps(available_times_instructor)
+
+@views.route('/get-available-times/individual/<int:instructor_id>')
+def get_available_times_individual_instructor(instructor_id):
+    db = get_db()
+    base_query = """
+        SELECT datum, cas_zacatku, COUNT(*) as count
+        FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny)
+        WHERE stav = 'volno' AND typ_hodiny = 'ind'
+    """
+    
+    if instructor_id != 0:
+        base_query += " AND ID_osoba = ?"
+        query_parameters = (instructor_id,)
+        query_result_ind = db.execute(base_query + " GROUP BY datum, cas_zacatku ORDER BY datum, cas_zacatku", query_parameters).fetchall()
+    else:
+        query_result_ind = db.execute(base_query + " GROUP BY datum, cas_zacatku ORDER BY datum, cas_zacatku").fetchall()
+    
+    available_times_ind = {}
+    for row in query_result_ind:
+        date_str = row['datum'].strftime('%Y-%m-%d')
+        time_str = row['cas_zacatku']
+        count = row['count']
+        
+        if date_str not in available_times_ind:
+            available_times_ind[date_str] = []
+        
+        available_times_ind[date_str].append((time_str, count))
+    
+    # Return a valid response (modify as needed)
+    return json.dumps(available_times_ind)

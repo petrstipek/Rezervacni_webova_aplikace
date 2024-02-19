@@ -1,20 +1,73 @@
 $(document).ready(function () {
 
-    $('#lesson_instructor').change(function () {
-        var instructorId = $(this).val();
-        $.ajax({
-            url: '/get-available-times/' + instructorId,
-            type: 'GET',
-            success: function (data) {
-                // Assuming 'data' is a list of strings representing available times
-                // Update your date picker with these times
-                updateDatePicker(data);
-            },
-            error: function (error) {
-                console.log(error);
-            }
+
+    function fetchAvailableTimes() {
+        console.log("spusteno")
+        var instructorId = $('#lesson_instructor').val();
+        var lessonType = $('#lesson_type').val(); // Get selected lesson type
+
+        // If individual lesson type is selected, fetch times based on the instructor
+        if (lessonType === 'individual' && instructorId) {
+            $.ajax({
+                url: '/get-available-times/individual/' + instructorId,
+                type: 'GET',
+                success: function (data) {
+                    console.log("uz jsem tady konecne")
+                    console.log(data)
+                    updateAvailableTimes(data);
+                    return data;
+                },
+                error: function (error) {
+                    console.error('Error fetching available times:', error);
+                }
+            });
+        } else if (lessonType === 'group') {
+            // For group lessons, fetch times without specifying an instructor
+            $.ajax({
+                url: '/get-available-times/group',
+                type: 'GET',
+                success: function (data) {
+                    // Assuming data is an array of available times for group lessons
+                    //updateAvailableTimes(data);
+                },
+                error: function (error) {
+                    console.error('Error fetching available times:', error);
+                }
+            });
+        }
+    }
+
+    $('#lesson_instructor').change(fetchAvailableTimes);
+
+    // Event listener for lesson type change
+    $('#lesson_type').change(fetchAvailableTimes);
+
+
+
+
+
+
+
+
+    /*
+        $('#lesson_instructor').change(function () {
+            var instructorId = $(this).val();
+            $.ajax({
+                url: '/get-available-times/' + instructorId,
+                type: 'GET',
+                success: function (data) {
+                    console.log("get-available-times")
+                    console.log(data)
+                    // Assuming 'data' is a list of strings representing available times
+                    // Update your date picker with these times
+                    //updateDatePicker(data);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
         });
-    });
+        */
 
     function toggleRequired(clientNumber) {
         const fields = [
@@ -61,19 +114,27 @@ $(document).ready(function () {
     var availableTimesGroup = ($('#datepicker').data('available-times-group'));
     var selectedDate = '';
 
-    function updateAvailableTimes() {
+    function updateAvailableTimes(data_times) {
         if (!selectedDate) {
             return;
         }
 
-        var lessonType = $('#lesson_type').val();
+        //var lessonType = $('#lesson_type').val();
 
-        var times = lessonType === 'individual' ? availableTimesInd[selectedDate] : availableTimesGroup[selectedDate];
-        console.log(times)
-        times = times || [];
+        //var times = lessonType === 'individual' ? availableTimesInd[selectedDate] : availableTimesGroup[selectedDate];
 
-        var timesHtml = times.map(function (time) {
-            return `<label><input type="checkbox" name="time" value="${time}" /> ${time}</label><br>`;
+        console.log("data times tady")
+        console.log(data_times)
+        data_times = JSON.parse(data_times)
+        data_times = data_times || [];
+
+        var timesForSelectedDate = data_times[selectedDate];
+
+        var timesHtml = timesForSelectedDate.map(function (timeCountPair) {
+            // timeCountPair is like ["11:00", 2]
+            var time = timeCountPair[0]; // Extract the time part
+            var count = timeCountPair[1]; // Extract the count part (if you want to display it)
+            return `<label><input type="checkbox" name="time" value="${time}" /> ${time} (Available Slots: ${count})</label><br>`;
         }).join('');
 
         $('.times-container').html(timesHtml);
@@ -84,7 +145,7 @@ $(document).ready(function () {
         onSelect: function (dateText) {
             selectedDate = dateText; // Store the selected date
             $("input[name='date']").val(dateText); // Optional: Update any form inputs if needed
-            updateAvailableTimes(); // Update available times based on the new date and current lesson type
+            updateAvailableTimes(fetchAvailableTimes()); // Update available times based on the new date and current lesson type
         }
     });
 
@@ -105,9 +166,11 @@ $(document).ready(function () {
     });
     */
 
+    /*
     $('#lesson_type').change(function () {
         updateAvailableTimes(); // Update available times based on the current date and new lesson type
     });
+    */
 
     // Event delegation for dynamically added checkboxes
     $('.times-container').on('change', 'input[name="time"]', function () {
