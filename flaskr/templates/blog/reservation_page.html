@@ -29,7 +29,7 @@
         <label for="lesson_length">{{ form.lesson_length.label }}</label>
         {{ form.lesson_length }}
         <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
-        {{ form.lesson_instructor_choices }}
+        {{ form.lesson_instructor_choices(id="lesson_instructor") }}
     </section>
 
     <section class="section_white" id="contact_information">
@@ -45,7 +45,7 @@
     </section>
 
     <section class="section_blue" id="students">
-        <h3 class="global-margin">Žáci</h3>
+        <h3 class="global-margin">Vlastnosti lekce</h3>
         <label for="student_client">{{ form.student_client.label }}</label>
         {{ form.student_client(id="student_client_checkbox") }}
         <div class="form-row" id="client_student_details_section" style="display: none;">
@@ -127,6 +127,7 @@
         </div>
     </section>
 </form>
+
 
 <script src="{{ url_for('static', filename='js/reservation.js') }}"></script>
 

@@ -60,10 +60,12 @@ def main_page():
     print("group")
     print(available_times_group)
 
-    query_result_instructors = db.execute("SELECT DISTINCT jmeno from instruktor")
-    available_instructors = ["Instruktor"]
+    query_result_instructors = db.execute("SELECT DISTINCT jmeno, ID_osoba from instruktor")
+    available_instructors = [(0, "Instruktor")]
     for row in query_result_instructors:
-        available_instructors.append(row["jmeno"])
+        available_instructors.append((row["ID_osoba"] ,row["jmeno"]))
+
+    print(available_instructors)
 
     form.lesson_instructor_choices.choices = available_instructors
 
@@ -298,11 +300,11 @@ def admin_page():
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (2, 44))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (3, 45))
 
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-14", "11:00", "volno", "group"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-14", "13:00", "volno", "group"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-14", "11:00", "volno", "group"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-14", "13:00", "volno", "group"))
 
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 92))
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 93))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 92))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 93))
 
 
     #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
@@ -391,7 +393,24 @@ def prices_page():
 def handle_selection():
     selected_option = request.json['selectedOption']
     print(selected_option)
-    # Process the selected option as needed
-    #print(selected_option)  # Just for demonstration
-    # You can return a response, such as confirmation or additional data
     return jsonify({"message": "Option processed successfully"})
+
+@views.route('/get-available-times/<instructor_id>')
+def get_available_times(instructor_id):
+    db = get_db()
+    print(instructor_id)
+    query_resuslt_instructor_times = db.execute('select datum, cas_zacatku from dostupne_hodiny left join ma_vypsane using (ID_hodiny) where stav="volno" and typ_hodiny="ind" and ID_osoba= ? order by datum, cas_zacatku', (instructor_id))
+    
+    available_times_instructor = {}
+
+    for row in query_resuslt_instructor_times:
+        date_str = row['datum'].strftime('%Y-%m-%d')
+        time_str = row['cas_zacatku']
+
+        if date_str not in available_times_instructor:
+            available_times_instructor[date_str] = []
+
+        available_times_instructor[date_str].append((time_str))
+    
+    print(available_times_instructor)
+    return json.dumps(available_times_instructor)

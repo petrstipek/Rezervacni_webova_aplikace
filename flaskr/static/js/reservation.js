@@ -1,5 +1,21 @@
 $(document).ready(function () {
 
+    $('#lesson_instructor').change(function () {
+        var instructorId = $(this).val();
+        $.ajax({
+            url: '/get-available-times/' + instructorId,
+            type: 'GET',
+            success: function (data) {
+                // Assuming 'data' is a list of strings representing available times
+                // Update your date picker with these times
+                updateDatePicker(data);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+
     function toggleRequired(clientNumber) {
         const fields = [
             $(`#surname_client${clientNumber}`),
