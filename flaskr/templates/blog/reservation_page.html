@@ -16,14 +16,11 @@
     <section class="section_blue" id="date_picker">
         <h3 class="global-margin">Výběr termínu rezervace</h3>
         <div class="container">
-            <div id="datepicker" data-available-times="{{ available_times }}"></div>
+            <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
             {{ form.date }}
             <div class="times-container">
                 {{ form.time }}
                 <!-- The selected dates will be appended here -->
-            </div>
-            <div id="test_container" data-test="{{ option_number2 }}">
-
             </div>
         </div>
         <label for="lesson_type">{{ form.lesson_type.label }}</label>
@@ -31,6 +28,8 @@
         <br>
         <label for="lesson_length">{{ form.lesson_length.label }}</label>
         {{ form.lesson_length }}
+        <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
+        {{ form.lesson_instructor_choices }}
     </section>
 
     <section class="section_white" id="contact_information">

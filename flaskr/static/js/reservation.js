@@ -41,8 +41,8 @@ $(document).ready(function () {
     });
 
 
-    var availableTimesInd = ($('#datepicker').data('available-times'));
-    var availableTimesGroup = ($('#test_container').data('test'));
+    var availableTimesInd = ($('#datepicker').data('available-times-ind'));
+    var availableTimesGroup = ($('#datepicker').data('available-times-group'));
     var selectedDate = '';
 
     function updateAvailableTimes() {
@@ -101,6 +101,7 @@ $(document).ready(function () {
         }
     });
 
+    /*
     $('#lesson_type').change(function () {
         var selectedOption = $(this).val();
         $.ajax({
@@ -121,4 +122,5 @@ $(document).ready(function () {
             }
         });
     });
+    */
 });

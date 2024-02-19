@@ -59,7 +59,13 @@ def main_page():
 
     print("group")
     print(available_times_group)
-    
+
+    query_result_instructors = db.execute("SELECT DISTINCT jmeno from instruktor")
+    available_instructors = ["Instruktor"]
+    for row in query_result_instructors:
+        available_instructors.append(row["jmeno"])
+
+    form.lesson_instructor_choices.choices = available_instructors
 
     if form.validate_on_submit():
         db = get_db()
@@ -172,7 +178,7 @@ def main_page():
         flash('Reservation submitted successfully!', category="success")
         return redirect(url_for('views.main_page'))  # Redi
 
-    return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form,  available_times=json.dumps(available_times_ind), option_number2=json.dumps(available_times_group))
+    return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form,  available_times_ind=json.dumps(available_times_ind), available_times_group=json.dumps(available_times_group))
 
 @views.route('/reservation-check')
 def reservation_check():
