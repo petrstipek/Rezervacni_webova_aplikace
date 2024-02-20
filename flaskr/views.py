@@ -443,4 +443,30 @@ def get_available_times_individual_instructor(instructor_id):
         available_times_ind[date_str].append((time_str, count))
     
     # Return a valid response (modify as needed)
-    return json.dumps(available_times_ind)
+    return jsonify(available_times_ind)
+
+@views.route('/get-available-times/group')
+def get_available_times_group():
+    db = get_db()
+
+    query_result_group = db.execute("""
+        SELECT datum, cas_zacatku, COUNT(*) as count
+        FROM dostupne_hodiny
+        WHERE stav = 'volno' AND typ_hodiny = 'group'
+        GROUP BY datum, cas_zacatku
+        ORDER BY datum, cas_zacatku;
+    """).fetchall()
+
+    available_times_group = {}
+
+    for row in query_result_group:
+        date_str = row['datum'].strftime('%Y-%m-%d')
+        time_str = row['cas_zacatku'] 
+        count = row['count']
+
+        if date_str not in available_times_group:
+            available_times_group[date_str] = []
+
+        available_times_group[date_str].append((time_str, count))
+
+    return jsonify(available_times_group)

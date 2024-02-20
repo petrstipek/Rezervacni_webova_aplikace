@@ -6,7 +6,6 @@ $(document).ready(function () {
         var instructorId = $('#lesson_instructor').val();
         var lessonType = $('#lesson_type').val(); // Get selected lesson type
 
-        // If individual lesson type is selected, fetch times based on the instructor
         if (lessonType === 'individual' && instructorId) {
             $.ajax({
                 url: '/get-available-times/individual/' + instructorId,
@@ -14,21 +13,20 @@ $(document).ready(function () {
                 success: function (data) {
                     console.log("uz jsem tady konecne")
                     console.log(data)
+                    console.log(data["2024-02-22"])
                     updateAvailableTimes(data);
-                    return data;
+                    //return data;
                 },
                 error: function (error) {
                     console.error('Error fetching available times:', error);
                 }
             });
         } else if (lessonType === 'group') {
-            // For group lessons, fetch times without specifying an instructor
             $.ajax({
                 url: '/get-available-times/group',
                 type: 'GET',
                 success: function (data) {
-                    // Assuming data is an array of available times for group lessons
-                    //updateAvailableTimes(data);
+                    updateAvailableTimes(data);
                 },
                 error: function (error) {
                     console.error('Error fetching available times:', error);
@@ -39,7 +37,6 @@ $(document).ready(function () {
 
     $('#lesson_instructor').change(fetchAvailableTimes);
 
-    // Event listener for lesson type change
     $('#lesson_type').change(fetchAvailableTimes);
 
 
@@ -114,6 +111,7 @@ $(document).ready(function () {
     var availableTimesGroup = ($('#datepicker').data('available-times-group'));
     var selectedDate = '';
 
+    /*
     function updateAvailableTimes(data_times) {
         if (!selectedDate) {
             return;
@@ -123,12 +121,21 @@ $(document).ready(function () {
 
         //var times = lessonType === 'individual' ? availableTimesInd[selectedDate] : availableTimesGroup[selectedDate];
 
+
         console.log("data times tady")
         console.log(data_times)
         data_times = JSON.parse(data_times)
         data_times = data_times || [];
 
         var timesForSelectedDate = data_times[selectedDate];
+
+        if (!data_times[selectedDate]) {
+            console.log("No times for selected date:", selectedDate);
+            $('.times-container').html("No available times for selected date.");
+            return;
+        }
+        
+
 
         var timesHtml = timesForSelectedDate.map(function (timeCountPair) {
             // timeCountPair is like ["11:00", 2]
@@ -139,6 +146,44 @@ $(document).ready(function () {
 
         $('.times-container').html(timesHtml);
     };
+    */
+
+    function updateAvailableTimes(data_times) {
+        // Ensure selectedDate and data_times are defined
+        if (!selectedDate || typeof data_times === 'undefined') {
+            console.log("selectedDate or data_times is undefined.");
+            return;
+        }
+
+        selectedDate = selectedDate.trim();
+        console.log("Selected date:", selectedDate);
+        console.log("Data times:", data_times);
+        console.log("Type of selectedDate:", typeof selectedDate);
+
+
+
+
+        // Safeguard for data_times[selectedDate]
+        if (!data_times.hasOwnProperty(selectedDate)) {
+            console.log("No available times for the selected date:", selectedDate);
+            $('.times-container').html("No available times for selected date.");
+            return;
+        }
+
+        var timesForSelectedDate = data_times[selectedDate];
+
+        if (!Array.isArray(timesForSelectedDate)) {
+            console.log("Times for selected date is not an array:", timesForSelectedDate);
+            return;
+        }
+
+        var timesHtml = timesForSelectedDate.map(function (timeCountPair) {
+            var time = timeCountPair[0]; // Extract the time string
+            return `<label><input type="checkbox" name="time" value="${time}" /> ${time}</label><br>`;
+        }).join('');
+
+        $('.times-container').html(timesHtml);
+    }
 
     $('#datepicker').datepicker({
         dateFormat: 'yy-mm-dd',
