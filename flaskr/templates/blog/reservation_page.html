@@ -26,10 +26,16 @@
         <label for="lesson_type">{{ form.lesson_type.label }}</label>
         {{ form.lesson_type(id="lesson_type") }}
         <br>
+        <div id="div_lesson_length">
         <label for="lesson_length">{{ form.lesson_length.label }}</label>
-        {{ form.lesson_length }}
+        {{ form.lesson_length(id="lesson_length") }}
+        </div>
+        <div id="div_lesson_instructor">
         <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
         {{ form.lesson_instructor_choices(id="lesson_instructor") }}
+        </div>
+        <label for="language_selection">{{ form.language_selection.label }}</label>
+        {{ form.language_selection(id="language_selection") }}
     </section>
 
     <section class="section_white" id="contact_information">

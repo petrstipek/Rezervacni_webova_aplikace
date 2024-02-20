@@ -1,5 +1,19 @@
 $(document).ready(function () {
 
+    const lessonTypeSelect = document.getElementById('lesson_type');
+    const additionalField1Container = document.getElementById('div_lesson_length');
+    const additionalField2Container = document.getElementById('div_lesson_instructor');
+
+    lessonTypeSelect.addEventListener('change', function () {
+        if (this.value === 'individual') {
+            additionalField1Container.style.display = '';
+            additionalField2Container.style.display = '';
+        } else if (this.value === 'group') {
+            additionalField1Container.style.display = 'none';
+            additionalField2Container.style.display = 'none';
+        }
+    });
+
 
     function fetchAvailableTimes() {
         console.log("spusteno")
@@ -178,7 +192,7 @@ $(document).ready(function () {
             var time = timeCountPair[0]; // Extract the time string
             var count = timeCountPair[1]; // Extract the count of available slots
             // Include both time and count in the label
-            return `<label><input type="checkbox" name="time" value="${time}" /> ${time} - Available Slots: ${count}</label><br>`;
+            return `<label><input type="radio" name="time" value="${time}" /> ${time} - Available Slots: ${count}</label><br>`;
         }).join('');
 
         $('.times-container').html(timesHtml);
@@ -216,10 +230,8 @@ $(document).ready(function () {
     });
     */
 
-    // Event delegation for dynamically added checkboxes
     $('.times-container').on('change', 'input[name="time"]', function () {
         if (this.checked) {
-            // Prepare the data to be sent to the server
             $("input[name='time']").val($(this).val());
         }
     });

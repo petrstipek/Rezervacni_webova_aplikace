@@ -35,6 +35,7 @@ class PersonalInformationForm(FlaskForm):
     lesson_type = SelectField('Typ výuky', choices=[('individual', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
     lesson_instructor_choices = SelectField("Instruktor", choices = [])
+    language_selection = SelectField("Jazyk", choices=[("czech", "čeština"), ("deutsch", "deutsch"), ("english", "english")])
 
     note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu"})
 
