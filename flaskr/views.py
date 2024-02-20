@@ -388,3 +388,8 @@ def get_available_times_group():
         available_times_group[date_str].append((time_str, count))
 
     return jsonify(available_times_group)
+
+@views.route('/get-available-times/2hour')
+def get_available_times_2hout():
+    db = get_db()
+    

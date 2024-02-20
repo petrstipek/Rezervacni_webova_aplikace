@@ -3,14 +3,17 @@ $(document).ready(function () {
     const lessonTypeSelect = document.getElementById('lesson_type');
     const additionalField1Container = document.getElementById('div_lesson_length');
     const additionalField2Container = document.getElementById('div_lesson_instructor');
+    const additionalField3Container = document.getElementById('div_lesson_language')
 
     lessonTypeSelect.addEventListener('change', function () {
         if (this.value === 'individual') {
             additionalField1Container.style.display = '';
             additionalField2Container.style.display = '';
+            additionalField3Container.style.display = '';
         } else if (this.value === 'group') {
             additionalField1Container.style.display = 'none';
             additionalField2Container.style.display = 'none';
+            additionalField3Container.style.display = 'none';
         }
     });
 
@@ -18,7 +21,8 @@ $(document).ready(function () {
     function fetchAvailableTimes() {
         console.log("spusteno")
         var instructorId = $('#lesson_instructor').val();
-        var lessonType = $('#lesson_type').val(); // Get selected lesson type
+        var lessonType = $('#lesson_type').val();
+        var lessonLength = $('#lesson_length').val();
 
         if (lessonType === 'individual' && instructorId) {
             $.ajax({
@@ -26,6 +30,7 @@ $(document).ready(function () {
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);
+                    console.log(lessonLength)
                     //return data;
                 },
                 error: function (error) {
