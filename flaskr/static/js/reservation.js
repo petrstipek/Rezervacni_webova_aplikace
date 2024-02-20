@@ -11,9 +11,6 @@ $(document).ready(function () {
                 url: '/get-available-times/individual/' + instructorId,
                 type: 'GET',
                 success: function (data) {
-                    console.log("uz jsem tady konecne")
-                    console.log(data)
-                    console.log(data["2024-02-22"])
                     updateAvailableTimes(data);
                     //return data;
                 },
@@ -179,7 +176,9 @@ $(document).ready(function () {
 
         var timesHtml = timesForSelectedDate.map(function (timeCountPair) {
             var time = timeCountPair[0]; // Extract the time string
-            return `<label><input type="checkbox" name="time" value="${time}" /> ${time}</label><br>`;
+            var count = timeCountPair[1]; // Extract the count of available slots
+            // Include both time and count in the label
+            return `<label><input type="checkbox" name="time" value="${time}" /> ${time} - Available Slots: ${count}</label><br>`;
         }).join('');
 
         $('.times-container').html(timesHtml);

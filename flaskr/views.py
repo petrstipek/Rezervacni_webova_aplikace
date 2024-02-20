@@ -14,58 +14,10 @@ def main_page():
 
     #query_result = db.execute('SELECT datum, cas_zacatku FROM Dostupne_hodiny WHERE stav = "volno" ORDER BY datum, cas_zacatku').fetchall()
 
-    query_result_ind = db.execute("""
-        SELECT datum, cas_zacatku, COUNT(*) as count
-        FROM dostupne_hodiny
-        WHERE stav = 'volno' AND typ_hodiny = 'ind'
-        GROUP BY datum, cas_zacatku
-        ORDER BY datum, cas_zacatku;
-    """).fetchall()
-
-    available_times_ind = {}
-    for row in query_result_ind:
-        date_str = row['datum'].strftime('%Y-%m-%d')
-        time_str = row['cas_zacatku'] 
-        count = row['count']
-        
-        if date_str not in available_times_ind:
-            available_times_ind[date_str] = []
-        
-        # Append a tuple of (time, count) for each cas_zacatku
-        available_times_ind[date_str].append((time_str, count))
-
-    query_result_group = db.execute("""
-        SELECT datum, cas_zacatku, COUNT(*) as count
-        FROM dostupne_hodiny
-        WHERE stav = 'volno' AND typ_hodiny = 'group'
-        GROUP BY datum, cas_zacatku
-        ORDER BY datum, cas_zacatku;
-    """).fetchall()
-
-    available_times_group = {}
-
-    for row in query_result_group:
-        date_str = row['datum'].strftime('%Y-%m-%d')
-        time_str = row['cas_zacatku'] 
-        count = row['count']
-
-        if date_str not in available_times_group:
-            available_times_group[date_str] = []
-
-        available_times_group[date_str].append((time_str, count))
-
-    print("ind")
-    print(available_times_ind)
-
-    print("group")
-    print(available_times_group)
-
     query_result_instructors = db.execute("SELECT DISTINCT jmeno, ID_osoba from instruktor")
     available_instructors = [(0, "Instruktor")]
     for row in query_result_instructors:
         available_instructors.append((row["ID_osoba"] ,row["jmeno"]))
-
-    print(available_instructors)
 
     form.lesson_instructor_choices.choices = available_instructors
 
@@ -73,11 +25,9 @@ def main_page():
         db = get_db()
 
         date = form.date.data
-        #print("daate from views " + date)
         time_to_split = form.time.data
         time_parts = time_to_split.split(",")
         time = time_parts[0]
-        #print("timeform: view: " + time)
 
         datetime_str = f"{date} {time}:00"
 
@@ -88,12 +38,16 @@ def main_page():
         lesson_type = form.lesson_type.data
         reservation_note = form.note.data
         lesson_length = form.lesson_length.data
+        instructor_selected = form.lesson_instructor_choices.data
 
         time_str = time
 
         datetime_obj = datetime.strptime(time_str, '%H:%M')
         datetime_obj_plus_one_hour = datetime_obj + timedelta(hours=1)
         time_plus_one = datetime_obj_plus_one_hour.strftime('%H:%M')
+
+        print("lesson instructor choices")
+        print(instructor_selected)
 
         
         def get_or_create_klient(db, name, surname, email, phone):
@@ -105,14 +59,12 @@ def main_page():
                 # User exists, return existing ID
                 klient_id = result[0]
             else:
-                # Step 2: Insert new user since it doesn't exist
                 cursor = db.execute('INSERT INTO klient (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
-                db.commit()  # Commit the insert to make sure the ID is generated
-                klient_id = cursor.lastrowid  # Get the newly inserted user's ID
+                db.commit()
+                klient_id = cursor.lastrowid
     
             return klient_id
 
-        # Usage example
         klient_id = get_or_create_klient(db, name, surname, email, phone)
         student_count = 0
 
@@ -138,13 +90,24 @@ def main_page():
         db.execute('UPDATE rezervace SET pocet_zaku = ? WHERE ID_rezervace = ?', (student_count, reservation_id))
 
         if lesson_length == "1hodina":
-            for student in range(student_count):
-                print(student)
-                query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
-                db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],))
-                query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
-                db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result_id_instructor["ID_osoba"],reservation_id))
-                db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, query_result_id_lesson["ID_hodiny"]))
+            if instructor_selected == 0:
+                for student in range(student_count):
+                    print("jakykoliv instruktor")
+                    query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
+                    db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],))
+                    query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result_id_lesson["ID_hodiny"],)).fetchone()
+                    db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result_id_instructor["ID_osoba"],reservation_id))
+                    db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, query_result_id_lesson["ID_hodiny"]))
+            else:
+                for student in range(student_count):
+                    query_result = db.execute('SELECT ID_hodiny, ID_osoba from dostupne_hodiny left join ma_vypsane using("ID_hodiny") WHERE ID_osoba = ? AND datum = ? AND cas_zacatku = ? and stav = ?', (instructor_selected, date, time, "volno")).fetchone()
+                    print("tady jsem vybral instruktora - presny instruktor")
+                    #query_result_id_lesson = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ?', (date, time, "volno")).fetchone()
+                    db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (query_result["ID_hodiny"],))
+                    query_result_id_instructor = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (query_result["ID_hodiny"],)).fetchone()
+                    db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result["ID_osoba"],reservation_id))
+                    db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, query_result["ID_hodiny"]))
+
         else:
 
             unique_ids = db.execute('SELECT DISTINCT ID_osoba FROM ma_vypsane').fetchall()
@@ -180,7 +143,7 @@ def main_page():
         flash('Reservation submitted successfully!', category="success")
         return redirect(url_for('views.main_page'))  # Redi
 
-    return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form,  available_times_ind=json.dumps(available_times_ind), available_times_group=json.dumps(available_times_group))
+    return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form)
 
 @views.route('/reservation-check')
 def reservation_check():
