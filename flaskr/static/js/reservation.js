@@ -22,7 +22,6 @@ $(document).ready(function () {
         var instructorId = $('#lesson_instructor').val();
         var lessonType = $('#lesson_type').val();
         var lessonLength = $('#lesson_length').val();
-        var url = '/get-available-times/individual/?instructorId=' + instructorId + '&lessonLength=' + lessonLength;
 
 
         if (lessonType === 'individual' && instructorId) {

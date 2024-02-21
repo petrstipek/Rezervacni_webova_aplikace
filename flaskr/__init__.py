@@ -3,6 +3,7 @@ from flask import Flask
 from flaskr.views import views
 from flask_bootstrap import Bootstrap5
 from flaskr.forms import CSRFProtect
+from flaskr.extensions import mail
 from . import db
 
 def create_app(test_config=None):
@@ -15,6 +16,16 @@ def create_app(test_config=None):
     #app.secret_key = 'tO$&!|0wkamvVia0?n$NqIRVWOG'
     bootstrap = Bootstrap5(app)
     csrf = CSRFProtect(app)
+    
+
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'johnlongshort256@gmail.com'  # Replace with your email
+    app.config['MAIL_PASSWORD'] = 'JohnLongShort256##ahoj'  # Replace with your password
+    app.config['MAIL_DEFAULT_SENDER'] = 'johnlongshort256@gmail.com'  # Replace with your email
+
+    mail.init_app(app)
 
     foo = secrets.token_urlsafe(16)
     app.secret_key = foo

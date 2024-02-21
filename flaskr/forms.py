@@ -43,3 +43,7 @@ class PersonalInformationForm(FlaskForm):
     time = HiddenField("time")
 
     submit = SubmitField('Submit')
+
+class ReservationInformationForm(FlaskForm):
+    reservation_id = IntegerField("Reservation ID", validators=[DataRequired()])
+    submit = SubmitField('Submit')

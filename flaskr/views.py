@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for, session
-from flaskr.forms import PersonalInformationForm
+from flaskr.forms import PersonalInformationForm, ReservationInformationForm
 from flaskr.db import get_db
+from .email import send_reservation_confirmation
 from datetime import datetime, timedelta
+import sqlite3
 
 views = Blueprint("views", __name__)
 
@@ -26,6 +28,8 @@ def main_page():
         time_to_split = form.time.data
         time_parts = time_to_split.split(",")
         time = time_parts[0]
+
+        print(time)
 
         datetime_str = f"{date} {time}:00"
 
@@ -67,7 +71,7 @@ def main_page():
         klient_id = get_or_create_klient(db, name, surname, email, phone)
         student_count = 0
 
-        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, datetime_str , lesson_length, language_selection, student_count, reservation_note))
+        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, date, time , lesson_length, language_selection, student_count, reservation_note))
         reservation_id = cursor.lastrowid
 
         if form.student_client.data:
@@ -204,7 +208,11 @@ def main_page():
                         print("Nothing was found for the given conditions.")  
                         return redirect(url_for('views.main_page'))
 
-
+        user_email = "felixgrent@gmail.com"  # Example user email
+        reservation_details = "haha email funguje"
+    
+        # Send confirmation email
+        #send_reservation_confirmation(user_email, reservation_details)
 
         db.commit()
 
@@ -215,7 +223,9 @@ def main_page():
 
 @views.route('/reservation-check')
 def reservation_check():
-    return render_template("blog/reservation_check.html")
+    form = ReservationInformationForm()
+
+    return render_template("blog/reservation_check.html", form=form)
 
 @views.route('/reservations-user')
 def reservations_user():
@@ -229,9 +239,9 @@ def login_page_admin():
 def admin_page():
     db = get_db()
 
-    #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
-    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "13:00", "volno", "ind"))
-    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "14:00", "volno", "ind"))
+    db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
+    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "13:00", "volno", "ind"))
+    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "14:00", "volno", "ind"))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 1))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
 
@@ -239,12 +249,12 @@ def admin_page():
     
     #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Natálie", "Dlouhá", "Natalie@Dlouha.cz", "111111111", "senior", "2001-03-31", "2020-01-01"))
     
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-13", "10:00", "volno", "ind"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-13", "11:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-13", "10:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-13", "11:00", "volno", "ind"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-12", "12:00", "volno", "ind"))
 
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 9))
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 10))
+    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 1))
+    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
     
     db.commit()
 
@@ -377,7 +387,6 @@ def get_available_times_group():
         date_str = row['datum'].strftime('%Y-%m-%d')
         time_str = row['cas_zacatku'] 
         count = row['count']
-        print(count)
 
         if date_str not in available_times_group:
             available_times_group[date_str] = []
@@ -385,4 +394,48 @@ def get_available_times_group():
         available_times_group[date_str].append((time_str, count))
 
     return jsonify(available_times_group)
+
+@views.route('/get-reservation-details/<reservation_id>')
+def get_reservation_details(reservation_id):
+    db = get_db()
+
+    query_result = db.execute("SELECT * from rezervace WHERE ID_rezervace = ?", (reservation_id)).fetchone()
+
+    if query_result:
+        columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
+        result_dict = {columns[i]: query_result[i] for i in range(len(columns))}
+        return jsonify(result_dict)
+    else:
+        return jsonify({"error": "Reservation not found"}), 404
+    
+@views.route('/delete-reservation/<reservation_id>', methods=['DELETE'])
+def delete_reservation(reservation_id):
+    db = get_db()
+    cur = db.cursor()
+
+    try:   
+        lessons_ids = db.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id)).fetchall()
+        
+        for lesson_id_tuple in lessons_ids:
+            lesson_id = lesson_id_tuple[0]  # Extract ID_hodiny from the tuple
+            cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id,))
+
+        cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
+        db.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id))
+        db.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id))
+        db.commit()
+
+        if cur.rowcount > 0:
+            response = {"message": "Reservation deleted successfully"}
+            status_code = 200
+        else:
+            response = {"error": "Reservation not found"}
+            status_code = 404
+    except sqlite3.Error as e:
+        response = {"error": str(e)}
+        status_code = 500
+    finally:
+        db.close()
+
+    return jsonify(response), status_code
 

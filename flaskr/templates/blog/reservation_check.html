@@ -4,6 +4,17 @@
     <title>Kontrola rezervací</title>
 {% endblock %}
 
-{% block bodytest %} Kontrola rezervací {% endblock %}
 {% block body %}
+    <form id="reservationForm" method="post">
+        {{ form.hidden_tag() }}
+        <label for="reservation_id">{{ form.reservation_id.label }}</label>
+        {{ form.reservation_id(id="reservation_id") }}
+
+        <button type="submit">Check Reservation</button>
+    </form>
+
+    <!-- Div for displaying the reservation details -->
+    <div id="reservationDetails"></div>
+
+    <script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
 {% endblock %}
