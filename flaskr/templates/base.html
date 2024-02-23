@@ -20,12 +20,16 @@
                 </a>
             </div>
 
-            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="{{ url_for('views.main_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a></li>
-                <li><a href="{{ url_for('views.school_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'school' else '' }}">Škola</a></li>
-                <li><a href="{{ url_for('views.prices_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a></li>
-                <li><a href="{{ url_for('views.instructors_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a></li>
-            </ul>
+            {% block menu %}
+
+                <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="{{ url_for('views.main_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a></li>
+                    <li><a href="{{ url_for('views.school_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'school' else '' }}">Škola</a></li>
+                    <li><a href="{{ url_for('views.prices_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a></li>
+                    <li><a href="{{ url_for('views.instructors_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a></li>
+                </ul>
+
+            {% endblock %}
 
             <div class="col-md-3 text-end d-flex justify-content-end">
                 <div class="dropdown me-2">

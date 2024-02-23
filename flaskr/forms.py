@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField
+from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional
 
 class PersonalInformationForm(FlaskForm):
@@ -47,3 +47,24 @@ class PersonalInformationForm(FlaskForm):
 class ReservationInformationForm(FlaskForm):
     reservation_id = IntegerField("Reservation ID", validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class LoginForm(FlaskForm):
+    username = StringField(label="Přihlašovací jméno: ", validators=[DataRequired()])
+    password = PasswordField(label="Heslo:", validators=[DataRequired()])
+    submit = SubmitField(label="Přihlásit se")
+
+class LessonInsertForm(FlaskForm):
+    pass
+
+class InstructorInsertForm(FlaskForm):
+    name = StringField(label="Jméno", validators=[Length(min=2, max=30), DataRequired()])
+    surname = StringField(label="Příjmení", validators=[Length(min=2, max=30), DataRequired()])
+    tel_number = StringField('Telefonní číslo', validators=[
+        DataRequired(),
+        Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    ], render_kw={"type": "tel"})
+    email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
+    experience = SelectField('Zkušenosti', choices=[('value1', 'Junior'), ('value2', 'Senior')], validators=[Optional()])
+    date_birth = DateField('Datum narození', validators=[DataRequired()], format='%Y-%m-%d')
+    date_started = DateField('Datum nástupu', validators=[DataRequired()], format='%Y-%m-%d')
+    submit = SubmitField(label="Vložit instruktora")

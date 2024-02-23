@@ -4,6 +4,8 @@ from flaskr.views import views
 from flask_bootstrap import Bootstrap5
 from flaskr.forms import CSRFProtect
 from flaskr.extensions import mail
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 from . import db
 
 def create_app(test_config=None):
@@ -16,7 +18,11 @@ def create_app(test_config=None):
     #app.secret_key = 'tO$&!|0wkamvVia0?n$NqIRVWOG'
     bootstrap = Bootstrap5(app)
     csrf = CSRFProtect(app)
-    
+
+    bcrypt = Bcrypt(app)
+    #login_manager = LoginManager(app)
+    #login_manager.login_view = "login_page"
+    #login_manager.login_message_category = "info"
 
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587

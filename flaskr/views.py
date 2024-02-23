@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for, session
-from flaskr.forms import PersonalInformationForm, ReservationInformationForm
+from flaskr.forms import PersonalInformationForm, ReservationInformationForm, LoginForm, InstructorInsertForm
 from flaskr.db import get_db
 from .email import send_reservation_confirmation
 from datetime import datetime, timedelta
 import sqlite3
+from flask_login import login_user, logout_user, login_required, current_user
+from .models import User
 
 views = Blueprint("views", __name__)
 
@@ -231,17 +233,34 @@ def reservation_check():
 def reservations_user():
     return render_template("blog/reservations_user.html")
 
-@views.route('/login-page-admin')
+@views.route('/login-page-admin', methods=["GET", "POST"])
 def login_page_admin():
-    return render_template("blog/login_admin.html")
+    form = LoginForm()
+    db = get_db()
+
+    username = form.username.data
+    password = form.password.data
+
+    if form.validate_on_submit():
+        user_attempt = db.execute('SELECT * FROM Spravce_skoly WHERE prihl_jmeno = ?', (username,))
+        if user_attempt == None:
+            flash("username or password not matched")
+        if user_attempt["prihl_jmeno"] == username and password == user_attempt["heslo"]:
+            #login_user(user_attempt)
+            flash("logged in as ", username)
+            return redirect(url_for(admin_page))
+        else:
+            flash("username or password not matched")
+
+    return render_template("blog/login_admin.html", form=form)
 
 @views.route('/admin-page', methods=["GET", "POST"])
 def admin_page():
     db = get_db()
 
-    db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "13:00", "volno", "ind"))
-    db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "14:00", "volno", "ind"))
+    #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "13:00", "volno", "ind"))
+    #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "14:00", "volno", "ind"))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 1))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
 
@@ -253,8 +272,10 @@ def admin_page():
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-13", "11:00", "volno", "ind"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-12", "12:00", "volno", "ind"))
 
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 1))
-    db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 1))
+    #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
+
+
     
     db.commit()
 
@@ -295,6 +316,31 @@ def lectures():
     #query_resutl2 = db.execute('select * from ma_vypsane left  join Dostupne_hodiny using (ID_hodiny) where ID_osoba = 1 and cas_zacatku = "14:00"').fetchone()
 
     return render_template("blog/lectures.html")
+
+@views.route('/instructors-admin', methods=["POST", "GET"])
+def instructors_admin():
+    form = InstructorInsertForm()
+    db = get_db()
+
+    name = form.name.data
+    surname = form.surname.data
+    tel_number = form.tel_number.data
+    email = form.email.data
+    experience = form.experience.data
+    date_birth = form.date_birth.data
+    date_started = form.date_started.data
+
+    if form.validate_on_submit():
+        query_result = db.execute('SELECT * FROM Instruktor WHERE email = ?', (email, )).fetchone()
+        if query_result:
+            flash("instructor already exists", category="danger")
+        else:
+            db.execute('INSERT INTO Instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', (name, surname, email, tel_number, experience, date_birth, date_started) )
+            db.commit()
+            redirect(url_for(instructors_admin))
+            flash("instructor added", category="success")
+
+    return render_template("blog/instructors_admin.html", form=form)
 
 @views.route('/reservations-admin')
 def reservations_admin():

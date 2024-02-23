@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title> Instruktoři </title>
+{% endblock %}
+
+{% block body %}
+
+<h>Vložení instruktorů</h>
+
+<form method="post" action="{{ url_for('views.instructors_admin') }}">
+    {{ form.hidden_tag() }}
+
+    <label for="name">{{ form.name.label }}</label>
+    {{ form.name }}
+    <br>
+    <label for="surname">{{ form.surname.label }}</label>
+    {{ form.surname }}
+    <br>
+    <label for="tel_number">{{ form.tel_number.label }}</label>
+    {{ form.tel_number }}
+    <br>
+    <label for="email">{{ form.email.label }}</label>
+    {{ form.email }}
+    <br>
+    <label for="experience">{{ form.experience.label }}</label>
+    {{ form.experience }}
+    <br>
+    <label for="date_birth">{{ form.date_birth.label }}</label>
+    {{ form.date_birth }}
+    <br>
+    <label for="date_started">{{ form.date_started.label }}</label>
+    {{ form.date_started }}
+    
+    {{ form.submit }}
+
+</form>
+
+{% endblock %}
