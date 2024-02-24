@@ -61,7 +61,10 @@ def validate_on_the_hour(form, field):
 
 class LessonInsertForm(FlaskForm):
     date = DateField('Datum', validators=[DataRequired()], format='%Y-%m-%d')
-    time_start = TimeField("Čas začátku", validators=[DataRequired(), validate_on_the_hour])
+    #time_start = TimeField("Čas začátku", validators=[DataRequired(), validate_on_the_hour])
+
+    time_start = SelectField("Čas začátku", validators=[DataRequired()], choices=[(f'{i}:00', f'{i}:00') for i in range(24)])
+
     lesson_type = SelectField('Typ lekce', choices=[('ind', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     capacity = IntegerField('Kapacita', validators=[Optional(), NumberRange(min=0, max=20)])
     lesson_instructor_choices = SelectField("Hlavní Instruktor", choices = [], validators=[DataRequired()])

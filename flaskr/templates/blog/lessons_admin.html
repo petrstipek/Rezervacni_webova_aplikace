@@ -49,6 +49,7 @@
                 <th>datum</th>
                 <th>čas začátku</th>
                 <th>stav</th>
+                <th>Instruktor</th>
             </tr>
         </thead>
         <tbody>
@@ -57,6 +58,7 @@
                     <td>{{ lesson['datum'] }}</td>
                     <td>{{ lesson['cas_zacatku'] }}</td>
                     <td>{{ lesson['stav'] }}</td>
+                    <td>{{ lesson['jmeno'] }}</td>
                     <td>
                         <form action="{{ url_for('views.delete_lesson_admin', lesson_id=lesson['ID_hodiny']) }}" method="post">
                             {{ form.hidden_tag() }}

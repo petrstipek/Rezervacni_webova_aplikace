@@ -389,14 +389,14 @@ def lessons_admin():
         if len(instructor_ids) != len(set(instructor_ids)):
             flash("one instructor twice in form", category="danger")
             return redirect(url_for("views.lessons_admin"))
-        time_str = time_start.strftime("%H:%M")
+        #time_str = time_start.strftime("%H:%M")
         date_str = date.strftime("%Y-%m-%d")
         if lesson_type == "ind":
-            query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba = ?', (date_str, time_str, instructor_id)).fetchone()
+            query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba = ?', (date_str, time_start, instructor_id)).fetchone()
             if query_result:
                 flash("already lesson for these parametrs", category="danger")
                 return redirect(url_for("views.lessons_admin"))
-            cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_str, "volno", lesson_type, capacity))
+            cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_start, "volno", lesson_type, capacity))
             last_row = cursor.lastrowid
             db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)',(int(instructor_id), last_row))
             db.commit()
@@ -404,11 +404,11 @@ def lessons_admin():
             redirect(url_for("views.lessons_admin"))
         elif lesson_type == "group":
             for instructor in instructor_ids:
-                query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_str, instructor)).fetchone()
+                query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_start, instructor)).fetchone()
                 if query_result:
                     flash("already lesson for these parametrs - instructor: " + instructor, category="danger")
                     return redirect(url_for("views.lessons_admin"))
-            cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_str, "volno", lesson_type, capacity))
+            cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_start, "volno", lesson_type, capacity))
             last_row = cursor.lastrowid
             for instructor in instructor_ids:
                 print("instruktor id ", instructor)
@@ -464,7 +464,6 @@ def handle_selection():
 @views.route('/get-available-times/<instructor_id>')
 def get_available_times(instructor_id):
     db = get_db()
-    print(instructor_id)
     query_resuslt_instructor_times = db.execute('select datum, cas_zacatku from dostupne_hodiny left join ma_vypsane using (ID_hodiny) where stav="volno" and typ_hodiny="ind" and ID_osoba= ? order by datum, cas_zacatku', (instructor_id))
     
     available_times_instructor = {}
