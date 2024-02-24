@@ -36,7 +36,7 @@
     </form>
 </section>
 <section class="section_white">
-    <table border="1"> <!-- You can replace 'border="1"' with CSS for styling -->
+    <table border="1">
         <thead>
             <tr>
                 <th>Jméno</th>
@@ -44,7 +44,6 @@
                 <th>Seniorita</th>
                 <th>tel. číslo</th>
                 <th>email</th>
-                <!-- Add more headers as needed -->
             </tr>
         </thead>
         <tbody>
@@ -61,7 +60,6 @@
                             <input type="submit" value="Delete">
                         </form>
                     </td>
-                    <!-- Add more data cells as needed -->
                 </tr>
             {% else %}
                 <tr><td colspan="2">No instructors found.</td></tr>
@@ -69,6 +67,5 @@
         </tbody>
     </table>
 </section>
-
 
 {% endblock %}

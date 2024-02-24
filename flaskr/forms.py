@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField
-from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional
+from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField
+from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional, ValidationError
 
 class PersonalInformationForm(FlaskForm):
     name = StringField(label="Jméno", validators=[Length(min=2, max=30), DataRequired()])
@@ -53,8 +53,19 @@ class LoginForm(FlaskForm):
     password = PasswordField(label="Heslo:", validators=[DataRequired()])
     submit = SubmitField(label="Přihlásit se")
 
+
+def validate_on_the_hour(form, field):
+    if field.data is not None:
+        if field.data.minute != 0:
+            raise ValidationError('round hours')
+
 class LessonInsertForm(FlaskForm):
-    pass
+    date = DateField('Datum', validators=[DataRequired()], format='%Y-%m-%d')
+    time_start = TimeField("Čas začátku", validators=[DataRequired(), validate_on_the_hour])
+    lesson_type = SelectField('Typ lekce', choices=[('ind', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
+    capacity = IntegerField('Kapacita', validators=[Optional(), NumberRange(min=0, max=20)])
+    lesson_instructor_choices = SelectField("Instruktor", choices = [])
+    submit = SubmitField(label="Vložit hodinu")
 
 class InstructorInsertForm(FlaskForm):
     name = StringField(label="Jméno", validators=[Length(min=2, max=30), DataRequired()])
@@ -64,7 +75,7 @@ class InstructorInsertForm(FlaskForm):
         Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     ], render_kw={"type": "tel"})
     email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
-    experience = SelectField('Zkušenosti', choices=[('value1', 'Junior'), ('value2', 'Senior')], validators=[Optional()])
+    experience = SelectField('Zkušenosti', choices=[('junior', 'Junior'), ('senior', 'Senior')], validators=[Optional()])
     date_birth = DateField('Datum narození', validators=[DataRequired()], format='%Y-%m-%d')
     date_started = DateField('Datum nástupu', validators=[DataRequired()], format='%Y-%m-%d')
     submit = SubmitField(label="Vložit instruktora")

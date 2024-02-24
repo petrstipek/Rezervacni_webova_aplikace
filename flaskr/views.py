@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for, session
-from flaskr.forms import PersonalInformationForm, ReservationInformationForm, LoginForm, InstructorInsertForm
+from flaskr.forms import PersonalInformationForm, ReservationInformationForm, LoginForm, InstructorInsertForm, LessonInsertForm
 from flaskr.db import get_db
 from .email import send_reservation_confirmation
 from datetime import datetime, timedelta
@@ -363,9 +363,42 @@ def delete_instructor_admin(instructor_id):
 
     return redirect(url_for("views.instructors_admin"))
 
-@views.route('/reservations-admin')
+@views.route('/reservations-admin', methods=["POST", "GET"])
 def reservations_admin():
-    return render_template("blog/reservations_admin.html")
+    form = LessonInsertForm()
+    db = get_db()
+
+    query_result_instructors = db.execute("SELECT DISTINCT jmeno, prijmeni, ID_osoba from instruktor")
+    available_instructors = [(0, "Instruktor")]
+    for row in query_result_instructors:
+        available_instructors.append((row["ID_osoba"] ,row["jmeno"] + " " + row["prijmeni"]))
+
+    form.lesson_instructor_choices.choices = available_instructors
+
+    date = form.date.data
+    time_start = form.time_start.data
+    lesson_type = form.lesson_type.data
+    capacity = form.capacity.data
+    instructor_id = form.lesson_instructor_choices.data
+
+    if form.validate_on_submit():
+        time_str = time_start.strftime("%H:%M")
+        date_str = date.strftime("%Y-%m-%d")
+        query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_str, instructor_id)).fetchone()
+        if query_result:
+            flash("already lesson for these parametrs", category="danger")
+            redirect(url_for("views.reservations_admin"))
+            return
+        else:
+            cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_str, "volno", lesson_type, capacity))
+            last_row = cursor.lastrowid
+            db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)',(int(instructor_id), last_row))
+            db.commit()
+            db.close()
+            flash("lesson added", category="success")
+            redirect(url_for("views.reservations_admin"))
+
+    return render_template("blog/reservations_admin.html", form=form)
 
 @views.route('/instructors')
 def instructors_page():
