@@ -337,10 +337,31 @@ def instructors_admin():
         else:
             db.execute('INSERT INTO Instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', (name, surname, email, tel_number, experience, date_birth, date_started) )
             db.commit()
-            redirect(url_for(instructors_admin))
+            redirect(url_for("views.instructors_admin"))
             flash("instructor added", category="success")
 
-    return render_template("blog/instructors_admin.html", form=form)
+    query_result = db.execute('SELECT * FROM Instruktor').fetchall()
+
+    instructors_dict = [dict(row) for row in query_result]
+
+    return render_template("blog/instructors_admin.html", form=form, instructors_dict=instructors_dict)
+
+@views.route('/delete_instructor_admin/<int:instructor_id>', methods=["POST"])
+def delete_instructor_admin(instructor_id):
+    print(instructor_id)
+    db = get_db()
+
+    query_result = db.execute('SELECT * from ma_vyuku WHERE ID_osoba = ?', (instructor_id,))
+    if query_result:
+        flash("instructor has occupied lessons", category="danger")
+        redirect(url_for("views.instructors_admin"))
+        return
+
+    db.execute('DELETE FROM Instruktor WHERE ID_osoba = ?', (instructor_id,))
+    db.commit()
+    db.close()
+
+    return redirect(url_for("views.instructors_admin"))
 
 @views.route('/reservations-admin')
 def reservations_admin():

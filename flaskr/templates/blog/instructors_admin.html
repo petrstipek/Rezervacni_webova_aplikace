@@ -7,33 +7,68 @@
 {% block body %}
 
 <h>Vložení instruktorů</h>
+<section class="section_blue">
+    <h3 class="global-margin">Vložení instruktora</h3>
+    <form method="post" action="{{ url_for('views.instructors_admin') }}">
+        {{ form.hidden_tag() }}
+        <label for="name">{{ form.name.label }}</label>
+        {{ form.name }}
+        <br>
+        <label for="surname">{{ form.surname.label }}</label>
+        {{ form.surname }}
+        <br>
+        <label for="tel_number">{{ form.tel_number.label }}</label>
+        {{ form.tel_number }}
+        <br>
+        <label for="email">{{ form.email.label }}</label>
+        {{ form.email }}
+        <br>
+        <label for="experience">{{ form.experience.label }}</label>
+        {{ form.experience }}
+        <br>
+        <label for="date_birth">{{ form.date_birth.label }}</label>
+        {{ form.date_birth }}
+        <br>
+        <label for="date_started">{{ form.date_started.label }}</label>
+        {{ form.date_started }}
+        
+        {{ form.submit }}
+    </form>
+</section>
+<section class="section_white">
+    <table border="1"> <!-- You can replace 'border="1"' with CSS for styling -->
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Příjmení</th>
+                <th>Seniorita</th>
+                <th>tel. číslo</th>
+                <th>email</th>
+                <!-- Add more headers as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for instructor in instructors_dict %}
+                <tr>
+                    <td>{{ instructor['jmeno'] }}</td>
+                    <td>{{ instructor['prijmeni'] }}</td>
+                    <td>{{ instructor['seniorita'] }}</td>
+                    <td>{{ instructor['tel_cislo'] }}</td>
+                    <td>{{ instructor['email'] }}</td>
+                    <td>
+                        <form action="{{ url_for('views.delete_instructor_admin', instructor_id=instructor['ID_osoba']) }}" method="post">
+                            {{ form.hidden_tag() }}
+                            <input type="submit" value="Delete">
+                        </form>
+                    </td>
+                    <!-- Add more data cells as needed -->
+                </tr>
+            {% else %}
+                <tr><td colspan="2">No instructors found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
 
-<form method="post" action="{{ url_for('views.instructors_admin') }}">
-    {{ form.hidden_tag() }}
-
-    <label for="name">{{ form.name.label }}</label>
-    {{ form.name }}
-    <br>
-    <label for="surname">{{ form.surname.label }}</label>
-    {{ form.surname }}
-    <br>
-    <label for="tel_number">{{ form.tel_number.label }}</label>
-    {{ form.tel_number }}
-    <br>
-    <label for="email">{{ form.email.label }}</label>
-    {{ form.email }}
-    <br>
-    <label for="experience">{{ form.experience.label }}</label>
-    {{ form.experience }}
-    <br>
-    <label for="date_birth">{{ form.date_birth.label }}</label>
-    {{ form.date_birth }}
-    <br>
-    <label for="date_started">{{ form.date_started.label }}</label>
-    {{ form.date_started }}
-    
-    {{ form.submit }}
-
-</form>
 
 {% endblock %}
