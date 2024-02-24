@@ -237,13 +237,13 @@ def main_page():
         flash('Reservation submitted successfully!', category="success")
         return redirect(url_for('views.main_page'))  # Redi
 
-    return render_template("blog/reservation_page.html", active_page = "reservation_page", form=form)
+    return render_template("blog/user/reservation_page.html", active_page = "reservation_page", form=form)
 
 @views.route('/reservation-check')
 def reservation_check():
     form = ReservationInformationForm()
 
-    return render_template("blog/reservation_check.html", form=form)
+    return render_template("blog/user/reservation_check.html", form=form)
 
 @views.route('/reservations-user')
 def reservations_user():
@@ -268,7 +268,7 @@ def login_page_admin():
         else:
             flash("username or password not matched")
 
-    return render_template("blog/login_admin.html", form=form)
+    return render_template("blog/admin/login_admin.html", form=form)
 
 @views.route('/admin-page', methods=["GET", "POST"])
 def admin_page():
@@ -295,7 +295,7 @@ def admin_page():
     
     db.commit()
 
-    return render_template("blog/admin_page.html")
+    return render_template("blog/admin/admin_page.html")
 
 @views.route('/lectures')
 def lectures():
@@ -360,7 +360,7 @@ def instructors_admin():
 
     instructors_dict = [dict(row) for row in query_result]
 
-    return render_template("blog/instructors_admin.html", form=form, instructors_dict=instructors_dict)
+    return render_template("blog/admin/instructors_admin.html", form=form, instructors_dict=instructors_dict)
 
 @views.route('/delete_instructor_admin/<int:instructor_id>', methods=["POST"])
 def delete_instructor_admin(instructor_id):
@@ -436,7 +436,7 @@ def lessons_admin():
     query_result = db.execute('SELECT * FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) left join Instruktor USING (ID_osoba)').fetchall()
     lessons_dict = [dict(row) for row in query_result]
 
-    return render_template("blog/lessons_admin.html", form=form, lessons_dict=lessons_dict)
+    return render_template("blog/admin/lessons_admin.html", form=form, lessons_dict=lessons_dict)
 
 @views.route('/delete_lesson_admin/<int:lesson_id>', methods=["POST"])
 def delete_lesson_admin(lesson_id):
