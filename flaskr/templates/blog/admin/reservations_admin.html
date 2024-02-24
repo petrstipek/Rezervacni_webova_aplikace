@@ -1,0 +1,73 @@
+{% extends "base_admin.html" %}
+
+{% block head %}
+    <title> Rezervace - admin stránka </title>
+{% endblock %}
+
+{% block body %}
+<section class="section_blue">
+    <h3>Vyhledávání rezervace</h3>
+    <form method="post" action="{{ url_for('views.reservations_admin') }}">
+        {{ form.hidden_tag() }}
+        <label for="reservation_id">{{ form.reservation_id.label }}</label>
+        {{ form.reservation_id(id="reservation_id") }}
+        <br>
+        <label for="name">{{ form.name.label }}</label>
+        {{ form.name }}
+        <br>
+        <label for="surname">{{ form.surname.label }}</label>
+        {{ form.surname }}
+        <br>
+        <label for="tel_number">{{ form.tel_number.label }}</label>
+        {{ form.tel_number }}
+        <br>
+        <label for="email">{{ form.email.label }}</label>
+        {{ form.email }}
+        <br>
+        {{ form.submit }}
+    </form>
+</section>
+
+<div id="reservationDetails"></div>
+
+<section class="section_white">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th>Příjmení</th>
+                <th>Termín</th>
+                <th>Čas začátku</th>
+                <th>Doba výuky</th>
+                <th>Email</th>
+                <th>Telefonní číslo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations_dict %}
+                <tr>
+                    <td>{{ reservation['jmeno'] }}</td>
+                    <td>{{ reservation['prijmeni'] }}</td>
+                    <td>{{ reservation['termin'] }}</td>
+                    <td>{{ reservation['cas_zacatku'] }}</td>
+                    <td>{{ reservation['doba_vyuky'] }}</td>
+                    <td>{{ reservation['email'] }}</td>
+                    <td>{{ reservation['tel_cislo'] }}</td>
+                    <td>
+                        <form action="{{ url_for('views.delete_reservation', reservation_id=reservation['ID_rezervace']) }}" method="post">
+                            {{ form.hidden_tag() }}
+                            <input type="submit" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="2">No reservations found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>
+<script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
+
+{% endblock %}

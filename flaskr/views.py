@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for, session
-from flaskr.forms import PersonalInformationForm, ReservationInformationForm, LoginForm, InstructorInsertForm, LessonInsertForm
+from flaskr.forms import PersonalInformationForm, ReservationInformationForm, LoginForm, InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin
 from flaskr.db import get_db
 from .email import send_reservation_confirmation
 from datetime import datetime, timedelta
 import sqlite3
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import User
+from urllib.parse import urlparse
 
 views = Blueprint("views", __name__)
 
@@ -348,23 +349,20 @@ def instructors_admin():
 
 @views.route('/delete_instructor_admin/<int:instructor_id>', methods=["POST"])
 def delete_instructor_admin(instructor_id):
-    print(instructor_id)
     db = get_db()
 
     query_result = db.execute('SELECT * from ma_vyuku WHERE ID_osoba = ?', (instructor_id,))
     if query_result:
         flash("instructor has occupied lessons", category="danger")
-        redirect(url_for("views.instructors_admin"))
-        return
+        return redirect(url_for("views.instructors_admin"))
 
     db.execute('DELETE FROM Instruktor WHERE ID_osoba = ?', (instructor_id,))
     db.commit()
-    db.close()
 
     return redirect(url_for("views.instructors_admin"))
 
-@views.route('/reservations-admin', methods=["POST", "GET"])
-def reservations_admin():
+@views.route('/lessons-admin', methods=["POST", "GET"])
+def lessons_admin():
     form = LessonInsertForm()
     db = get_db()
 
@@ -374,6 +372,9 @@ def reservations_admin():
         available_instructors.append((row["ID_osoba"] ,row["jmeno"] + " " + row["prijmeni"]))
 
     form.lesson_instructor_choices.choices = available_instructors
+    form.lesson_instructor_choices2.choices = available_instructors
+    form.lesson_instructor_choices3.choices = available_instructors
+    form.lesson_instructor_choices4.choices = available_instructors
 
     date = form.date.data
     time_start = form.time_start.data
@@ -381,37 +382,78 @@ def reservations_admin():
     capacity = form.capacity.data
     instructor_id = form.lesson_instructor_choices.data
 
+    instructor_ids = [form.lesson_instructor_choices.data, form.lesson_instructor_choices2.data, form.lesson_instructor_choices3.data, form.lesson_instructor_choices4.data]
+    instructor_ids = [id for id in instructor_ids if id != "0"]
+
     if form.validate_on_submit():
+        if len(instructor_ids) != len(set(instructor_ids)):
+            flash("one instructor twice in form", category="danger")
+            return redirect(url_for("views.lessons_admin"))
         time_str = time_start.strftime("%H:%M")
         date_str = date.strftime("%Y-%m-%d")
-        query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_str, instructor_id)).fetchone()
-        if query_result:
-            flash("already lesson for these parametrs", category="danger")
-            redirect(url_for("views.reservations_admin"))
-            return
-        else:
+        if lesson_type == "ind":
+            query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba = ?', (date_str, time_str, instructor_id)).fetchone()
+            if query_result:
+                flash("already lesson for these parametrs", category="danger")
+                return redirect(url_for("views.lessons_admin"))
             cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_str, "volno", lesson_type, capacity))
             last_row = cursor.lastrowid
             db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)',(int(instructor_id), last_row))
             db.commit()
-            db.close()
             flash("lesson added", category="success")
-            redirect(url_for("views.reservations_admin"))
+            redirect(url_for("views.lessons_admin"))
+        elif lesson_type == "group":
+            for instructor in instructor_ids:
+                query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_str, instructor)).fetchone()
+                if query_result:
+                    flash("already lesson for these parametrs - instructor: " + instructor, category="danger")
+                    return redirect(url_for("views.lessons_admin"))
+            cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_str, "volno", lesson_type, capacity))
+            last_row = cursor.lastrowid
+            for instructor in instructor_ids:
+                print("instruktor id ", instructor)
+                print("last row", last_row)
+                db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)',(int(instructor), last_row))
+            db.commit()
+            flash("lesson added", category="success")
+            redirect(url_for("views.lessons_admin"))
 
-    return render_template("blog/reservations_admin.html", form=form)
+    query_result = db.execute('SELECT * FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) left join Instruktor USING (ID_osoba)').fetchall()
+    lessons_dict = [dict(row) for row in query_result]
 
-@views.route('/instructors')
-def instructors_page():
-    return render_template("blog/instructors.html", active_page = "instructors")
+    return render_template("blog/lessons_admin.html", form=form, lessons_dict=lessons_dict)
 
-@views.route('/school')
-def school_page():
-    return render_template("blog/school.html", active_page = "school")
+@views.route('/delete_lesson_admin/<int:lesson_id>', methods=["POST"])
+def delete_lesson_admin(lesson_id):
+    db = get_db()
 
-@views.route('prices')
-def prices_page():
-    return render_template("blog/prices.html", active_page = "prices")
+    try:
+        query_result = db.execute('SELECT stav FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,)).fetchone()
 
+        if query_result and query_result["stav"] == "obsazeno":
+            flash("Hodina je obsazene, nelze proto smazat", category="danger")
+        else:
+            db.execute('DELETE FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,))
+            db.execute('DELETE FROM ma_vypsane WHERE ID_hodiny = ?', (lesson_id,))
+            db.commit()
+            flash("Dostupná hodina byla úspěšně smazána!", category="success")
+    except Exception as e:
+        flash("Error", category="danger")
+    return redirect(url_for("views.lessons_admin"))
+
+@views.route('/reservations-admin', methods=["GET", "POST"])
+def reservations_admin():
+    db = get_db()
+    form = ReservationInformationAdmin()
+
+    query_result = db.execute('SELECT * FROM rezervace left join Klient USING (ID_osoba)').fetchall()
+    reservations_dict = [dict(row) for row in query_result]
+
+    if form.validate_on_submit():
+        pass
+
+
+    return render_template("blog/admin/reservations_admin.html", form=form, reservations_dict=reservations_dict)
 
 @views.route('/handle_selection', methods=['POST'])
 def handle_selection():
@@ -508,10 +550,15 @@ def get_reservation_details(reservation_id):
     else:
         return jsonify({"error": "Reservation not found"}), 404
     
-@views.route('/delete-reservation/<reservation_id>', methods=['DELETE'])
+@views.route('/delete-reservation/<reservation_id>', methods=['DELETE', 'POST'])
 def delete_reservation(reservation_id):
     db = get_db()
     cur = db.cursor()
+
+    referer_url = request.headers.get('Referer', 'default_fallback_url')
+    parsed_url = urlparse(referer_url)
+    path = parsed_url.path
+    last_part_url = path.strip('/').split('/')[-1]
 
     try:   
         lessons_ids = db.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id)).fetchall()
@@ -534,8 +581,21 @@ def delete_reservation(reservation_id):
     except sqlite3.Error as e:
         response = {"error": str(e)}
         status_code = 500
-    finally:
-        db.close()
+    
+    if last_part_url == "reservations-admin":
+        flash("Dostupná hodina byla úspěšně smazána!", category="success")
+        return redirect(url_for("views.reservations_admin"))
+    else:
+        return jsonify(response), status_code
 
-    return jsonify(response), status_code
+@views.route('/instructors')
+def instructors_page():
+    return render_template("blog/instructors.html", active_page = "instructors")
 
+@views.route('/school')
+def school_page():
+    return render_template("blog/school.html", active_page = "school")
+
+@views.route('prices')
+def prices_page():
+    return render_template("blog/prices.html", active_page = "prices")

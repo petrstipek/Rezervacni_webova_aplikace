@@ -1,0 +1,76 @@
+{% extends "base_admin.html" %}
+
+{% block head %}
+    <title> Dostupné hodiny - admin </title>
+{% endblock %}
+
+{% block body %}
+<section class="section_blue">
+    <form method="post" action="{{ url_for('views.lessons_admin') }}">
+        {{ form.hidden_tag() }}
+        <label for="date">{{ form.date.label }}</label>
+        {{ form.date }}
+        <br>
+        <label for="time_start">{{ form.time_start.label }}</label>
+        {{ form.time_start }}
+        {% if form.time_start.errors %}
+            <div class="errors">{{ form.time_start.errors[0] }}</div>
+        {% endif %}
+        <br>
+        <label for="lesson_type">{{ form.lesson_type.label }}</label>
+        {{ form.lesson_type(id="lesson_type") }}
+        <br>
+        <div id="div_lesson_capacity" style="display: none;">
+            <label for="capacity">{{ form.capacity.label }}</label>
+            {{ form.capacity }}
+        </div>
+        <div id="div_additional_instructors" style="display: none;">
+            <label for="lesson_instructor_choices2">{{ form.lesson_instructor_choices2.label }}</label>
+            {{ form.lesson_instructor_choices2 }}
+            <br>
+            <label for="lesson_instructor_choices3">{{ form.lesson_instructor_choices3.label }}</label>
+            {{ form.lesson_instructor_choices3 }}
+            <br>
+            <label for="lesson_instructor_choices4">{{ form.lesson_instructor_choices4.label }}</label>
+            {{ form.lesson_instructor_choices4 }}
+        </div>
+
+        <br>
+        <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
+        {{ form.lesson_instructor_choices }}
+        {{ form.submit }}
+        </form>
+</section>
+
+<section class="section_white">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>datum</th>
+                <th>čas začátku</th>
+                <th>stav</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons_dict %}
+                <tr>
+                    <td>{{ lesson['datum'] }}</td>
+                    <td>{{ lesson['cas_zacatku'] }}</td>
+                    <td>{{ lesson['stav'] }}</td>
+                    <td>
+                        <form action="{{ url_for('views.delete_lesson_admin', lesson_id=lesson['ID_hodiny']) }}" method="post">
+                            {{ form.hidden_tag() }}
+                            <input type="submit" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="2">No lessons found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>
+
+{% endblock %}

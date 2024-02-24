@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_admin.html" %}
 
 {% block head %}
     <title> Instruktoři </title>
@@ -6,9 +6,8 @@
 
 {% block body %}
 
-<h>Vložení instruktorů</h>
 <section class="section_blue">
-    <h3 class="global-margin">Vložení instruktora</h3>
+    <h3 class="global-margin">Správa instruktora</h3>
     <form method="post" action="{{ url_for('views.instructors_admin') }}">
         {{ form.hidden_tag() }}
         <label for="name">{{ form.name.label }}</label>

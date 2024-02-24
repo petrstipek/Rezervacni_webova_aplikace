@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_user.html" %}
 
 {% block head %}
     <title>Kontrola rezervací</title>
@@ -13,7 +13,6 @@
         <button type="submit">Check Reservation</button>
     </form>
 
-    <!-- Div for displaying the reservation details -->
     <div id="reservationDetails"></div>
 
     <script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>

@@ -64,7 +64,10 @@ class LessonInsertForm(FlaskForm):
     time_start = TimeField("Čas začátku", validators=[DataRequired(), validate_on_the_hour])
     lesson_type = SelectField('Typ lekce', choices=[('ind', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     capacity = IntegerField('Kapacita', validators=[Optional(), NumberRange(min=0, max=20)])
-    lesson_instructor_choices = SelectField("Instruktor", choices = [])
+    lesson_instructor_choices = SelectField("Hlavní Instruktor", choices = [], validators=[DataRequired()])
+    lesson_instructor_choices2 = SelectField("Instruktor 2", choices = [], validators=[Optional()])
+    lesson_instructor_choices3 = SelectField("Instruktor 3", choices = [], validators=[Optional()])
+    lesson_instructor_choices4 = SelectField("Instruktor 4", choices = [], validators=[Optional()])
     submit = SubmitField(label="Vložit hodinu")
 
 class InstructorInsertForm(FlaskForm):
@@ -79,3 +82,14 @@ class InstructorInsertForm(FlaskForm):
     date_birth = DateField('Datum narození', validators=[DataRequired()], format='%Y-%m-%d')
     date_started = DateField('Datum nástupu', validators=[DataRequired()], format='%Y-%m-%d')
     submit = SubmitField(label="Vložit instruktora")
+
+class ReservationInformationAdmin(FlaskForm):
+    name = StringField(label="Jméno klienta", validators=[Length(min=2, max=30), Optional()])
+    surname = StringField(label="Příjmení klienta", validators=[Length(min=2, max=30), Optional()])
+    tel_number = StringField('Telefonní číslo', validators=[
+        Optional(),
+        Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    ], render_kw={"type": "tel"})
+    email =  StringField('Email', validators=[Optional(), Email()], render_kw={"type": "email"})
+    reservation_id = StringField(label="ID rezervace", validators=[Optional()])
+    submit = SubmitField(label="Najít rezervaci")
