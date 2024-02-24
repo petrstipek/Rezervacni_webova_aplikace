@@ -219,6 +219,7 @@ cas_zacatku          TIME                 not null,
 doba_vyuky           INTEGER              not null,
 jazyk                VARCHAR(20)          not null,
 pocet_zaku           INTEGER              not null,
+platba               VARCHAR(20)          not null,
 poznamka             VARCHAR(100),
 primary key (ID_rezervace),
 foreign key (ID_osoba)

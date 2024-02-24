@@ -74,7 +74,7 @@ def main_page():
         klient_id = get_or_create_klient(db, name, surname, email, phone)
         student_count = 0
 
-        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, date, time , lesson_length, language_selection, student_count, reservation_note))
+        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, platba, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, date, time , lesson_length, language_selection, student_count, "nezaplaceno", reservation_note))
         reservation_id = cursor.lastrowid
 
         if form.student_client.data:
@@ -549,6 +549,22 @@ def get_reservation_details(reservation_id):
         return jsonify(result_dict)
     else:
         return jsonify({"error": "Reservation not found"}), 404
+
+@views.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
+def reservation_payment_status(reservation_id):
+    db = get_db()
+    reservation = db.execute('SELECT platba FROM rezervace WHERE ID_rezervace = ?', (reservation_id,)).fetchone()
+
+    if not reservation:
+        flash("Rezervace nenalezena!", category="danger")
+    elif reservation["platba"] == "nezaplaceno":
+        db.execute('UPDATE rezervace SET platba = "zaplaceno" WHERE ID_rezervace = ?', (reservation_id,))
+        db.commit()
+        flash("Rezervace označena jako zaplacená!", category="success")
+    else:
+        flash("Rezervace již je zaplacena", category="warning")
+
+    return redirect(url_for("views.reservations_admin"))
     
 @views.route('/delete-reservation/<reservation_id>', methods=['DELETE', 'POST'])
 def delete_reservation(reservation_id):
