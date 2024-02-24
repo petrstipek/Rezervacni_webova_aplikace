@@ -7,8 +7,22 @@ import sqlite3
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import User
 from urllib.parse import urlparse
+import random, string
 
 views = Blueprint("views", __name__)
+
+def generate_unique_reservation_identifier():
+    identifier = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    db = get_db()
+
+    query_result = db.execute('SELECT rezervacni_kod FROM rezervace').fetchall()
+
+    existing_identifiers = [row['rezervacni_kod'] for row in query_result]
+
+    while identifier in existing_identifiers:
+        identifier = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    
+    return identifier
 
 @views.route('/', methods=["GET", "POST"])
 def main_page():
@@ -73,8 +87,9 @@ def main_page():
 
         klient_id = get_or_create_klient(db, name, surname, email, phone)
         student_count = 0
+        identifier = generate_unique_reservation_identifier()
 
-        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, platba, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, date, time , lesson_length, language_selection, student_count, "nezaplaceno", reservation_note))
+        cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, platba, rezervacni_kod, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (klient_id, lesson_type, date, time , lesson_length, language_selection, student_count, "nezaplaceno", identifier, reservation_note))
         reservation_id = cursor.lastrowid
 
         if form.student_client.data:
@@ -539,8 +554,9 @@ def get_available_times_group():
 @views.route('/get-reservation-details/<reservation_id>')
 def get_reservation_details(reservation_id):
     db = get_db()
+    print(type(reservation_id))
 
-    query_result = db.execute("SELECT * from rezervace WHERE ID_rezervace = ?", (reservation_id)).fetchone()
+    query_result = db.execute("SELECT * from rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
 
     if query_result:
         columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
