@@ -7,28 +7,25 @@
 {% block body %}
 <section class="section_blue">
     <h3>Vyhledávání rezervace</h3>
-    <form method="post" action="{{ url_for('views.reservations_admin') }}">
+    <form id="reservationForm" method="post">
         {{ form.hidden_tag() }}
         <label for="reservation_id">{{ form.reservation_id.label }}</label>
         {{ form.reservation_id(id="reservation_id") }}
         <br>
-        <label for="name">{{ form.name.label }}</label>
-        {{ form.name }}
-        <br>
         <label for="surname">{{ form.surname.label }}</label>
-        {{ form.surname }}
-        <br>
-        <label for="tel_number">{{ form.tel_number.label }}</label>
-        {{ form.tel_number }}
+        {{ form.surname(id="reservation_name") }}
         <br>
         <label for="email">{{ form.email.label }}</label>
-        {{ form.email }}
+        {{ form.email(id="reservation_email") }}
         <br>
-        {{ form.submit }}
+        <label for="tel_number">{{ form.tel_number.label }}</label>
+        {{ form.tel_number(id="reservation_tel_number") }}
+        <br>
+        <!--{{ form.submit }}-->
+        <button type="submit">Check Reservation</button>
     </form>
+    <div id="reservationDetails"></div>
 </section>
-
-<div id="reservationDetails"></div>
 
 <section class="section_white">
     <table border="1">
@@ -56,15 +53,15 @@
                     <td>{{ reservation['email'] }}</td>
                     <td>{{ reservation['tel_cislo'] }}</td>
                     <td>
-                        <form action="{{ url_for('views.delete_reservation', reservation_id=reservation['ID_rezervace']) }}" method="post">
-                            {{ form.hidden_tag() }}
-                            <input type="submit" value="Delete">
-                        </form>
-                    </td>
-                    <td>
                         <form action="{{ url_for('views.reservation_payment_status', reservation_id=reservation['ID_rezervace']) }}" method="post">
                             {{ form.hidden_tag() }}
                             <input type="submit" value="Označit zaplaceno">
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('views.delete_reservation', reservation_id=reservation['ID_rezervace']) }}" method="post">
+                            {{ form.hidden_tag() }}
+                            <input type="submit" value="Delete">
                         </form>
                     </td>
                 </tr>
@@ -75,7 +72,6 @@
     </table>
 </section>
 
-<script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>
 <script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
 
 {% endblock %}

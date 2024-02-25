@@ -551,19 +551,30 @@ def get_available_times_group():
 
     return jsonify(available_times_group)
 
-@views.route('/get-reservation-details/<reservation_id>')
-def get_reservation_details(reservation_id):
+@views.route('/get-reservation-details/<reservation_identifiers>/<identifier>')
+def get_reservation_details(reservation_identifiers, identifier):
     db = get_db()
-    print(type(reservation_id))
 
-    query_result = db.execute("SELECT * from rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
+    def query_db_and_construct_response(sql_query, params):
+        query_result = db.execute(sql_query, params).fetchone()
+        if query_result:
+            columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
+            return jsonify({columns[i]: query_result[i] for i in range(len(columns))})
+        else:
+            return jsonify({"error": "Reservation not found"}), 404
 
-    if query_result:
-        columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
-        result_dict = {columns[i]: query_result[i] for i in range(len(columns))}
-        return jsonify(result_dict)
+    query_map = {
+        "reservationID": ("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (identifier,)),
+        "name": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE prijmeni = ?", (identifier,)),
+        "email": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE email = ?", (identifier,)),
+        "tel-number": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE tel_cislo = ?", (identifier,))
+    }
+
+    if reservation_identifiers in query_map:
+        sql_query, params = query_map[reservation_identifiers]
+        return query_db_and_construct_response(sql_query, params)
     else:
-        return jsonify({"error": "Reservation not found"}), 404
+        return jsonify({"error": "Invalid reservation identifier"}), 400
 
 @views.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
 def reservation_payment_status(reservation_id):
