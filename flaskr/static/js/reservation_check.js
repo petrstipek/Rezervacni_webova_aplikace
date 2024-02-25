@@ -26,20 +26,45 @@ $(document).ready(function () {
             type: "GET",
             success: function (data) {
                 $('#reservationDetails').empty();
-                var detailsList = $('<ul></ul>');
-                $.each(data, function (key, value) {
-                    detailsList.append($('<li></li>').text(key + ": " + value));
+
+                if (data.length === 0) {
+                    $('#reservationDetails').text('No reservations found.');
+                    return;
+                }
+
+                var table = $('<table></table>').addClass('reservation-table');
+                var thead = $('<thead></thead>');
+                var tbody = $('<tbody></tbody>');
+                var headerRow = $('<tr></tr>');
+
+                $.each(data[0], function (key) {
+                    headerRow.append($('<th></th>').text(key));
                 });
-                $('#reservationDetails').append(detailsList);
+                thead.append(headerRow);
 
-                var deleteButton = $('<button>Delete Reservation</button>');
-                deleteButton.attr('id', 'deleteReservationButton');
-                $('#reservationDetails').append(deleteButton);
+                $.each(data, function (index, reservation) {
+                    var row = $('<tr></tr>');
+                    $.each(reservation, function (key, value) {
+                        row.append($('<td></td>').text(value));
+                    });
 
-                var csrfToken = $('input[name="csrf_token"]').val();
+                    var deleteButton = $('<button>Delete Reservation</button>')
+                        .addClass('deleteReservationButton')
+                        .data('reservationId', reservation.ID_rezervace);
+                    row.append($('<td></td>').append(deleteButton));
 
-                $('#deleteReservationButton').on('click', function () {
+                    tbody.append(row);
+                });
+
+                table.append(thead).append(tbody);
+                $('#reservationDetails').append(table);
+
+                $(document).on('click', '.deleteReservationButton', function () {
+                    var reservationId = $(this).data('reservationId');
+
                     if (confirm('Are you sure you want to delete this reservation?')) {
+                        var csrfToken = $('input[name="csrf_token"]').val();
+
                         $.ajax({
                             url: "/delete-reservation/" + reservationId,
                             type: "DELETE",
@@ -48,7 +73,7 @@ $(document).ready(function () {
                             },
                             success: function () {
                                 alert('Reservation deleted successfully.');
-                                $('#reservationDetails').empty();
+                                $(this).closest('tr').remove();
                             },
                             error: function (xhr, status, error) {
                                 console.error("Error: " + status + " - " + error);

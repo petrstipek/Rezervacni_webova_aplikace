@@ -456,7 +456,7 @@ def delete_lesson_admin(lesson_id):
         flash("Error", category="danger")
     return redirect(url_for("views.lessons_admin"))
 
-@views.route('/reservations-admin', methods=["GET", "POST"])
+@views.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 def reservations_admin():
     db = get_db()
     form = ReservationInformationAdmin()
@@ -556,10 +556,11 @@ def get_reservation_details(reservation_identifiers, identifier):
     db = get_db()
 
     def query_db_and_construct_response(sql_query, params):
-        query_result = db.execute(sql_query, params).fetchone()
+        query_result = db.execute(sql_query, params).fetchall()
         if query_result:
             columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
-            return jsonify({columns[i]: query_result[i] for i in range(len(columns))})
+            results_list = [{column: row[i] for i, column in enumerate(columns)} for row in query_result]
+            return jsonify(results_list)
         else:
             return jsonify({"error": "Reservation not found"}), 404
 
