@@ -8,8 +8,41 @@ from flask_login import login_user, logout_user, login_required, current_user
 from .models import User
 from urllib.parse import urlparse
 import random, string
+from flask_login import login_user, logout_user, login_required
+from werkzeug.security import check_password_hash, generate_password_hash
+from flaskr.extensions import login_manager
 
 views = Blueprint("views", __name__)
+
+@login_manager.user_loader
+def load_user(user_id):
+    db = get_db()
+    user_result = db.execute('SELECT * FROM Spravce_skoly WHERE ID_osoba = ?', (user_id)).fetchone()
+    if user_result:
+        user = User(user_result['ID_osoba'], user_result['prijmeni'])
+        return user
+    return None
+
+@views.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('views.main_page'))
+
+@views.route('/login-page-admin', methods=['GET', 'POST'])
+def login_page_admin():
+    form = LoginForm()
+    if form.validate_on_submit:
+        username = form.username.data
+        password = form.password.data
+        db = get_db()
+        query_result = db.execute('SELECT * FROM Spravce_skoly WHERE prihl_jmeno = ?', (username,)).fetchone()
+        if query_result and (query_result['heslo'], password):
+            user = User(query_result['ID_osoba'], query_result['prihl_jmeno'])
+            login_user(user, remember=request.form.get('remember'))
+            return redirect(url_for('views.admin_page'))
+        else:
+            flash("Invalid parametrs")
+    return render_template("blog/admin/login_admin.html", form=form)
 
 def generate_unique_reservation_identifier():
     identifier = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -71,12 +104,10 @@ def main_page():
 
         
         def get_or_create_klient(db, name, surname, email, phone):
-            # Step 1: Check if the user already exists
             cursor = db.execute('SELECT ID_osoba FROM klient WHERE email = ?', (email,))
             result = cursor.fetchone()
     
             if result:
-                # User exists, return existing ID
                 klient_id = result[0]
             else:
                 cursor = db.execute('INSERT INTO klient (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
@@ -103,9 +134,8 @@ def main_page():
             client_experience_fields = [form.experience_client1, form.experience_client2]
 
             for i in range(len(client_name_fields)):
-                if client_name_fields[i].data != '':  # Check if field is not empty
+                if client_name_fields[i].data != '':
                     student_count += 1
-                    # Insert each additional student into Zak
                     db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, client_name_fields[i].data, client_surname_fields[i].data, client_experience_fields[i].data, client_age_fields[i].data))
         print("student count",student_count)
         print("lesson type", lesson_type)
@@ -249,31 +279,13 @@ def reservation_check():
 def reservations_user():
     return render_template("blog/reservations_user.html")
 
-@views.route('/login-page-admin', methods=["GET", "POST"])
-def login_page_admin():
-    form = LoginForm()
-    db = get_db()
-
-    username = form.username.data
-    password = form.password.data
-
-    if form.validate_on_submit():
-        user_attempt = db.execute('SELECT * FROM Spravce_skoly WHERE prihl_jmeno = ?', (username,))
-        if user_attempt == None:
-            flash("username or password not matched")
-        if user_attempt["prihl_jmeno"] == username and password == user_attempt["heslo"]:
-            #login_user(user_attempt)
-            flash("logged in as ", username)
-            return redirect(url_for(admin_page))
-        else:
-            flash("username or password not matched")
-
-    return render_template("blog/admin/login_admin.html", form=form)
 
 @views.route('/admin-page', methods=["GET", "POST"])
+@login_required
 def admin_page():
     db = get_db()
 
+    db.execute('INSERT INTO Spravce_skoly (jmeno, prijmeni, email, tel_cislo, prihl_jmeno, heslo) VALUES (?, ?, ?, ?, ?, ?)', ("Ředitel", "Dlouhý", "reditel@dlouhy.cz", "123456789", "reditel", "reditel123"))
     #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "13:00", "volno", "ind"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "14:00", "volno", "ind"))
@@ -291,8 +303,6 @@ def admin_page():
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 1))
     #db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)', (1, 2))
 
-
-    
     db.commit()
 
     return render_template("blog/admin/admin_page.html")
@@ -527,7 +537,6 @@ def get_available_times_individual_instructor(instructor_id):
         
         available_times_ind[date_str].append((time_str, count))
     
-    # Return a valid response (modify as needed)
     return jsonify(available_times_ind)
 
 @views.route('/get-available-times/group')
@@ -555,11 +564,6 @@ def get_available_times_group():
         available_times_group[date_str].append((time_str, count))
 
     return jsonify(available_times_group)
-
-
-
-
-
 
 @views.route('/get-reservation-details/<reservation_identifiers>', defaults={'identifier': None})
 @views.route('/get-reservation-details/<reservation_identifiers>/<identifier>')
@@ -607,14 +611,6 @@ def get_reservation_details(reservation_identifiers, identifier):
     else:
         return jsonify({"error": "Invalid reservation identifier"}), 400
 
-
-
-
-
-
-
-
-
 @views.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
 def reservation_payment_status(reservation_id):
     db = get_db()
@@ -645,7 +641,7 @@ def delete_reservation(reservation_id):
         lessons_ids = db.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id)).fetchall()
         
         for lesson_id_tuple in lessons_ids:
-            lesson_id = lesson_id_tuple[0]  # Extract ID_hodiny from the tuple
+            lesson_id = lesson_id_tuple[0]
             cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id,))
 
         cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
