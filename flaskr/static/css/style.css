@@ -8,9 +8,9 @@ header {
     margin-bottom: -8px !important;
 }
 
-.global-margin {
-    margin-left: 20px;
-    margin-right: 20px;
+body .global-margin {
+    margin-left: 150px;
+    margin-right: 150px;
 }
 
 .header .col-md-3 {
@@ -72,7 +72,6 @@ section {
 }
 
 .dates-container {
-    margin-left: 20px;
     max-height: 200px;
     /* Maximum height before scrolling */
     overflow-y: auto;
@@ -172,4 +171,96 @@ section {
     /* Lighter blue for hover state */
     color: #0056b3;
     /* Dark blue text for hover state */
+}
+
+.date-picker-container {
+    display: flex;
+    /* This will align the children next to each other */
+    align-items: center;
+    /* This will vertically align the children in the middle */
+    gap: 20px;
+    /* This adds space between the children */
+    text-align: left;
+}
+
+.horizontal-fields-container {
+    display: flex;
+    /* Align the children (field containers) horizontally */
+    align-items: center;
+    /* Vertically center the contents */
+    gap: 20px;
+    /* Add some space between each field */
+}
+
+.field-container {
+    display: flex;
+    /* This makes sure that the label and field are nicely aligned */
+    flex-direction: column;
+    /* Stack the label on top of the field */
+    align-items: flex-start;
+    /* Aligns the items to the start of the container */
+}
+
+.section_white {
+    text-align: center;
+    /* Center the section title */
+}
+
+.form-row {
+    display: flex;
+    justify-content: center;
+    /* Center the flex items */
+    flex-wrap: wrap;
+    /* Wrap items to the next line on small screens */
+    gap: 20px;
+    /* Space between items */
+}
+
+.form-group {
+    flex: 1;
+    /* Each flex item will grow to use available space */
+    min-width: 250px;
+    /* Minimum width for each form-group */
+}
+
+.form-group label,
+.form-group input,
+.form-group textarea,
+.form-group select {
+    display: block;
+    /* Elements take full width of .form-group */
+    margin-bottom: 10px;
+    /* Space below each element */
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    /* Full width of their parent */
+}
+
+.center-section {
+    text-align: center;
+}
+
+.form-block {
+    display: inline-block;
+    text-align: left;
+}
+
+/* If your form-row already exists and has different styles, you may need to adjust or add a new class specific for this layout */
+.form-row-centered {
+    margin: 0 auto;
+    text-align: left;
+}
+
+/* Adjust the width as necessary to fit your design */
+.form-block,
+.form-row-centered {
+    width: 90%;
+    /* Adjust this value based on your layout needs */
 }

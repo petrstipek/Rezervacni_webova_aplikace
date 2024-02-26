@@ -10,12 +10,20 @@ from urllib.parse import urlparse
 import random, string
 from flask_login import login_user, logout_user, login_required
 from werkzeug.security import check_password_hash
-from flaskr.extensions import login_manager
+from flaskr.extensions import login_manager, mail
 from werkzeug.security import generate_password_hash
 import hashlib
 import os
+from flask_mail import Message
 
 views = Blueprint("views", __name__)
+
+
+def send_email(subject, sender, recipients, text_body, html_body):
+    msg = Message(subject, sender=sender, recipients=[recipients])
+    msg.body = text_body
+    msg.html = html_body
+    mail.send(msg)
 
 def hash_password(password):
     salt = os.urandom(16)
@@ -270,11 +278,8 @@ def main_page():
                         print("Nothing was found for the given conditions.")  
                         return redirect(url_for('views.main_page'))
 
-        user_email = "felixgrent@gmail.com"  # Example user email
-        reservation_details = "haha email funguje"
-    
-        # Send confirmation email
-        #send_reservation_confirmation(user_email, reservation_details)
+        query_result = db.execute("SELECT rezervacni_kod FROM rezervace WHERE ID_rezervace = ?", (reservation_id,)).fetchone()
+        send_email('Subject Here', 'johnlongshort256@gmail.com', 'felixgrent@gmail.com', 'Ttext body emailu', '<h1>HTML body here</h1>' + query_result["rezervacni_kod"])
 
         db.commit()
 
