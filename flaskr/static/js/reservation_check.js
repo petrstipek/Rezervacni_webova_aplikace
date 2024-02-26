@@ -24,6 +24,7 @@ $(document).ready(function () {
             url: url,
             type: "GET",
             success: function (data) {
+                var reservations = data.reservations;
                 $('#reservationDetails').empty();
 
                 if (data.length === 0) {
@@ -36,12 +37,12 @@ $(document).ready(function () {
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
 
-                $.each(data[0], function (key) {
+                $.each(reservations[0], function (key) {
                     headerRow.append($('<th></th>').text(key));
                 });
                 thead.append(headerRow);
 
-                $.each(data, function (index, reservation) {
+                $.each(reservations, function (index, reservation) {
                     var row = $('<tr></tr>');
                     $.each(reservation, function (key, value) {
                         row.append($('<td></td>').text(value));
