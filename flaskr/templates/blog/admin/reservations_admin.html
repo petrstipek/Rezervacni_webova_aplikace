@@ -2,6 +2,7 @@
 
 {% block head %}
     <title> Rezervace - admin stránka </title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 {% endblock %}
 
 {% block body %}
@@ -25,53 +26,16 @@
         <button type="submit">Check Reservation</button>
     </form>
     <div id="reservationDetails"></div>
+    <div id="paginationControlsFirstTable" class="pagination-controls"></div>
 </section>
 
 <section class="section_white">
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Jméno</th>
-                <th>Příjmení</th>
-                <th>Termín</th>
-                <th>Čas začátku</th>
-                <th>Stav platby</th>
-                <th>Doba výuky</th>
-                <th>Email</th>
-                <th>Telefonní číslo</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for reservation in reservations_dict %}
-                <tr>
-                    <td>{{ reservation['jmeno'] }}</td>
-                    <td>{{ reservation['prijmeni'] }}</td>
-                    <td>{{ reservation['termin'] }}</td>
-                    <td>{{ reservation['cas_zacatku'] }}</td>
-                    <td>{{ reservation['platba'] }}</td>
-                    <td>{{ reservation['doba_vyuky'] }}</td>
-                    <td>{{ reservation['email'] }}</td>
-                    <td>{{ reservation['tel_cislo'] }}</td>
-                    <td>
-                        <form action="{{ url_for('views.reservation_payment_status', reservation_id=reservation['ID_rezervace']) }}" method="post">
-                            {{ form.hidden_tag() }}
-                            <input type="submit" value="Označit zaplaceno">
-                        </form>
-                    </td>
-                    <td>
-                        <form action="{{ url_for('views.delete_reservation', reservation_id=reservation['ID_rezervace']) }}" method="post">
-                            {{ form.hidden_tag() }}
-                            <input type="submit" value="Delete">
-                        </form>
-                    </td>
-                </tr>
-            {% else %}
-                <tr><td colspan="2">No reservations found.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div id="reservationDetailsAll"></div>
+    <div id="paginationControlsSecondTable" class="pagination-controls"></div>
+
+
 </section>
 
-<script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
+<script src="{{ url_for('static', filename='js/reservation_admin_check.js') }}"></script>
 
 {% endblock %}

@@ -2,6 +2,8 @@
 
 {% block head %}
     <title> Dostupné hodiny - admin </title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 {% endblock %}
 
 {% block body %}
@@ -43,34 +45,10 @@
 </section>
 
 <section class="section_white">
-    <table border="1">
-        <thead>
-            <tr>
-                <th>datum</th>
-                <th>čas začátku</th>
-                <th>stav</th>
-                <th>Instruktor</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for lesson in lessons_dict %}
-                <tr>
-                    <td>{{ lesson['datum'] }}</td>
-                    <td>{{ lesson['cas_zacatku'] }}</td>
-                    <td>{{ lesson['stav'] }}</td>
-                    <td>{{ lesson['jmeno'] }}</td>
-                    <td>
-                        <form action="{{ url_for('views.delete_lesson_admin', lesson_id=lesson['ID_hodiny']) }}" method="post">
-                            {{ form.hidden_tag() }}
-                            <input type="submit" value="Delete">
-                        </form>
-                    </td>
-                </tr>
-            {% else %}
-                <tr><td colspan="2">No lessons found.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <input type="date" id="lessonDate" name="lessonDate">
+    <input type="button" id="allLessons" name="allLessons" value="Zobrazit všechny hodiny">
+    <div id="lessonsAll"></div>
+    <div id="paginationControls"></div>
 </section>
 
 <script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>

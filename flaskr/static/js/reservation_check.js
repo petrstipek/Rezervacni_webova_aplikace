@@ -21,7 +21,6 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            //url: "/get-reservation-details/" + reservationId,
             url: url,
             type: "GET",
             success: function (data) {

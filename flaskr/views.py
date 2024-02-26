@@ -441,20 +441,25 @@ def lessons_admin():
 @views.route('/delete_lesson_admin/<int:lesson_id>', methods=["POST"])
 def delete_lesson_admin(lesson_id):
     db = get_db()
+    print("jsem tady v lesson delte")
+    print(type(lesson_id))
 
     try:
         query_result = db.execute('SELECT stav FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,)).fetchone()
 
         if query_result and query_result["stav"] == "obsazeno":
-            flash("Hodina je obsazene, nelze proto smazat", category="danger")
+            #flash("Hodina je obsazene, nelze proto smazat", category="danger")
+            return jsonify({"error": True, "message": "Hodina je obsazene, nelze proto smazat"}), 400
         else:
             db.execute('DELETE FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,))
             db.execute('DELETE FROM ma_vypsane WHERE ID_hodiny = ?', (lesson_id,))
             db.commit()
-            flash("Dostupná hodina byla úspěšně smazána!", category="success")
+            #flash("Dostupná hodina byla úspěšně smazána!", category="success")
+            return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
     except Exception as e:
-        flash("Error", category="danger")
-    return redirect(url_for("views.lessons_admin"))
+        #flash("Error", category="danger")
+        return jsonify({"error": True, "message": "An error occurred. Please try again."}), 500
+    #return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
 
 @views.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 def reservations_admin():
@@ -551,24 +556,49 @@ def get_available_times_group():
 
     return jsonify(available_times_group)
 
+
+
+
+
+
+@views.route('/get-reservation-details/<reservation_identifiers>', defaults={'identifier': None})
 @views.route('/get-reservation-details/<reservation_identifiers>/<identifier>')
 def get_reservation_details(reservation_identifiers, identifier):
     db = get_db()
-
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 5, type=int)
+    
     def query_db_and_construct_response(sql_query, params):
-        query_result = db.execute(sql_query, params).fetchall()
+        offset = (page - 1) * per_page
+        
+        paginated_sql_query = f"{sql_query} LIMIT ? OFFSET ?"
+        paginated_params = params + (per_page, offset)
+
+        query_result = db.execute(paginated_sql_query, paginated_params).fetchall()
+        
         if query_result:
-            columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
+            columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "platba", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
             results_list = [{column: row[i] for i, column in enumerate(columns)} for row in query_result]
-            return jsonify(results_list)
+            
+            count_sql_query = f"SELECT COUNT(*) FROM ({sql_query})"
+            total_items = db.execute(count_sql_query, params).fetchone()[0]
+            total_pages = (total_items + per_page - 1) // per_page
+            
+            return jsonify({
+                "reservations": results_list,
+                "total_items": total_items,
+                "total_pages": total_pages,
+                "current_page": page
+            })
         else:
-            return jsonify({"error": "Reservation not found"}), 404
+            return jsonify({"error": "No reservations found"}), 404
 
     query_map = {
         "reservationID": ("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (identifier,)),
         "name": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE prijmeni = ?", (identifier,)),
         "email": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE email = ?", (identifier,)),
-        "tel-number": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE tel_cislo = ?", (identifier,))
+        "tel-number": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE tel_cislo = ?", (identifier,)),
+        "all": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba)", ())
     }
 
     if reservation_identifiers in query_map:
@@ -576,6 +606,14 @@ def get_reservation_details(reservation_identifiers, identifier):
         return query_db_and_construct_response(sql_query, params)
     else:
         return jsonify({"error": "Invalid reservation identifier"}), 400
+
+
+
+
+
+
+
+
 
 @views.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
 def reservation_payment_status(reservation_id):
@@ -642,3 +680,27 @@ def school_page():
 @views.route('prices')
 def prices_page():
     return render_template("blog/prices.html", active_page = "prices")
+
+@views.route('/get-lessons')
+def get_lessons():
+    db = get_db()
+
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 1, type=int)
+    selected_date = request.args.get('date', None)
+
+    if selected_date:
+        query_result = db.execute('SELECT ID_hodiny, datum, cas_zacatku, prijmeni, stav, typ_hodiny, obsazenost FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) left join Instruktor USING (ID_osoba) WHERE datum = ? LIMIT ? OFFSET ?', (selected_date, per_page, (page - 1) * per_page)).fetchall()
+        total = db.execute('SELECT COUNT(*) FROM dostupne_hodiny WHERE datum = ?', (selected_date,)).fetchone()[0]
+    else:
+        query_result = db.execute('SELECT ID_hodiny, datum, cas_zacatku, prijmeni, stav, typ_hodiny, obsazenost FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) left join Instruktor USING (ID_osoba) LIMIT ? OFFSET ?', (per_page, (page - 1) * per_page)).fetchall()
+        total = db.execute('SELECT COUNT(*) FROM dostupne_hodiny').fetchone()[0]
+
+    lessons_dict = [dict(row) for row in query_result]
+
+    return jsonify({
+        'lessons': lessons_dict,
+        'total': total,
+        'pages': (total + per_page - 1) // per_page,
+        'current_page': page
+    })
