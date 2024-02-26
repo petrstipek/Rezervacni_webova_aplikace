@@ -9,10 +9,23 @@ from .models import User
 from urllib.parse import urlparse
 import random, string
 from flask_login import login_user, logout_user, login_required
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 from flaskr.extensions import login_manager
+from werkzeug.security import generate_password_hash
+import hashlib
+import os
 
 views = Blueprint("views", __name__)
+
+def hash_password(password):
+    salt = os.urandom(16)
+    pwdhash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
+    return salt.hex() + ':' + pwdhash.hex()
+
+def check_password(stored_password, user_password):
+    salt, hash = stored_password.split(':')
+    pwdhash = hashlib.pbkdf2_hmac('sha256', user_password.encode(), bytes.fromhex(salt), 100000)
+    return pwdhash.hex() == hash
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -30,6 +43,7 @@ def logout():
 
 @views.route('/login-page-admin', methods=['GET', 'POST'])
 def login_page_admin():
+    
     form = LoginForm()
     if form.validate_on_submit:
         username = form.username.data
@@ -284,8 +298,9 @@ def reservations_user():
 @login_required
 def admin_page():
     db = get_db()
+    
 
-    db.execute('INSERT INTO Spravce_skoly (jmeno, prijmeni, email, tel_cislo, prihl_jmeno, heslo) VALUES (?, ?, ?, ?, ?, ?)', ("Ředitel", "Dlouhý", "reditel@dlouhy.cz", "123456789", "reditel", "reditel123"))
+    #db.execute('INSERT INTO Spravce_skoly (jmeno, prijmeni, email, tel_cislo, prihl_jmeno, heslo) VALUES (?, ?, ?, ?, ?, ?)', ("Ředitel", "Dlouhý", "reditel@dlouhy.cz", "123456789", "reditel", "reditel123"))
     #db.execute('INSERT INTO instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', ("Petr", "Štípek", "petr@stipek.cz", "123456789", "senior", "2001-08-31", "2020-01-01"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "13:00", "volno", "ind"))
     #db.execute('INSERT INTO dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny) VALUES (?, ?, ?, ?)', ("2024-02-21", "14:00", "volno", "ind"))
@@ -344,6 +359,7 @@ def lectures():
     return render_template("blog/lectures.html")
 
 @views.route('/instructors-admin', methods=["POST", "GET"])
+@login_required
 def instructors_admin():
     form = InstructorInsertForm()
     db = get_db()
@@ -373,6 +389,7 @@ def instructors_admin():
     return render_template("blog/admin/instructors_admin.html", form=form, instructors_dict=instructors_dict)
 
 @views.route('/delete_instructor_admin/<int:instructor_id>', methods=["POST"])
+@login_required
 def delete_instructor_admin(instructor_id):
     db = get_db()
 
@@ -387,6 +404,7 @@ def delete_instructor_admin(instructor_id):
     return redirect(url_for("views.instructors_admin"))
 
 @views.route('/lessons-admin', methods=["POST", "GET"])
+@login_required
 def lessons_admin():
     form = LessonInsertForm()
     db = get_db()
@@ -449,6 +467,7 @@ def lessons_admin():
     return render_template("blog/admin/lessons_admin.html", form=form, lessons_dict=lessons_dict)
 
 @views.route('/delete_lesson_admin/<int:lesson_id>', methods=["POST"])
+@login_required
 def delete_lesson_admin(lesson_id):
     db = get_db()
     print("jsem tady v lesson delte")
@@ -612,6 +631,7 @@ def get_reservation_details(reservation_identifiers, identifier):
         return jsonify({"error": "Invalid reservation identifier"}), 400
 
 @views.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
+@login_required
 def reservation_payment_status(reservation_id):
     db = get_db()
     reservation = db.execute('SELECT platba FROM rezervace WHERE ID_rezervace = ?', (reservation_id,)).fetchone()
