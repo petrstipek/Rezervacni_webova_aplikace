@@ -121,7 +121,7 @@ $(document).ready(function () {
             var time = timeCountPair[0];
             var count = timeCountPair[1];
 
-            return `<label><input type="radio" name="time" value="${time}" /> ${time} - Available Slots: ${count}</label><br>`;
+            return `<label><input class="form-check-input" type="radio" name="time" value="${time}" /> ${time} - Available Slots: ${count}</label><br>`;
         }).join('');
 
         $('.times-container').html(timesHtml);

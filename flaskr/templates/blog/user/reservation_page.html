@@ -15,146 +15,150 @@
 {% block body %}
 <form method="post" action="{{ url_for('views.main_page') }}">
     {{ form.hidden_tag() }}
-    <section class="section_blue global-margin" id="date_picker">
-        <h2 class="h2-headers">Výběr termínu rezervace</h2>
-        <div class="grid-container">
-            <div class="custom-date-picker-container">
-                <div>
-                    <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
+    <section class="section-blue" id="date_picker">
+        <div class="global-margin">
+            <h2 class="h2-headers">Výběr termínu rezervace</h2>
+            <div class="grid-container">
+                <div class="horizontal-fields-container-lessontype">
+                    <div class="field-container d-flex align-items-center">
+                        <label for="lesson_type" class="me-2 no-wrap">{{ form.lesson_type.label }}</label>
+                        {{ form.lesson_type(id="lesson_type", class="form-select") }}
+                    </div>
+                    <div class="field-container d-flex align-items-center">
+                        <label for="lesson_length" class="me-2 no-wrap">{{ form.lesson_length.label }}</label>
+                        {{ form.lesson_length(id="lesson_length", class="form-select") }}
+                    </div>
+                    <div class="field-container d-flex align-items-center">
+                        <label for="lesson_instructor_choices" class="me-2">{{ form.lesson_instructor_choices.label }}</label>
+                        {{ form.lesson_instructor_choices(id="lesson_instructor", class="form-select") }}
+                    </div>
+                    <div class="field-container d-flex align-items-center">
+                        <label for="language_selection" class="me-2">{{ form.language_selection.label }}</label>
+                        {{ form.language_selection(id="language_selection", class="form-select") }}
+                    </div>
+                </div>
+                <div class="date-and-times-container">
+                    <div class="custom-date-picker-container">
+                        <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
+                    </div>
                     <div class="times-container">
                         {{ form.time }}
                     </div>
                 </div>
             </div>
+        </div>
+        <hr class="global-margin">
+    </section>
+
+    <section class="section-grey" id="contact_information">
+        <div class="global-margin">
+            <h2 class="h2-headers">Kontaktní informace</h2>
             <div class="horizontal-fields-container">
                 <div class="field-container">
-                    <label for="lesson_type">{{ form.lesson_type.label }}</label>
-                    {{ form.lesson_type(id="lesson_type") }}
+                    <label for="name">{{ form.name.label }}</label>
+                    {{ form.name }}
                 </div>
-                <div class="field-container">
-                    <label for="lesson_length">{{ form.lesson_length.label }}</label>
-                    {{ form.lesson_length(id="lesson_length") }}
+                <div>
+                    <label for="surname">{{ form.surname.label }}</label>
+                    {{ form.surname }}
                 </div>
-                <div class="field-container">
-                    <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
-                    {{ form.lesson_instructor_choices(id="lesson_instructor") }}
+                <div>
+                    <label for="tel_number">{{ form.tel_number.label }}</label>
+                    {{ form.tel_number }}
                 </div>
-                <div class="field-container">
-                    <label for="language_selection">{{ form.language_selection.label }}</label>
-                    {{ form.language_selection(id="language_selection") }}
+                <div>
+                    <label for="email">{{ form.email.label }}</label>
+                    {{ form.email }}
                 </div>
             </div>
         </div>
+        <hr class="global-margin">
     </section>
-
-    <hr class="global-margin">
-
-    <section class="section_white global-margin" id="contact_information">
-        <h2 class="h2-headers">Kontaktní informace</h2>
-        <div class="horizontal-fields-container">
-            <div class="field-container">
-                <label for="name">{{ form.name.label }}</label>
-                {{ form.name }}
-            </div>
-            <div>
-                <label for="surname">{{ form.surname.label }}</label>
-                {{ form.surname }}
-            </div>
-            <div>
-                <label for="tel_number">{{ form.tel_number.label }}</label>
-                {{ form.tel_number }}
-            </div>
-            <div>
-                <label for="email">{{ form.email.label }}</label>
-                {{ form.email }}
-            </div>
-        </div>
-    </section>
-
-    <hr class="global-margin">
-
-    <section class="section_blue global-margin" id="students">
-        <h2 class="h2-headers">Žáci lekce</h2>
-        <div class="form-block">
-            <div class="checkbox-container">
-                <div class="checkbox-field">
-                    <label for="student_client">{{ form.student_client.label }}</label>
-                    {{ form.student_client(id="student_client_checkbox", checked=true) }}
+    <section class="section-blue" id="students">
+        <div class="global-margin">
+            <h2 class="h2-headers">Žáci lekce</h2>
+            <div class="form-block">
+                <div class="checkbox-container">
+                    <div class="checkbox-field">
+                        <label for="student_client">{{ form.student_client.label }}</label>
+                        {{ form.student_client(id="student_client_checkbox", checked=true) }}
+                    </div>
+                    <div class="checkbox-field">
+                        <label for="more_students">{{ form.more_students.label }}</label>
+                        {{ form.more_students(id="more_students_checkbox") }}
+                    </div>
                 </div>
-                <div class="checkbox-field">
-                    <label for="more_students">{{ form.more_students.label }}</label>
-                    {{ form.more_students(id="more_students_checkbox") }}
+                <div class="horizontal-fields-container" id="client_student_details_section" style="display: none;">
+                    <label for="name_client_hidden" class="invisible-field">Jméno</label>
+                    <input id="name_client_hidden" maxlength="30" minlength="2" name="name_client_hidden" type="text" class="invisible-field" disabled value="">
+                    <label for="name_client_hidden" class="invisible-field">Příjmení</label>
+                    <input id="surname_client_hidden" maxlength="30" minlength="2" name="surname_client_hidden" type="text" class="invisible-field" disabled value="">
+
+                    {{ form.age_client.label }} <br>
+                    {{ form.age_client(class_="age-field") }} <br>
+                    {% for error in form.age_client.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+        
+                    {{ form.experience_client.label }} <br>
+                    {{ form.experience_client(class_="selector-field") }} <br>
+                    {% for error in form.experience_client.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
                 </div>
             </div>
-            <div class="horizontal-fields-container" id="client_student_details_section" style="display: none;">
-                <label for="name_client_hidden" class="invisible-field">Jméno</label>
-                <input id="name_client_hidden" maxlength="30" minlength="2" name="name_client_hidden" type="text" class="invisible-field" disabled value="">
-                <label for="name_client_hidden" class="invisible-field">Příjmení</label>
-                <input id="surname_client_hidden" maxlength="30" minlength="2" name="surname_client_hidden" type="text" class="invisible-field" disabled value="">
-
-                {{ form.age_client.label }} <br>
-                {{ form.age_client(class_="age-field") }} <br>
-                {% for error in form.age_client.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-    
-                {{ form.experience_client.label }} <br>
-                {{ form.experience_client(class_="selector-field") }} <br>
-                {% for error in form.experience_client.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </div>
+        
+            <div id="student_details_section" class="center-section" style="display: none;">
+                <div class="horizontal-fields-container">
+                    <label for="name">{{ form.name_client1.label }}</label>
+                    {{ form.name_client1 }}
+                    
+                    <label for="surname">{{ form.surname_client1.label }}</label>
+                    {{ form.surname_client1 }}
+        
+                    {{ form.age_client1.label }} <br>
+                    {{ form.age_client1(class_="age-field") }} <br>
+                    {% for error in form.age_client1.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+        
+                    {{ form.experience_client1.label }} <br>
+                    {{ form.experience_client1(class_="selector-field") }} <br>
+                    {% for error in form.experience_client1.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="horizontal-fields-container">
+                    <label for="name">{{ form.name_client2.label }}</label>
+                    {{ form.name_client2 }}
+        
+                    <label for="surname">{{ form.surname_client2.label }}</label>
+                    {{ form.surname_client2 }}
+        
+                    {{ form.age_client2.label }} <br>
+                    {{ form.age_client2(class_="age-field") }} <br>
+                    {% for error in form.age_client2.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+        
+                    {{ form.experience_client2.label }} <br>
+                    {{ form.experience_client2(class_="selector-field") }} <br>
+                    {% for error in form.experience_client2.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div> 
         </div>
-    
-        <div id="student_details_section" class="center-section" style="display: none;">
-            <div class="horizontal-fields-container">
-                <label for="name">{{ form.name_client1.label }}</label>
-                {{ form.name_client1 }}
-                
-                <label for="surname">{{ form.surname_client1.label }}</label>
-                {{ form.surname_client1 }}
-    
-                {{ form.age_client1.label }} <br>
-                {{ form.age_client1(class_="age-field") }} <br>
-                {% for error in form.age_client1.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-    
-                {{ form.experience_client1.label }} <br>
-                {{ form.experience_client1(class_="selector-field") }} <br>
-                {% for error in form.experience_client1.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </div>
-            <div class="horizontal-fields-container">
-                <label for="name">{{ form.name_client2.label }}</label>
-                {{ form.name_client2 }}
-    
-                <label for="surname">{{ form.surname_client2.label }}</label>
-                {{ form.surname_client2 }}
-    
-                {{ form.age_client2.label }} <br>
-                {{ form.age_client2(class_="age-field") }} <br>
-                {% for error in form.age_client2.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-    
-                {{ form.experience_client2.label }} <br>
-                {{ form.experience_client2(class_="selector-field") }} <br>
-                {% for error in form.experience_client2.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </div>
-        </div>  
+        <hr class="global-margin"> 
     </section>
 
-    <hr class="global-margin">
-
-    <section class="section_white global-margin" id="reservation_send">
-        <h2 class="h2-headers">Odeslání rezervace</h2>
-        <div class="form-row">
-            {{ form.note(class="notes-field") }}
-            {{ form.submit(class="submit-button") }}
+    <section class="section-grey last-section" id="reservation_send">
+        <div class="global-margin">
+            <h2 class="h2-headers">Odeslání rezervace</h2>
+            <div class="form-row">
+                {{ form.note(class="notes-field") }}
+                {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}
+            </div>
         </div>
     </section>
 </form>

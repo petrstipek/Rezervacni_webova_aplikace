@@ -32,7 +32,7 @@ class PersonalInformationForm(FlaskForm):
     experience_client2 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
     experience_client3 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
 
-    lesson_type = SelectField('Typ výuky', choices=[('individual', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
+    lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
     lesson_instructor_choices = SelectField("Instruktor", choices = [])
     language_selection = SelectField("Jazyk", choices=[("czech", "čeština"), ("deutsch", "deutsch"), ("english", "english")])
@@ -42,7 +42,7 @@ class PersonalInformationForm(FlaskForm):
     date = HiddenField("date")
     time = HiddenField("time")
 
-    submit = SubmitField('Submit')
+    submit = SubmitField('Odeslat rezervaci')
 
 class ReservationInformationForm(FlaskForm):
     reservation_id = StringField("Reservation ID", validators=[DataRequired()])
@@ -53,7 +53,6 @@ class LoginForm(FlaskForm):
     password = PasswordField(label="Heslo:", validators=[DataRequired()])
     submit = SubmitField(label="Přihlásit se")
 
-
 def validate_on_the_hour(form, field):
     if field.data is not None:
         if field.data.minute != 0:
@@ -61,7 +60,7 @@ def validate_on_the_hour(form, field):
 
 class LessonInsertForm(FlaskForm):
     date = DateField('Datum', validators=[DataRequired()], format='%Y-%m-%d')
-    time_start = SelectField("Čas začátku", validators=[DataRequired()], choices=[(f'{i}:00', f'{i}:00') for i in range(24)])
+    time_start = SelectField("Čas začátku", validators=[DataRequired()], choices=[(f'{i:02d}:00', f'{i:02d}:00') for i in range(24)])
     lesson_type = SelectField('Typ lekce', choices=[('ind', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     capacity = IntegerField('Kapacita', validators=[Optional(), NumberRange(min=0, max=20)])
     lesson_instructor_choices = SelectField("Hlavní Instruktor", choices = [], validators=[DataRequired()])

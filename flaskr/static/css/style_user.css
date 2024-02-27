@@ -1,0 +1,199 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.global-margin {
+    margin-left: 190px;
+    margin-right: 190px;
+}
+
+section {
+    margin-bottom: 15px;
+}
+
+.horizontal-fields-container-lessontype {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.horizontal-fields-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.field-container {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.field-container .no-wrap {
+    flex-basis: 55%;
+}
+
+.field-container .form-select {
+    flex-basis: 70%;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 5px;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+}
+
+.notes-field {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.checkbox-field label {
+    margin-right: 10px;
+}
+
+.checkbox-field input[type="checkbox"] {
+    transform: scale(1.5);
+    margin-right: 5px;
+}
+
+.large-checkbox {
+    transform: scale(1.5);
+    margin-right: 5px;
+}
+
+.invisible-field {
+    visibility: hidden;
+}
+
+.h2-headers {
+    margin-bottom: 15px;
+    padding-top: 15px;
+}
+
+.section-blue {
+    background-color: aquamarine;
+}
+
+.times-container {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.date-and-times-container {
+    display: flex;
+    align-items: start;
+    gap: 20px;
+}
+
+.btn-send-reservation {
+    padding: 15px 30px !important;
+    font-size: 20px !important;
+    border-radius: 10px !important;
+    background-color: #FBC639;
+}
+
+.btn-select-reservation {
+    background-color: #FBC639;
+}
+
+.no-wrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.field-container label {
+    flex-basis: 30%;
+    text-align: right;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.field-container .form-select {
+    flex-basis: 110%;
+}
+
+@media (max-width: 768px) {
+    .field-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .field-container label {
+        flex-basis: auto;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    .field-container .form-select {
+        flex-basis: auto;
+        width: 100%;
+    }
+}
+
+.section-blue {
+    background-color: #E0F4FF;
+    margin-bottom: 0px;
+}
+
+.section-grey {
+    background-color: #F5F5F5;
+    margin-bottom: 0px;
+}
+
+hr {
+    margin-top: 15px;
+    margin-bottom: 0px;
+    border: none;
+    height: 2px;
+    background-color: black;
+}
+
+.navbar-custom {
+    margin-bottom: 0 !important;
+}
+
+.last-section {
+    padding-bottom: 20px;
+}
