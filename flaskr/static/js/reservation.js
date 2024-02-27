@@ -116,15 +116,36 @@ $(document).ready(function () {
             console.log("Times for selected date is not an array:", timesForSelectedDate);
             return;
         }
+        var timesHtml = '<div class="times-grid">';
 
-        var timesHtml = timesForSelectedDate.map(function (timeCountPair) {
+        timesForSelectedDate.sort(function (a, b) {
+            return new Date('1970/01/01 ' + a[0]) - new Date('1970/01/01 ' + b[0]);
+        });
+
+        timesForSelectedDate.forEach(function (timeCountPair, index) {
+            if (index % 3 === 0) {
+                if (index !== 0) {
+                    timesHtml += '</div>';
+                }
+                timesHtml += '<div class="times-grid-row">';
+            }
+
             var time = timeCountPair[0];
             var count = timeCountPair[1];
+            timesHtml += `<div class="time-slot">
+                            <label>
+                                <input class="form-check-input" type="radio" name="time" value="${time}" />
+                                ${time} - Volné: ${count}
+                            </label>
+                            </div>`;
 
-            return `<label><input class="form-check-input" type="radio" name="time" value="${time}" /> ${time} - Available Slots: ${count}</label><br>`;
-        }).join('');
+            if (index === timesForSelectedDate.length - 1) {
+                timesHtml += '</div>';
+            }
+        });
 
-        $('.times-container').html(timesHtml);
+        timesHtml += '</div>';
+        document.querySelector('.times-container').innerHTML = timesHtml;
     }
 
     $('#datepicker').datepicker({

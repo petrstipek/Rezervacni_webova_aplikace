@@ -197,3 +197,36 @@ hr {
 .last-section {
     padding-bottom: 20px;
 }
+
+.times-grid-row {
+    display: flex;
+}
+
+.time-slot {
+    flex: 0 0 calc(50% - 10px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    box-sizing: border-box;
+    font-size: smaller;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.times-grid-row .time-slot:not(:last-child) {
+    margin-right: 10px;
+}
+
+.times-grid-row .time-slot:last-child {
+    margin-right: 0;
+}
+
+.nav-link.active {
+    background-color: #007bff;
+    color: white !important;
+}
+
+.navbar-custom {
+    background-color: white !important;
+}

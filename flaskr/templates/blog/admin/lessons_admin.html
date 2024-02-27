@@ -10,36 +10,37 @@
 <section class="section_blue">
     <form method="post" action="{{ url_for('views.lessons_admin') }}">
         {{ form.hidden_tag() }}
-        <label for="date">{{ form.date.label }}</label>
-        {{ form.date }}
-        <br>
-        <label for="time_start">{{ form.time_start.label }}</label>
-        {{ form.time_start }}
-        {% if form.time_start.errors %}
-            <div class="errors">{{ form.time_start.errors[0] }}</div>
-        {% endif %}
-        <br>
-        <label for="lesson_type">{{ form.lesson_type.label }}</label>
-        {{ form.lesson_type(id="lesson_type") }}
-        <br>
-        <div id="div_lesson_capacity" style="display: none;">
-            <label for="capacity">{{ form.capacity.label }}</label>
-            {{ form.capacity }}
-        </div>
-        <div id="div_additional_instructors" style="display: none;">
-            <label for="lesson_instructor_choices2">{{ form.lesson_instructor_choices2.label }}</label>
-            {{ form.lesson_instructor_choices2 }}
+        <div class="horizontal-fields-container">
+            <label for="date">{{ form.date.label }}</label>
+            {{ form.date }}
             <br>
-            <label for="lesson_instructor_choices3">{{ form.lesson_instructor_choices3.label }}</label>
-            {{ form.lesson_instructor_choices3 }}
+            <label for="time_start">{{ form.time_start.label }}</label>
+            {{ form.time_start }}
+            {% if form.time_start.errors %}
+                <div class="errors">{{ form.time_start.errors[0] }}</div>
+            {% endif %}
             <br>
-            <label for="lesson_instructor_choices4">{{ form.lesson_instructor_choices4.label }}</label>
-            {{ form.lesson_instructor_choices4 }}
+            <label for="lesson_type">{{ form.lesson_type.label }}</label>
+            {{ form.lesson_type(id="lesson_type") }}
+            <br>
+            <div id="div_lesson_capacity" style="display: none;">
+                <label for="capacity">{{ form.capacity.label }}</label>
+                {{ form.capacity }}
+            </div>
+            <div id="div_additional_instructors" style="display: none;">
+                <label for="lesson_instructor_choices2">{{ form.lesson_instructor_choices2.label }}</label>
+                {{ form.lesson_instructor_choices2 }}
+                <br>
+                <label for="lesson_instructor_choices3">{{ form.lesson_instructor_choices3.label }}</label>
+                {{ form.lesson_instructor_choices3 }}
+                <br>
+                <label for="lesson_instructor_choices4">{{ form.lesson_instructor_choices4.label }}</label>
+                {{ form.lesson_instructor_choices4 }}
+            </div>
+            <br>
+            <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
+            {{ form.lesson_instructor_choices }}
         </div>
-
-        <br>
-        <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
-        {{ form.lesson_instructor_choices }}
         {{ form.submit }}
         </form>
 </section>
