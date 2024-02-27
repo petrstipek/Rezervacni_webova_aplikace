@@ -15,70 +15,83 @@
 {% block body %}
 <form method="post" action="{{ url_for('views.main_page') }}">
     {{ form.hidden_tag() }}
-    <section class="section_blue" id="date_picker">
-        <h3 class="global-margin">Výběr termínu rezervace</h3>
-        <div class="container custom-date-picker-container">
-            <div class="date-picker-container">
-                <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
-                <div class="times-container">
-                    {{ form.time }}
+    <section class="section_blue global-margin" id="date_picker">
+        <h2 class="h2-headers">Výběr termínu rezervace</h2>
+        <div class="grid-container">
+            <div class="custom-date-picker-container">
+                <div>
+                    <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
+                    <div class="times-container">
+                        {{ form.time }}
+                    </div>
+                </div>
+            </div>
+            <div class="horizontal-fields-container">
+                <div class="field-container">
+                    <label for="lesson_type">{{ form.lesson_type.label }}</label>
+                    {{ form.lesson_type(id="lesson_type") }}
+                </div>
+                <div class="field-container">
+                    <label for="lesson_length">{{ form.lesson_length.label }}</label>
+                    {{ form.lesson_length(id="lesson_length") }}
+                </div>
+                <div class="field-container">
+                    <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
+                    {{ form.lesson_instructor_choices(id="lesson_instructor") }}
+                </div>
+                <div class="field-container">
+                    <label for="language_selection">{{ form.language_selection.label }}</label>
+                    {{ form.language_selection(id="language_selection") }}
                 </div>
             </div>
         </div>
-        <div class="horizontal-fields-container">
-            <div class="field-container">
-                <label for="lesson_type">{{ form.lesson_type.label }}</label>
-                {{ form.lesson_type(id="lesson_type") }}
-            </div>
-            <div class="field-container">
-                <label for="lesson_length">{{ form.lesson_length.label }}</label>
-                {{ form.lesson_length(id="lesson_length") }}
-            </div>
-            <div class="field-container">
-                <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
-                {{ form.lesson_instructor_choices(id="lesson_instructor") }}
-            </div>
-            <div class="field-container">
-                <label for="language_selection">{{ form.language_selection.label }}</label>
-                {{ form.language_selection(id="language_selection") }}
-            </div>
-        </div>
     </section>
+
+    <hr class="global-margin">
 
     <section class="section_white global-margin" id="contact_information">
-        <h3 class="global-margin">Kontaktní informace</h3>
-        <div class="form-row">
-            <!-- Row for name and surname -->
-            <div class="form-row-inner">
-                <div class="form-group">
-                    <label for="name">{{ form.name.label }}</label>
-                    {{ form.name }}
-                </div>
-                <div class="form-group">
-                    <label for="surname">{{ form.surname.label }}</label>
-                    {{ form.surname }}
-                </div>
+        <h2 class="h2-headers">Kontaktní informace</h2>
+        <div class="horizontal-fields-container">
+            <div class="field-container">
+                <label for="name">{{ form.name.label }}</label>
+                {{ form.name }}
             </div>
-            <!-- Row for number and email -->
-            <div class="form-row-inner">
-                <div class="form-group">
-                    <label for="tel_number">{{ form.tel_number.label }}</label>
-                    {{ form.tel_number }}
-                </div>
-                <div class="form-group">
-                    <label for="email">{{ form.email.label }}</label>
-                    {{ form.email }}
-                </div>
+            <div>
+                <label for="surname">{{ form.surname.label }}</label>
+                {{ form.surname }}
+            </div>
+            <div>
+                <label for="tel_number">{{ form.tel_number.label }}</label>
+                {{ form.tel_number }}
+            </div>
+            <div>
+                <label for="email">{{ form.email.label }}</label>
+                {{ form.email }}
             </div>
         </div>
     </section>
 
-    <section class="section_blue center-section" id="students">
-        <h3 class="global-margin">Vlastnosti lekce</h3>
+    <hr class="global-margin">
+
+    <section class="section_blue global-margin" id="students">
+        <h2 class="h2-headers">Žáci lekce</h2>
         <div class="form-block">
-            <label for="student_client">{{ form.student_client.label }}</label>
-            {{ form.student_client(id="student_client_checkbox") }}
-            <div class="form-row-centered" id="client_student_details_section" style="display: none;">
+            <div class="checkbox-container">
+                <div class="checkbox-field">
+                    <label for="student_client">{{ form.student_client.label }}</label>
+                    {{ form.student_client(id="student_client_checkbox", checked=true) }}
+                </div>
+                <div class="checkbox-field">
+                    <label for="more_students">{{ form.more_students.label }}</label>
+                    {{ form.more_students(id="more_students_checkbox") }}
+                </div>
+            </div>
+            <div class="horizontal-fields-container" id="client_student_details_section" style="display: none;">
+                <label for="name_client_hidden" class="invisible-field">Jméno</label>
+                <input id="name_client_hidden" maxlength="30" minlength="2" name="name_client_hidden" type="text" class="invisible-field" disabled value="">
+                <label for="name_client_hidden" class="invisible-field">Příjmení</label>
+                <input id="surname_client_hidden" maxlength="30" minlength="2" name="surname_client_hidden" type="text" class="invisible-field" disabled value="">
+
                 {{ form.age_client.label }} <br>
                 {{ form.age_client(class_="age-field") }} <br>
                 {% for error in form.age_client.errors %}
@@ -91,16 +104,10 @@
                     <span style="color: red;">{{ error }}</span>
                 {% endfor %}
             </div>
-            <br>
-            <div>
-                {{ form.more_students.label }}
-                {{ form.more_students(id="more_students_checkbox") }}
-            </div>
         </div>
     
-        <!-- The section you want to toggle -->
         <div id="student_details_section" class="center-section" style="display: none;">
-            <div class="form-row-centered">
+            <div class="horizontal-fields-container">
                 <label for="name">{{ form.name_client1.label }}</label>
                 {{ form.name_client1 }}
                 
@@ -119,7 +126,7 @@
                     <span style="color: red;">{{ error }}</span>
                 {% endfor %}
             </div>
-            <div class="form-row-centered">
+            <div class="horizontal-fields-container">
                 <label for="name">{{ form.name_client2.label }}</label>
                 {{ form.name_client2 }}
     
@@ -140,15 +147,14 @@
             </div>
         </div>  
     </section>
-    
 
-    <section class="section_white" id="reservation_send">
-        <h2 class="global-margin">Odeslání rezervace</h2>
+    <hr class="global-margin">
+
+    <section class="section_white global-margin" id="reservation_send">
+        <h2 class="h2-headers">Odeslání rezervace</h2>
         <div class="form-row">
-            {{ form.note }}
-
-            
-            {{ form.submit }}
+            {{ form.note(class="notes-field") }}
+            {{ form.submit(class="submit-button") }}
         </div>
     </section>
 </form>

@@ -4,263 +4,85 @@ header {
     justify-content: space-between;
 }
 
-.header-no-margin {
-    margin-bottom: -8px !important;
-}
-
-body .global-margin {
-    margin-left: 150px;
-    margin-right: 150px;
-}
-
-.header .col-md-3 {
-    display: flex;
-    align-items: center;
-    /* Align children vertically in the center */
-    justify-content: flex-start;
-    /* Align children to the start of the container */
-}
-
-/* Adjust the h3 styling to ensure it doesn't disrupt alignment */
-.header .col-md-3 h3 {
-    margin-top: 0;
-    padding: 0;
-    /* You might want to adjust the font size or other properties based on your design */
-}
-
-.nav-link.active {
-    background-color: #007bff;
-    /* Bootstrap primary color */
-    color: white !important;
-    /* Ensures text color is white */
+.global-margin {
+    margin-left: 190px;
+    margin-right: 190px;
 }
 
 section {
-    padding: 20px;
-    /* This will add padding inside the sections */
-}
-
-.section_blue {
-    background-color: #E0F4FF;
-}
-
-.form-row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    flex-wrap: wrap;
-    /* Allow items to wrap onto the next line if needed */
-}
-
-.form-row label,
-.form-row input,
-.form-row .age-field,
-.form-row .selector-field {
-    margin: 5px 0;
-}
-
-.error-message {
-    color: red;
-    margin-left: 10px;
-}
-
-.container {
-    display: flex;
-    justify-content: start;
-    align-items: flex-start;
-}
-
-.dates-container {
-    max-height: 200px;
-    /* Maximum height before scrolling */
-    overflow-y: auto;
-    /* Enable vertical scrolling */
-    width: 200px;
-    /* Set a fixed width if desired */
-}
-
-.selected-date {
-    margin-bottom: 10px;
-    /* Spacing between date entries */
-}
-
-.ui-datepicker {
-    border: none;
-    background: none;
-    box-shadow: none;
-}
-
-/* Style the header */
-.ui-datepicker .ui-datepicker-header {
-    background-color: #e6f4ff;
-    /* Soft blue background */
-    color: #000;
-    /* Black text */
-    padding: 0.6em 1em;
-    /* Adjust padding as needed */
-    border: none;
-    /* No borders */
-}
-
-/* Style the prev/next buttons */
-.ui-datepicker .ui-datepicker-prev,
-.ui-datepicker .ui-datepicker-next {
-    background: none;
-    border: none;
-    font-weight: bold;
-    color: #007bff;
-    /* Color similar to the image provided */
-}
-
-/* Replace icons with text */
-.ui-datepicker .ui-icon {
-    text-indent: 0;
-    margin-top: -8px;
-    /* Align text vertically */
-}
-
-/* Style the month and year */
-.ui-datepicker .ui-datepicker-title {
-    font-weight: bold;
-    /* Bold text for month and year */
-}
-
-/* Style the table of days */
-.ui-datepicker table {
-    background-color: #e6f4ff;
-    width: 100%;
-    /* Full width */
-    font-size: 0.9em;
-    /* Adjust font size as needed */
-}
-
-/* Style table cells */
-.ui-datepicker td {
-    padding: 0.7em;
-    /* Adjust cell padding as needed */
-    border: none;
-    /* Remove borders */
-}
-
-/* Style individual day cells */
-.ui-datepicker td span,
-.ui-datepicker td a {
-    text-align: center;
-    display: block;
-    color: #000;
-    /* Black text for days */
-    background-color: #e6f4ff;
-    /* Soft blue background for day cells */
-    /* Round corners for day cells */
-    padding: 0.5em;
-    /* Adjust padding as needed */
-}
-
-/* Style the current day */
-.ui-datepicker td.ui-datepicker-today a {
-    background-color: #0056b3;
-    /* Darker blue for the selected day */
-    color: white;
-    /* White text for the selected day */
-}
-
-/* Style hover state */
-.ui-datepicker td a:hover {
-    background-color: #cce0ff;
-    /* Lighter blue for hover state */
-    color: #0056b3;
-    /* Dark blue text for hover state */
-}
-
-.date-picker-container {
-    display: flex;
-    /* This will align the children next to each other */
-    align-items: center;
-    /* This will vertically align the children in the middle */
-    gap: 20px;
-    /* This adds space between the children */
-    text-align: left;
+    margin-bottom: 15px;
 }
 
 .horizontal-fields-container {
     display: flex;
-    /* Align the children (field containers) horizontally */
-    align-items: center;
-    /* Vertically center the contents */
-    gap: 20px;
-    /* Add some space between each field */
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
 }
 
-.field-container {
-    display: flex;
-    /* This makes sure that the label and field are nicely aligned */
-    flex-direction: column;
-    /* Stack the label on top of the field */
-    align-items: flex-start;
-    /* Aligns the items to the start of the container */
-}
-
-.section_white {
-    text-align: center;
-    /* Center the section title */
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
 .form-row {
     display: flex;
-    justify-content: center;
-    /* Center the flex items */
-    flex-wrap: wrap;
-    /* Wrap items to the next line on small screens */
-    gap: 20px;
-    /* Space between items */
+    align-items: center;
+    justify-content: space-between;
 }
 
-.form-group {
-    flex: 1;
-    /* Each flex item will grow to use available space */
-    min-width: 250px;
-    /* Minimum width for each form-group */
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;
+    height: auto;
 }
 
-.form-group label,
-.form-group input,
-.form-group textarea,
-.form-group select {
-    display: block;
-    /* Elements take full width of .form-group */
-    margin-bottom: 10px;
-    /* Space below each element */
-}
-
-.form-group input,
-.form-group textarea {
+.notes-field {
+    width: 70%;
     padding: 10px;
-    font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 100%;
-    /* Full width of their parent */
+    resize: vertical;
 }
 
-.center-section {
-    text-align: center;
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 15px;
 }
 
-.form-block {
-    display: inline-block;
-    text-align: left;
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
 }
 
-/* If your form-row already exists and has different styles, you may need to adjust or add a new class specific for this layout */
-.form-row-centered {
-    margin: 0 auto;
-    text-align: left;
+.checkbox-field label {
+    margin-right: 10px;
 }
 
-/* Adjust the width as necessary to fit your design */
-.form-block,
-.form-row-centered {
-    width: 90%;
-    /* Adjust this value based on your layout needs */
+.checkbox-field input[type="checkbox"] {
+    transform: scale(1.5);
+    margin-right: 5px;
+}
+
+.large-checkbox {
+    transform: scale(1.5);
+    margin-right: 5px;
+}
+
+.invisible-field {
+    visibility: hidden;
+}
+
+.h2-headers {
+    margin-bottom: 15px;
 }

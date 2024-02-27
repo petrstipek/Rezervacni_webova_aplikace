@@ -84,7 +84,7 @@ $(document).ready(function () {
         } else {
             $('#client_student_details_section').hide();
         }
-    })
+    }).change();
 
     $('#more_students_checkbox').change(function () {
         if (this.checked) {

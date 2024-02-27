@@ -279,7 +279,7 @@ def main_page():
                         return redirect(url_for('views.main_page'))
 
         query_result = db.execute("SELECT rezervacni_kod FROM rezervace WHERE ID_rezervace = ?", (reservation_id,)).fetchone()
-        send_email('Subject Here', 'johnlongshort256@gmail.com', 'felixgrent@gmail.com', 'Ttext body emailu', '<h1>HTML body here</h1>' + query_result["rezervacni_kod"])
+        send_email('Rezervace lyžařské hodiny', 'johnlongshort256@gmail.com', 'felixgrent@gmail.com', 'text body emailu', '<h1>Vaše rezervace má ID: </h1>' + query_result["rezervacni_kod"])
 
         db.commit()
 
