@@ -4,3 +4,14 @@
     justify-content: space-around;
     margin-bottom: 20px;
 }
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.global-margin {
+    margin-left: 190px;
+    margin-right: 190px;
+}

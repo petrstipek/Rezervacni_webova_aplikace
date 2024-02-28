@@ -5,15 +5,26 @@
 {% endblock %}
 
 {% block body %}
-    <form id="reservationForm" method="post">
-        {{ form.hidden_tag() }}
-        <label for="reservation_id">{{ form.reservation_id.label }}</label>
-        {{ form.reservation_id(id="reservation_id") }}
+<form id="reservationForm" method="post" class="form-layout global-margin">
+    {{ form.hidden_tag() }}
+    <div class="form-row">
+        <div class="form-column">
+            <label for="reservation_id">{{ form.reservation_id.label }}</label>
+        </div>
+        <div class="form-column">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-column">
+            {{ form.reservation_id(id="reservation_id") }}
+        </div>
+        <div class="form-column">
+            <button class="btn btn-warning" type="submit">Check Reservation</button>
+        </div>
+    </div>
+</form>
 
-        <button type="submit">Check Reservation</button>
-    </form>
-
-    <div id="reservationDetails"></div>
+    <div id="reservationDetails" class="global-margin"></div>
 
     <script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
 {% endblock %}

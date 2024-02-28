@@ -28,17 +28,6 @@ section {
     margin-bottom: 20px;
 }
 
-.field-container {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.field-container .no-wrap {
-    flex-basis: 55%;
-}
-
 .field-container .form-select {
     flex-basis: 70%;
 }
@@ -203,7 +192,7 @@ hr {
 }
 
 .time-slot {
-    flex: 0 0 calc(50% - 10px);
+    flex: 0 0 calc(40% - 10px);
     padding: 10px;
     border: 1px solid #ddd;
     margin-right: 10px;
@@ -241,4 +230,13 @@ hr {
     background-color: #ffe3ac;
     color: black;
     border-radius: 8px;
+}
+
+.form-layout {
+    width: 100%;
+    max-width: 600px;
+}
+
+.field-container .no-wrap {
+    flex-basis: 55%;
 }

@@ -3,11 +3,12 @@
 {% block head %}
     <title> Dostupné hodiny - admin </title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
 
 {% endblock %}
 
 {% block body %}
-<section class="section_blue">
+<section class="section_blue global-margin">
     <form method="post" action="{{ url_for('administration.lessons_admin') }}">
         {{ form.hidden_tag() }}
         <div class="horizontal-fields-container">
@@ -45,7 +46,7 @@
         </form>
 </section>
 
-<section class="section_white">
+<section class="section_white global-margin">
     <input type="date" id="lessonDate" name="lessonDate">
     <input type="button" id="allLessons" name="allLessons" value="Zobrazit všechny hodiny">
     <div id="lessonsAll"></div>

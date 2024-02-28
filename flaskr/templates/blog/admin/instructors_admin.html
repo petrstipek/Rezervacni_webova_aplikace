@@ -2,12 +2,13 @@
 
 {% block head %}
     <title> Instruktoři </title>
+    <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
 
-<section class="section_blue">
-    <h3 class="global-margin">Správa instruktora</h3>
+<section class="section_blue global-margin">
+    <h3>Správa instruktora</h3>
     <form method="post" action="{{ url_for('administration.instructors_admin') }}">
         {{ form.hidden_tag() }}
         <div class="horizontal-fields-container">
@@ -35,7 +36,7 @@
         {{ form.submit }}
     </form>
 </section>
-<section class="section_white">
+<section class="section_white global-margin">
     <table border="1">
         <thead>
             <tr>

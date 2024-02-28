@@ -2,24 +2,24 @@
 
 {% block head %}
     <title>Přihlašování admin</title>
+    <link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
 <body class="text-center">
-    <div class="container">
+    <div class="form-container">
         <form method="POST" class="form-signin" style="color:white">
             {{ form.hidden_tag() }}
-            <h1 class="h3 mb-3 font-weight-normal">
-                Please Login
-            </h1>
+            <h2 class="h2-headers">Přihlášení k administraci</h2>
             <br>
-            {{ form.username.label() }}
-            {{ form.username(class="form-control", placeholder="Přihlašovací jméno") }}
+            {{ form.username.label(class="login-label") }}
+            {{ form.username(class="form-control login-fields", placeholder="Přihlašovací jméno") }}
 
-            {{ form.password.label() }}
-            {{ form.password(class="form-control", placeholder="Heslo") }}
+            {{ form.password.label(class="login-label") }}
+            {{ form.password(class="form-control login-fields", placeholder="Heslo") }}
             <br>
-            {{ form.submit(class="btn btn-lg btn-block btn-primary") }}
+            {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}
         </form>
     </div>
 </body>

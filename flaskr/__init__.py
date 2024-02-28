@@ -3,7 +3,6 @@ from flask import Flask
 from flask_bootstrap import Bootstrap5
 from flaskr.forms import CSRFProtect
 from flaskr.extensions import mail
-from flask_bcrypt import Bcrypt
 from . import db
 from flaskr.extensions import login_manager
 from flaskr.auth.auth import auth_bp
@@ -20,22 +19,14 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
-    #app.secret_key = 'tO$&!|0wkamvVia0?n$NqIRVWOG'
     bootstrap = Bootstrap5(app)
     csrf = CSRFProtect(app)
-    bcrypt = Bcrypt(app)
-
-    login_manager.init_app(app)
-    login_manager.login_view = 'auth.login_page_admin'
-
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-    app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = 'johnlongshort256@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'rurz bzfm vmzc ikov'
-    app.config['MAIL_DEFAULT_SENDER'] = 'johnlongshort256@gmail.com'
 
     mail.init_app(app)
+    db.init_app(app)
+    login_manager.init_app(app)
+
+    login_manager.login_view = 'auth.login_page_admin'
 
     foo = secrets.token_urlsafe(16)
     app.secret_key = foo
@@ -48,7 +39,13 @@ def create_app(test_config=None):
     app.register_blueprint(admin_lessons_bp, url_prefix="/admin-api-lessons")
     app.register_blueprint(reservations_api_bp, url_prefix="/reservations-api")
 
-    db.init_app(app)
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'johnlongshort256@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'rurz bzfm vmzc ikov'
+    app.config['MAIL_DEFAULT_SENDER'] = 'johnlongshort256@gmail.com'
+
 
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)
