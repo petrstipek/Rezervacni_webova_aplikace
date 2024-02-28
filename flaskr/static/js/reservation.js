@@ -26,7 +26,7 @@ $(document).ready(function () {
 
         if (lessonType === 'individual' && instructorId) {
             $.ajax({
-                url: '/get-available-times/individual/' + instructorId,
+                url: '/reservations-api/get-available-times/individual/' + instructorId,
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);
@@ -38,7 +38,7 @@ $(document).ready(function () {
             });
         } else if (lessonType === 'group') {
             $.ajax({
-                url: '/get-available-times/group',
+                url: '/reservations-api/get-available-times/group',
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);

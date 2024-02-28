@@ -13,7 +13,7 @@ $(document).ready(function () {
         var reservation_email = $('#reservation_email').val();
         var reservation_tel_number = $('#reservation_tel_number').val();
 
-        var baseUrl = "/get-reservation-details/";
+        var baseUrl = "/reservations-api/get-reservation-details/";
         var url = baseUrl;
 
         if (reservationId) {
@@ -75,7 +75,7 @@ $(document).ready(function () {
     }
 
     function fetchReservationsAll(page) {
-        var baseUrl = "/get-reservation-details/";
+        var baseUrl = "/reservations-api/get-reservation-details/";
         var url = baseUrl + "all";
 
         url += `?page=${page}&per_page=${perPageSecondTable}`;
@@ -190,7 +190,7 @@ $(document).ready(function () {
     $(document).on('click', '.deleteReservation', function () {
         var reservationId = $(this).data('id');
         $.ajax({
-            url: `/delete-reservation/${reservationId}`,
+            url: `/reservations-api/delete-reservation/${reservationId}`,
             type: "POST",
             headers: {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')
@@ -208,17 +208,21 @@ $(document).ready(function () {
     $(document).on('click', '.markAsPaid', function () {
         var reservationId = $(this).data('id');
         $.ajax({
-            url: `/mark-reservation-paid/${reservationId}`,
+            url: `/administration/mark-reservation-paid/${reservationId}`,
             type: "POST",
             headers: {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
-                alert("Platba uložena");
+                alert(response.message);
                 fetchReservationsAll(currentPageFirstTable);
             },
             error: function (xhr, status, error) {
-                alert("Error");
+                if (xhr.responseJSON) {
+                    alert(xhr.responseJSON.message);
+                } else {
+                    alert("Error: " + error);
+                }
             }
         });
     });

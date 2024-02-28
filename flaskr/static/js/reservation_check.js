@@ -7,7 +7,7 @@ $(document).ready(function () {
         var reservation_email = $('#reservation_email').val();
         var reservation_tel_number = $('#reservation_tel_number').val();
 
-        var baseUrl = "/get-reservation-details/";
+        var baseUrl = "/reservations-api/get-reservation-details/";
         var url;
 
         if (reservationId) {
@@ -66,7 +66,7 @@ $(document).ready(function () {
                         var csrfToken = $('input[name="csrf_token"]').val();
 
                         $.ajax({
-                            url: "/delete-reservation/" + reservationId,
+                            url: "/reservations-api/delete-reservation/" + reservationId,
                             type: "DELETE",
                             beforeSend: function (xhr) {
                                 xhr.setRequestHeader("X-CSRFToken", csrfToken);

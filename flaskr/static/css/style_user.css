@@ -230,3 +230,15 @@ hr {
 .navbar-custom {
     background-color: white !important;
 }
+
+.nav-item .active {
+    background-color: #ffe3ac;
+    color: black !important;
+    border-radius: 8px;
+}
+
+.nav-link:hover {
+    background-color: #ffe3ac;
+    color: black;
+    border-radius: 8px;
+}

@@ -9,8 +9,7 @@ admin_instructors_bp = Blueprint('admin_api_instructors', __name__, template_fol
 @login_required
 def delete_instructor_admin(instructor_id):
     db = get_db()
-
-    query_result = db.execute('SELECT * from ma_vyuku WHERE ID_osoba = ?', (instructor_id,))
+    query_result = db.execute('SELECT * from ma_vyuku WHERE ID_osoba = ?', (instructor_id,)).fetchone()
     if query_result:
         flash("instructor has occupied lessons", category="danger")
         return redirect(url_for("administration.instructors_admin"))

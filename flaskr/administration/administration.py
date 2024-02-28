@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, flash, url_for
+from flask import Blueprint, render_template, redirect, flash, url_for, jsonify
 from flask_login import login_required
 from flaskr.db import get_db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin
@@ -75,13 +75,13 @@ def lessons_admin():
             query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba = ?', (date_str, time_start, instructor_id)).fetchone()
             if query_result:
                 flash("already lesson for these parametrs", category="danger")
-                return redirect(url_for("views.lessons_admin"))
+                return redirect(url_for("administration.lessons_admin"))
             cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_start, "volno", lesson_type, capacity))
             last_row = cursor.lastrowid
             db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)',(int(instructor_id), last_row))
             db.commit()
             flash("lesson added", category="success")
-            redirect(url_for("views.lessons_admin"))
+            redirect(url_for("administration.lessons_admin"))
         elif lesson_type == "group":
             for instructor in instructor_ids:
                 query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_start, instructor)).fetchone()
@@ -114,3 +114,18 @@ def reservations_admin():
     if form.validate_on_submit():
         pass
     return render_template("blog/admin/reservations_admin.html", form=form, reservations_dict=reservations_dict)
+
+@administration_bp.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
+@login_required
+def reservation_payment_status(reservation_id):
+    db = get_db()
+    reservation = db.execute('SELECT platba FROM rezervace WHERE ID_rezervace = ?', (reservation_id,)).fetchone()
+
+    if not reservation:
+        return jsonify({'status': 'error', 'message': 'Rezervace nenalezena!'}), 404
+    elif reservation["platba"] == "nezaplaceno":
+        db.execute('UPDATE rezervace SET platba = "zaplaceno" WHERE ID_rezervace = ?', (reservation_id,))
+        db.commit()
+        return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
+    else:
+        return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200

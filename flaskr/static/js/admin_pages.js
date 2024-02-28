@@ -32,7 +32,7 @@ $(document).ready(function () {
     });
 
     function fetchLessons(page, date) {
-        var url = `/get-lessons?page=${page}&per_page=${perPage}`;
+        var url = `/admin-api-lessons/get-lessons?page=${page}&per_page=${perPage}`;
         if (date) {
             url += `&date=${date}`;
         }
