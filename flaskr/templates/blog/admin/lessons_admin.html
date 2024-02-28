@@ -8,7 +8,7 @@
 
 {% block body %}
 <section class="section_blue">
-    <form method="post" action="{{ url_for('views.lessons_admin') }}">
+    <form method="post" action="{{ url_for('administration.lessons_admin') }}">
         {{ form.hidden_tag() }}
         <div class="horizontal-fields-container">
             <label for="date">{{ form.date.label }}</label>

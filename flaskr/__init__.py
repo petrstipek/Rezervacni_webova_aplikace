@@ -7,6 +7,11 @@ from flaskr.extensions import mail
 from flask_bcrypt import Bcrypt
 from . import db
 from flaskr.extensions import login_manager
+from flaskr.auth.auth import auth_bp
+from flaskr.reservations.reservations import reservations_bp
+from flaskr.administration.administration import administration_bp
+from flaskr.information.information import information_bp
+from flaskr.api.instructors_api import admin_instructors_bp
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -26,7 +31,7 @@ def create_app(test_config=None):
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USERNAME'] = 'johnlongshort256@gmail.com'
-    app.config['MAIL_PASSWORD'] = ''
+    app.config['MAIL_PASSWORD'] = 'rurz bzfm vmzc ikov'
     app.config['MAIL_DEFAULT_SENDER'] = 'johnlongshort256@gmail.com'
 
     mail.init_app(app)
@@ -35,6 +40,11 @@ def create_app(test_config=None):
     app.secret_key = foo
 
     app.register_blueprint(views, url_prefix="/")
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(reservations_bp, url_prefixes="/reservations")
+    app.register_blueprint(administration_bp, url_prefix="/administration")
+    app.register_blueprint(information_bp, url_prefix="/information")
+    app.register_blueprint(admin_instructors_bp, url_prefix="/admin_api_instructors")
 
     db.init_app(app)
 

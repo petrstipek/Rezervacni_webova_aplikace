@@ -8,7 +8,7 @@
 
 <section class="section_blue">
     <h3 class="global-margin">Správa instruktora</h3>
-    <form method="post" action="{{ url_for('views.instructors_admin') }}">
+    <form method="post" action="{{ url_for('administration.instructors_admin') }}">
         {{ form.hidden_tag() }}
         <div class="horizontal-fields-container">
             <label for="name">{{ form.name.label }}</label>
@@ -55,7 +55,7 @@
                     <td>{{ instructor['tel_cislo'] }}</td>
                     <td>{{ instructor['email'] }}</td>
                     <td>
-                        <form action="{{ url_for('views.delete_instructor_admin', instructor_id=instructor['ID_osoba']) }}" method="post">
+                        <form action="{{ url_for('admin_api_instructors.delete_instructor_admin', instructor_id=instructor['ID_osoba']) }}" method="post">
                             {{ form.hidden_tag() }}
                             <input type="submit" value="Delete">
                         </form>

@@ -21,20 +21,17 @@
             </div>
 
                 <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="{{ url_for('views.reservations_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a></li>
-                    <li><a href="{{ url_for('views.lessons_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Dostupné hodiny</a></li>
-                    <li><a href="{{ url_for('views.instructors_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'school' else '' }}">Instruktoři</a></li>
-                    <li><a href="{{ url_for('views.prices_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a></li>
+                    <li><a href="{{ url_for('administration.reservations_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a></li>
+                    <li><a href="{{ url_for('administration.lessons_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Dostupné hodiny</a></li>
+                    <li><a href="{{ url_for('administration.instructors_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'school' else '' }}">Instruktoři</a></li>
+                    <li><a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a></li>
                 </ul>
 
             <div class="col-md-3 text-end d-flex justify-content-end">
                 <div>
                     {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('views.logout') }}" class="btn btn-primary button-right-margin" role="button">Odhlášení</a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-primary button-right-margin" role="button">Odhlášení</a>
                     {% endif %}
-                </div>
-                <div>
-                    <a href="{{ url_for('views.reservation_check') }}" class="btn btn-primary button-right-margin" role="button">Správa rezervace</a>
                 </div>
             </div>
             
@@ -66,7 +63,7 @@
                 <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Ski Bublava</a></li>
                     <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Kontakty</a></li>
-                    <li class="nav-item"><a href="{{ url_for('views.login_page_admin') }}" class="nav-link px-2 text-muted">Admin</a></li>
+                    <li class="nav-item"><a href="{{ url_for('auth.login_page_admin') }}" class="nav-link px-2 text-muted">Admin</a></li>
                 </ul>
                 <p class="text-center text-muted">&copy; Lyžařská škola Bublava</p>
             </footer>
