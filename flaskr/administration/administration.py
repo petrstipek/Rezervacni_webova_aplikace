@@ -129,3 +129,20 @@ def reservation_payment_status(reservation_id):
         return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
     else:
         return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
+    
+@administration_bp.route('/delete_lesson_admin/<int:lesson_id>', methods=["POST"])
+@login_required
+def delete_lesson_admin(lesson_id):
+    db = get_db()
+    try:
+        query_result = db.execute('SELECT stav FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,)).fetchone()
+
+        if query_result and query_result["stav"] == "obsazeno":
+            return jsonify({"error": True, "message": "Hodina je obsazene, nelze smazat, nejdřív smažte rezervaci."}), 400
+        else:
+            db.execute('DELETE FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,))
+            db.execute('DELETE FROM ma_vypsane WHERE ID_hodiny = ?', (lesson_id,))
+            db.commit()
+            return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
+    except Exception as e:
+        return jsonify({"error": True, "message": "An error occurred. Please try again."}), 500

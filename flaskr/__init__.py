@@ -1,6 +1,5 @@
 import os, secrets
 from flask import Flask
-from flaskr.views import views
 from flask_bootstrap import Bootstrap5
 from flaskr.forms import CSRFProtect
 from flaskr.extensions import mail
@@ -27,7 +26,7 @@ def create_app(test_config=None):
     bcrypt = Bcrypt(app)
 
     login_manager.init_app(app)
-    login_manager.login_view = 'views.login_page_admin'
+    login_manager.login_view = 'auth.login_page_admin'
 
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
@@ -41,7 +40,6 @@ def create_app(test_config=None):
     foo = secrets.token_urlsafe(16)
     app.secret_key = foo
 
-    app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(reservations_bp, url_prefixes="/reservations")
     app.register_blueprint(administration_bp, url_prefix="/administration")

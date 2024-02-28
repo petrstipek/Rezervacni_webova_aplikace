@@ -112,7 +112,7 @@ $(document).ready(function () {
 
     window.deleteLesson = function (lessonId) {
         $.ajax({
-            url: `/delete_lesson_admin/` + lessonId,
+            url: `/administration/delete_lesson_admin/` + lessonId,
             type: "POST",
             headers: {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')
