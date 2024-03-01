@@ -38,7 +38,7 @@ def add_group_lesson(db, date_str, time_start, instructor_ids, lesson_type, capa
         query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_start, instructor_id)).fetchone()
         if query_result:
             return False, "Lesson already exists for these parameters - instructor: " + instructor_id
-    cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita) VALUES (?, ?, ?, ?, ?)', (date_str, time_start, "volno", lesson_type, capacity))
+    cursor = db.execute('INSERT INTO Dostupne_hodiny (datum, cas_zacatku, stav, typ_hodiny, kapacita, obsazenost) VALUES (?, ?, ?, ?, ?, ?)', (date_str, time_start, "volno", lesson_type, capacity, 0))
     last_row = cursor.lastrowid
     for instructor_id in instructor_ids:
         db.execute('INSERT INTO ma_vypsane (ID_osoba, ID_hodiny) VALUES (?, ?)',(int(instructor_id), last_row))
@@ -70,3 +70,8 @@ def delete_lesson(lesson_id):
     db.execute('DELETE FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,))
     db.execute('DELETE FROM ma_vypsane WHERE ID_hodiny = ?', (lesson_id,))
     db.commit()
+
+def get_all_lessons():
+    db = get_db()
+    query_result = db.execute('SELECT * FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) left join Instruktor USING (ID_osoba)').fetchall()
+    return [dict(row) for row in query_result]

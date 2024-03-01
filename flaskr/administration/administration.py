@@ -76,8 +76,7 @@ def lessons_admin():
 
         return redirect(url_for("administration.lessons_admin"))
 
-    query_result = db.execute('SELECT * FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) left join Instruktor USING (ID_osoba)').fetchall()
-    lessons_dict = [dict(row) for row in query_result]
+    lessons_dict = get_all_lessons()
 
     return render_template("blog/admin/lessons_admin.html", form=form, lessons_dict=lessons_dict)
 
