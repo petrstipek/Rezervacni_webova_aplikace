@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, request, jsonify, json, flash, redirect, url_for, session
-from flaskr.forms import PersonalInformationForm, ReservationInformationForm, LoginForm, InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin
+from flaskr.forms import PersonalInformationForm, ReservationInformationForm
 from flaskr.db import get_db
 from datetime import datetime, timedelta
 import random, string
-from flaskr.extensions import login_manager, mail
+from flaskr.extensions import mail
 from flask_mail import Message
 
 
@@ -233,7 +233,7 @@ def main_page():
                         return redirect(url_for('reservations.main_page'))
 
         query_result = db.execute("SELECT rezervacni_kod FROM rezervace WHERE ID_rezervace = ?", (reservation_id,)).fetchone()
-        send_email('Rezervace lyžařské hodiny', 'johnlongshort256@gmail.com', 'felixgrent@gmail.com', 'text body emailu', "Vaše rezervace má ID: "  + query_result["rezervacni_kod"])
+        send_email('Rezervace lyžařské hodiny', 'jl6701543@gmail.com', 'felixgrent@gmail.com', 'text body emailu', "Vaše rezervace má ID: "  + query_result["rezervacni_kod"])
 
         db.commit()
 

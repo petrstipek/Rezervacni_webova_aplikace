@@ -22,7 +22,6 @@ def create_app(test_config=None):
     bootstrap = Bootstrap5(app)
     csrf = CSRFProtect(app)
 
-    mail.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
 
@@ -42,9 +41,11 @@ def create_app(test_config=None):
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = 'johnlongshort256@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'rurz bzfm vmzc ikov'
-    app.config['MAIL_DEFAULT_SENDER'] = 'johnlongshort256@gmail.com'
+    app.config['MAIL_USERNAME'] = 'jl6701543@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'qqlg wnwf bsni lzqm '
+    app.config['MAIL_DEFAULT_SENDER'] = 'jl6701543@gmail.com'
+
+    mail.init_app(app)
 
 
     if test_config is None:
