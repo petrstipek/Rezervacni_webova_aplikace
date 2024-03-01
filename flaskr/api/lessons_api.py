@@ -1,13 +1,11 @@
 from flask import Blueprint, jsonify, request
-from flaskr.db import get_db
+from flaskr.extensions import db
 
 
 admin_lessons_bp = Blueprint('admin_api_lessons', __name__, template_folder='templates')
 
 @admin_lessons_bp.route('/get-lessons')
 def get_lessons():
-    db = get_db()
-
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 1, type=int)
     selected_date = request.args.get('date', None)

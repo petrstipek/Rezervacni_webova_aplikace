@@ -1,13 +1,15 @@
 from flask import Blueprint, jsonify, flash, request, redirect, url_for, json
-from flaskr.db import get_db
+from flaskr.extensions import db
 from urllib.parse import urlparse
 import sqlite3
+from flaskr.models import DostupneHodiny, MaVypsane
+from sqlalchemy import func
+from datetime import date, time
 
 reservations_api_bp = Blueprint('reservations_api', __name__, template_folder='templates')
 
 @reservations_api_bp.route('/delete-reservation/<reservation_id>', methods=['DELETE', 'POST'])
 def delete_reservation(reservation_id):
-    db = get_db()
     cur = db.cursor()
 
     referer_url = request.headers.get('Referer', 'default_fallback_url')
@@ -46,7 +48,6 @@ def delete_reservation(reservation_id):
 @reservations_api_bp.route('/get-reservation-details/<reservation_identifiers>', defaults={'identifier': None})
 @reservations_api_bp.route('/get-reservation-details/<reservation_identifiers>/<identifier>')
 def get_reservation_details(reservation_identifiers, identifier):
-    db = get_db()
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 5, type=int)
     
@@ -91,7 +92,6 @@ def get_reservation_details(reservation_identifiers, identifier):
 
 @reservations_api_bp.route('/get-available-times/group')
 def get_available_times_group():
-    db = get_db()
 
     query_result_group = db.execute("""
         SELECT datum, cas_zacatku, (kapacita - obsazenost) as count
@@ -117,29 +117,27 @@ def get_available_times_group():
 
 @reservations_api_bp.route('/get-available-times/individual/<int:instructor_id>')
 def get_available_times_individual_instructor(instructor_id):
-    db = get_db()
-    base_query = """
-        SELECT datum, cas_zacatku, COUNT(*) as count
-        FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny)
-        WHERE stav = 'volno' AND typ_hodiny = 'ind'
-    """
-    
+
+    base_query = db.session.query(DostupneHodiny.datum, DostupneHodiny.cas_zacatku, func.count().label("count")).join(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny).filter(DostupneHodiny.stav == "volno").first()
+    print(base_query)
+
     if instructor_id != 0:
-        base_query += " AND ID_osoba = ?"
-        query_parameters = (instructor_id,)
-        query_result_ind = db.execute(base_query + " GROUP BY datum, cas_zacatku ORDER BY datum, cas_zacatku", query_parameters).fetchall()
-    else:
-        query_result_ind = db.execute(base_query + " GROUP BY datum, cas_zacatku ORDER BY datum, cas_zacatku").fetchall()
+        base_query = base_query.filter(MaVypsane.ID_osoba == instructor_id)
+    
+    query_result_ind = base_query.group_by(
+        DostupneHodiny.datum, DostupneHodiny.cas_zacatku
+    ).order_by(
+        DostupneHodiny.datum, DostupneHodiny.cas_zacatku
+    ).all()
     
     available_times_ind = {}
-    for row in query_result_ind:
-        date_str = row['datum'].strftime('%Y-%m-%d')
-        time_str = row['cas_zacatku']
-        count = row['count']
-        
+    for datum, cas_zacatku, count in query_result_ind:
+        date_str = datum.strftime('%Y-%m-%d')
+        time_str = cas_zacatku
         if date_str not in available_times_ind:
             available_times_ind[date_str] = []
-        
         available_times_ind[date_str].append((time_str, count))
+    
+    print(available_times_ind)
     
     return jsonify(available_times_ind)

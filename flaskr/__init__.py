@@ -2,9 +2,11 @@ import os, secrets
 from flask import Flask
 from flask_bootstrap import Bootstrap5
 from flaskr.forms import CSRFProtect
+
 from flaskr.extensions import mail
-from . import db
 from flaskr.extensions import login_manager
+from flaskr.extensions import db
+
 from flaskr.auth.auth import auth_bp
 from flaskr.reservations.reservations import reservations_bp
 from flaskr.administration.administration import administration_bp
@@ -17,12 +19,19 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        #DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'flaskr.sqlite')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
     bootstrap = Bootstrap5(app)
     csrf = CSRFProtect(app)
 
     db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
+
     login_manager.init_app(app)
 
     login_manager.login_view = 'auth.login_page_admin'

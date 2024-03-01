@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, flash, url_for, jsonify
 from flask_login import login_required
-from flaskr.db import get_db
+from flaskr.extensions import db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
