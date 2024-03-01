@@ -90,17 +90,20 @@ def reservations_admin():
 @administration_bp.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
 @login_required
 def reservation_payment_status(reservation_id):
-    reservation = get_reservation_payment_status(reservation_id)
+    try:
+        reservation = get_reservation_payment_status(reservation_id)
 
-    if not reservation:
-        return jsonify({'status': 'error', 'message': 'Rezervace nenalezena!'}), 404
+        if not reservation:
+            return jsonify({'status': 'error', 'message': 'Rezervace nenalezena!'}), 404
 
-    payment_status = reservation["platba"]
-    if payment_status == "nezaplaceno":
-        mark_reservation_as_paid(reservation_id)
-        return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
-    elif payment_status == "zaplaceno":
-        return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
+        payment_status = reservation["platba"]
+        if payment_status == "nezaplaceno":
+            mark_reservation_as_paid(reservation_id)
+            return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
+        elif payment_status == "zaplaceno":
+            return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': 'Error!'}), 500
     
 @administration_bp.route('/delete_lesson_admin/<int:lesson_id>', methods=["POST"])
 @login_required
