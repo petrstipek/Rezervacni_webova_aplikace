@@ -32,7 +32,7 @@ def login_page_admin():
             return redirect(url_for('administration.admin_page'))
         else:
             flash("Invalid parameters")
-    return render_template("blog/admin/login_admin.html", form=form)
+    return render_template("auth/login_admin.html", form=form)
 
 @auth_bp.route('/logout')
 def logout():
