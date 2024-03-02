@@ -12,7 +12,7 @@
         {% block head %} {% endblock %}
     </head>
     <body>
-        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom header-no-margin global-margin">
+        <header class=" navbar-custom d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom header-no-margin global-margin">
             <div class="col-md-3 mb-2 mb-md-0">
                 <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
                     <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
@@ -20,7 +20,7 @@
                 </a>
             </div>
 
-                <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <ul class="navbar-custom nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="{{ url_for('administration.reservations_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a></li>
                     <li><a href="{{ url_for('administration.lessons_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Dostupné hodiny</a></li>
                     <li><a href="{{ url_for('administration.instructors_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'school' else '' }}">Instruktoři</a></li>
@@ -34,7 +34,6 @@
                     {% endif %}
                 </div>
             </div>
-            
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -48,12 +47,6 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-
-        <div class="jumbotron">
-            <div class="container">
-                <h1 class="display-3">{% block bodytest %} {% endblock %}</h1>
-            </div>
-        </div>
 
         {% block body %} {% endblock %}
 

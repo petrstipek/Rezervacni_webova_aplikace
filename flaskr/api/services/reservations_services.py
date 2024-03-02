@@ -54,12 +54,12 @@ def get_paginated_reservation_details(identifier, identifier_type, page, per_pag
     db = get_db()
     columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "platba", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
     query_map = {
-        "reservationID": ("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (identifier,)),
-        "name": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE prijmeni = ?", (identifier,)),
-        "email": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE email = ?", (identifier,)),
-        "tel-number": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE tel_cislo = ?", (identifier,)),
-        "all": ("SELECT * FROM rezervace LEFT JOIN Klient USING (ID_osoba)", ())
-    }
+    "reservationID": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace WHERE rezervacni_kod = ?", (identifier,)),
+    "name": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE prijmeni = ?", (identifier,)),
+    "email": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE email = ?", (identifier,)),
+    "tel-number": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE tel_cislo = ?", (identifier,)),
+    "all": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba)", ())
+}
 
     if identifier_type not in query_map:
         return None, "Invalid reservation identifier"

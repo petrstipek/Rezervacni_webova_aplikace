@@ -93,10 +93,6 @@ section {
     padding-top: 15px;
 }
 
-.section-blue {
-    background-color: aquamarine;
-}
-
 .times-container {
     grid-column: 2;
     grid-row: 2;

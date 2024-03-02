@@ -7,36 +7,42 @@
 {% endblock %}
 
 {% block body %}
-<section class="section_blue global-margin">
-    <h3>Vyhledávání rezervace</h3>
-    <form id="reservationForm" method="post">
-        {{ form.hidden_tag() }}
-        <div class="horizontal-fields-container">
-            <label for="reservation_id">{{ form.reservation_id.label }}</label>
-            {{ form.reservation_id(id="reservation_id") }}
-            <br>
-            <label for="surname">{{ form.surname.label }}</label>
-            {{ form.surname(id="reservation_name") }}
-            <br>
-            <label for="email">{{ form.email.label }}</label>
-            {{ form.email(id="reservation_email") }}
-            <br>
-            <label for="tel_number">{{ form.tel_number.label }}</label>
-            {{ form.tel_number(id="reservation_tel_number") }}
-        </div>
-        <br>
-        <!--{{ form.submit }}-->
-        <button type="submit">Check Reservation</button>
-    </form>
-    <div id="reservationDetails"></div>
-    <div id="paginationControlsFirstTable" class="pagination-controls"></div>
+<section class="section-blue">
+    <div class="global-margin reservations-section-search">
+        <h2>Vyhledávání rezervace</h2>
+        <form id="reservationForm" method="post">
+            {{ form.hidden_tag() }}
+            <div class="horizontal-fields-container-admin-reservations">
+                <div class="containers-reservations">
+                    <label for="reservation_id">{{ form.reservation_id.label }}</label>
+                    {{ form.reservation_id(id="reservation_id") }}
+                </div>
+                <div class="containers-reservations">
+                    <label for="surname">{{ form.surname.label }}</label>
+                    {{ form.surname(id="reservation_name") }}
+                </div>
+                <div class="containers-reservations">
+                    <label for="email">{{ form.email.label }}</label>
+                    {{ form.email(id="reservation_email") }}
+                </div>
+                <div class="containers-reservations">
+                    <label for="tel_number">{{ form.tel_number.label }}</label>
+                    {{ form.tel_number(id="reservation_tel_number") }}
+                </div>
+                <button class="btn btn-warning btn-send-reservation submit-button" type="submit">Vyhledat rezervaci</button>
+            </div>
+        </form>
+        <div id="reservationDetails"></div>
+        <div id="paginationControlsFirstTable" class="pagination-controls"></div>
+    </div>
 </section>
 
-<section class="section_white global-margin">
-    <div id="reservationDetailsAll"></div>
-    <div id="paginationControlsSecondTable" class="pagination-controls"></div>
-
-
+<section class="section-grey">
+    <div class="global-margin reservations-section-all">
+        <h2>Přehled všech rezervací</h2>
+        <div id="reservationDetailsAll" class="table-all-reservations"></div>
+        <div id="paginationControlsSecondTable" class="pagination-controls"></div>
+    </div>
 </section>
 
 <script src="{{ url_for('static', filename='js/reservation_admin_check.js') }}"></script>

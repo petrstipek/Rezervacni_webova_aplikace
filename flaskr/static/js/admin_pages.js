@@ -58,6 +58,7 @@ $(document).ready(function () {
                 $.each(response.lessons[0], function (key) {
                     headerRow.append($('<th></th>').text(key));
                 });
+
                 thead.append(headerRow);
 
                 $.each(response.lessons, function (index, lesson) {

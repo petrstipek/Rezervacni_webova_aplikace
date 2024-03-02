@@ -24,7 +24,7 @@ def login_page_admin():
         if authenticate_user(username, password):
             return redirect(url_for('administration.admin_page'))
         else:
-            flash("Nesprávné přihlašovací údaje")
+            flash("Nesprávné přihlašovací údaje", category="danger")
     return render_template("auth/login_admin.html", form=form)
 
 @auth_bp.route('/logout')

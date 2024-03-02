@@ -90,7 +90,7 @@ $(document).ready(function () {
                     $('#reservationDetailsAll').text('No reservations found.');
                     return;
                 }
-
+                console.log(response)
                 var table = $('<table></table>').addClass('reservation-table');
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
@@ -99,6 +99,8 @@ $(document).ready(function () {
                 $.each(response.reservations[0], function (key) {
                     headerRow.append($('<th></th>').text(key));
                 });
+                headerRow.append($('<th></th>').text('Platba'));
+                headerRow.append($('<th></th>').text('Storno'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
@@ -133,14 +135,13 @@ $(document).ready(function () {
 
     function updatePaginationControlsFirstTable(totalPagesFirstTable, currentPageFirstTable) {
         $('#paginationControlsFirstTable').empty();
-        $('#paginationControlsFirstTable').append(`<button id="prevPage">Previous</button>`);
 
         if (currentPageFirstTable > 1) {
-            $('#paginationControlsFirstTable').append(`<button id="prevPage">Previous</button>`);
+            $('#paginationControlsFirstTable').append(`<button id="prevPage" onclick="changePage(${currentPageFirstTable - 1})">Previous</button>`);
         }
 
         if (currentPageFirstTable < totalPagesFirstTable) {
-            $('#paginationControlsFirstTable').append(`<button id="nextPage">Next</button>`);
+            $('#paginationControlsFirstTable').append(`<button id="nextPage" onclick="changePage(${currentPageFirstTable + 1})">Next</button>`);
         }
     }
 
@@ -158,15 +159,9 @@ $(document).ready(function () {
 
     function updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable) {
         $('#paginationControlsSecondTable').empty();
+        $('#paginationControlsSecondTable').append(`<button id="prevPageAll">Previous</button>`);
+        $('#paginationControlsSecondTable').append(`<button id="nextPageAll">Next</button>`);
 
-        if (currentPageSecondTable > 1) {
-            console.log("ahoj")
-            $('#paginationControlsSecondTable').append(`<button id="prevPageAll">Previous</button>`);
-        }
-
-        if (currentPageSecondTable < totalPagesSecondTable) {
-            $('#paginationControlsSecondTable').append(`<button id="nextPageAll">Next</button>`);
-        }
     }
 
     $('#paginationControlsSecondTable').on('click', '#prevPageAll', function () {

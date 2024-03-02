@@ -1,4 +1,21 @@
-.horizontal-fields-container {
+.section-blue {
+    background-color: #E0F4FF;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.section-grey {
+    background-color: #F5F5F5;
+    margin-bottom: 0px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.navbar-custom {
+    margin-bottom: 0 !important;
+}
+
+.horizontal-fields-container-admin-reservations {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -14,4 +31,96 @@ header {
 .global-margin {
     margin-left: 190px;
     margin-right: 190px;
+}
+
+.containers-reservations {
+    text-align: center;
+}
+
+.containers-reservations input {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 10px
+}
+
+.submit-button {
+    display: block;
+    margin: 0 auto;
+}
+
+.reservation-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.reservation-table th,
+.reservation-table td {
+    border: 1px solid #000;
+    padding: 8px;
+}
+
+.reservation-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.reservation-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.reservation-table tr:hover {
+    background-color: #e8e8e8;
+}
+
+.deleteReservation,
+.markAsPaid {
+    margin-right: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.deleteReservation {
+    background-color: #ff6666;
+    color: white;
+}
+
+.markAsPaid {
+    background-color: #99cc00;
+    color: white;
+}
+
+.reservations-section-search {
+    height: 390px;
+}
+
+.reservations-section-all {
+    height: 400px;
+}
+
+.pagination-controls button {
+    position: sticky;
+    background-color: #FBC639;
+    color: black;
+    padding: 10px 10px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+#paginationControlsFirstTable button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.table-all-reservations {
+    height: 310px;
 }
