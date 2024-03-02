@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, flash, url_for
 from flask_login import login_required
-from flaskr.api.instructor_services import *
+from flaskr.api.services.instructor_services import *
 
 
 admin_instructors_bp = Blueprint('admin_api_instructors', __name__, template_folder='templates')

@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flaskr.api.lessons_services import get_paginated_lessons
+from flaskr.api.services.lessons_services import get_paginated_lessons
 
 admin_lessons_bp = Blueprint('admin_api_lessons', __name__, template_folder='templates')
 

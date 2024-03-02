@@ -10,11 +10,6 @@ def add_instructor(name, surname, email, tel_number, experience, date_birth, dat
     db.execute('INSERT INTO Instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', (name, surname, email, tel_number, experience, date_birth, date_started) )
     db.commit()
 
-def get_all_instructors():
-    db = get_db()
-    query_result = db.execute('SELECT * FROM Instruktor').fetchall()
-    return [dict(row) for row in query_result]
-
 def get_available_instructors():
     db = get_db()
     query_result_instructors = db.execute("SELECT DISTINCT jmeno, prijmeni, ID_osoba from instruktor")

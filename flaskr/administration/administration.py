@@ -3,6 +3,7 @@ from flask_login import login_required
 from flaskr.db import get_db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin
 from flaskr.administration.services import *
+from flaskr.api.services.instructor_services import get_all_instructors
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 

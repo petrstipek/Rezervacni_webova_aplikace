@@ -14,3 +14,8 @@ def delete_instructor_by_id(instructor_id):
         db.rollback()  
         return False, e
     return True
+
+def get_all_instructors():
+    db = get_db()
+    query_result = db.execute('SELECT * FROM Instruktor').fetchall()
+    return [dict(row) for row in query_result]

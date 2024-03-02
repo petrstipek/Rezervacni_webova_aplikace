@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, flash, request, redirect, url_for, json
 from flaskr.db import get_db
 from urllib.parse import urlparse
 import sqlite3
-from flaskr.api.reservations_services import *
+from flaskr.api.services.reservations_services import *
 
 reservations_api_bp = Blueprint('reservations_api', __name__, template_folder='templates')
 
