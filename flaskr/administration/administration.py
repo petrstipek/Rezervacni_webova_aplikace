@@ -56,12 +56,13 @@ def lessons_admin():
         capacity = form.capacity.data
         instructor_id = form.lesson_instructor_choices.data
 
-        instructor_ids = [form.lesson_instructor_choices.data, form.lesson_instructor_choices2.data, form.lesson_instructor_choices3.data, form.lesson_instructor_choices4.data]
-        instructor_ids = [id for id in instructor_ids if id != "0"]
+        if lesson_type == "group":
+            instructor_ids = [form.lesson_instructor_choices.data, form.lesson_instructor_choices2.data, form.lesson_instructor_choices3.data, form.lesson_instructor_choices4.data]
+            instructor_ids = [id for id in instructor_ids if id != "0"]
 
-        if len(instructor_ids) != len(set(instructor_ids)):
-            flash("One instructor selected multiple times in the form", category="danger")
-            return redirect(url_for("administration.lessons_admin"))
+            if len(instructor_ids) != len(set(instructor_ids)):
+                flash("One instructor selected multiple times in the form", category="danger")
+                return redirect(url_for("administration.lessons_admin"))
 
         date_str = date.strftime("%Y-%m-%d")
 

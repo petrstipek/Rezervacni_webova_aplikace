@@ -8,49 +8,88 @@
 {% endblock %}
 
 {% block body %}
-<section class="section_blue global-margin">
-    <form method="post" action="{{ url_for('administration.lessons_admin') }}">
-        {{ form.hidden_tag() }}
-        <div class="horizontal-fields-container">
-            <label for="date">{{ form.date.label }}</label>
-            {{ form.date }}
-            <br>
-            <label for="time_start">{{ form.time_start.label }}</label>
-            {{ form.time_start }}
-            {% if form.time_start.errors %}
-                <div class="errors">{{ form.time_start.errors[0] }}</div>
-            {% endif %}
-            <br>
-            <label for="lesson_type">{{ form.lesson_type.label }}</label>
-            {{ form.lesson_type(id="lesson_type") }}
-            <br>
-            <div id="div_lesson_capacity" style="display: none;">
-                <label for="capacity">{{ form.capacity.label }}</label>
-                {{ form.capacity }}
-            </div>
-            <div id="div_additional_instructors" style="display: none;">
-                <label for="lesson_instructor_choices2">{{ form.lesson_instructor_choices2.label }}</label>
-                {{ form.lesson_instructor_choices2 }}
-                <br>
-                <label for="lesson_instructor_choices3">{{ form.lesson_instructor_choices3.label }}</label>
-                {{ form.lesson_instructor_choices3 }}
-                <br>
-                <label for="lesson_instructor_choices4">{{ form.lesson_instructor_choices4.label }}</label>
-                {{ form.lesson_instructor_choices4 }}
-            </div>
-            <br>
-            <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
-            {{ form.lesson_instructor_choices }}
-        </div>
-        {{ form.submit }}
-        </form>
+<section class="section-blue">
+    <div class="global-margin">
+        <form method="post" action="{{ url_for('administration.lessons_admin') }}">
+            {{ form.hidden_tag() }}
+            <h2>Vytvoření nové dostupné hodiny</h2>
+            <div class="lessons-admin-grid">
+                <div class="horizontal-fields-container-admin-lessons">
+                    <div class="containers-lessons">
+                        <label for="date">{{ form.date.label }}</label>
+                        {{ form.date }}
+                    </div>
+                    <div class="containers-lessons">
+                        <label for="time_start">{{ form.time_start.label }}</label>
+                        {{ form.time_start }}
+                        {% if form.time_start.errors %}
+                        <div class="errors">{{ form.time_start.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="containers-lessons">
+                        <label for="lesson_type">{{ form.lesson_type.label }}</label>
+                        {{ form.lesson_type(id="lesson_type") }}
+                    </div>
+                    <div class="containers-lessons">
+                        <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
+                        {{ form.lesson_instructor_choices }}
+                    </div> 
+                </div>
+                <div class="horizontal-fields-container-admin-lessons additional-parametrs">
+                    <div id="div_lesson_capacity" class="capacity-lessons">
+                        <div class="containers-lessons">
+                            <label for="capacity">{{ form.capacity.label }}</label>
+                            {{ form.capacity }}
+                        </div>
+                    </div>
+                    <div id="div_additional_instructors">
+                        <div class="horizontal-fields-container-admin-lessons">
+                            <div class="containers-lessons">
+                                <label for="lesson_instructor_choices2">{{ form.lesson_instructor_choices2.label }}</label>
+                                {{ form.lesson_instructor_choices2 }}
+                            </div>
+                            <div class="containers-lessons">
+                                <label for="lesson_instructor_choices3">{{ form.lesson_instructor_choices3.label }}</label>
+                                {{ form.lesson_instructor_choices3 }}
+                            </div>
+                            <div class="containers-lessons">
+                                <label for="lesson_instructor_choices4">{{ form.lesson_instructor_choices4.label }}</label>
+                                {{ form.lesson_instructor_choices4 }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="containers-lessons">
+                        <label class="invisible-label" aria-hidden="true">schovane pole</label> 
+                        <button class="btn btn-warning" type="submit">Vložit hodinu</button>
+                    </div>
+                </div> 
+            </div>          
+            </form>
+    </div>
 </section>
 
-<section class="section_white global-margin">
-    <input type="date" id="lessonDate" name="lessonDate">
-    <input type="button" id="allLessons" name="allLessons" value="Zobrazit všechny hodiny">
-    <div id="lessonsAll"></div>
-    <div id="paginationControls"></div>
+<section class="section-grey">
+    <div class="global-margin">
+        <h2>Přehled vypsaných hodin</h2>
+        <div class="lessons-admin-grid">
+            <div class="horizontal-fields-container-admin-lessons">
+                <div class="containers-lessons">
+                    <input type="date" id="lessonDate" name="lessonDate">
+                </div>
+                <div class="containers-lessons">
+                    <input type="button" id="allLessons" name="allLessons" value="Zobrazit všechny hodiny">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="lessonDate" name="lessonDate">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="lessonDate" name="lessonDate">
+                </div>
+            </div>
+        </div>
+        <div id="lessonsAll" class="table-all-lessons"></div>
+        <div id="paginationControls" class="pagination-controls"></div>
+    </div>
 </section>
 
 <script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>

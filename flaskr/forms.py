@@ -68,6 +68,7 @@ class LessonInsertForm(FlaskForm):
     lesson_instructor_choices3 = SelectField("Instruktor 3", choices = [], validators=[Optional()])
     lesson_instructor_choices4 = SelectField("Instruktor 4", choices = [], validators=[Optional()])
     submit = SubmitField(label="Vložit hodinu")
+    date2 = DateField('Datum', validators=[Optional()], format='%Y-%m-%d')
 
 class InstructorInsertForm(FlaskForm):
     name = StringField(label="Jméno", validators=[Length(min=2, max=30), DataRequired()])

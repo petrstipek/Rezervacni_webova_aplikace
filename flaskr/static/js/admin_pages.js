@@ -4,20 +4,6 @@ $(document).ready(function () {
     var totalPages = 0;
     var selectedDate = null;
 
-    const lessonTypeSelect = document.getElementById('lesson_type');
-    const additionalField1Container = document.getElementById('div_lesson_capacity');
-    const additionalField2Container = document.getElementById('div_additional_instructors');
-
-    lessonTypeSelect.addEventListener('change', function () {
-        if (this.value === 'ind') {
-            additionalField1Container.style.display = 'none';
-            additionalField2Container.style.display = 'none';
-        } else if (this.value === 'group') {
-            additionalField1Container.style.display = '';
-            additionalField2Container.style.display = '';
-        }
-    });
-
     $(document).on('change', '#lessonDate', function () {
         console.log("button clicked")
         selectedDate = $('#lessonDate').val();
@@ -50,7 +36,7 @@ $(document).ready(function () {
                     return;
                 }
 
-                var table = $('<table></table>').addClass('lessons-table');
+                var table = $('<table></table>').addClass('reservation-table');
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
@@ -58,7 +44,7 @@ $(document).ready(function () {
                 $.each(response.lessons[0], function (key) {
                     headerRow.append($('<th></th>').text(key));
                 });
-
+                headerRow.append($('<th></th>').text('Odstranění výuky'));
                 thead.append(headerRow);
 
                 $.each(response.lessons, function (index, lesson) {
@@ -69,7 +55,7 @@ $(document).ready(function () {
                         }
                         row.append($('<td></td>').text(value));
                     });
-                    row.append($(`<td><button onclick="deleteLesson(${lesson.ID_hodiny})">Smazání hodiny</button></td>`));
+                    row.append($(`<td><button class="deleteReservation" onclick="deleteLesson(${lesson.ID_hodiny})">Smazání hodiny</button></td>`));
                     tbody.append(row);
                 });
 
@@ -140,6 +126,20 @@ $(document).ready(function () {
         const year = date.getFullYear();
         return `${day}.${month}.${year}`;
     }
+
+    function toggleFields() {
+        var selectedType = $('#lesson_type').val();
+        if (selectedType === 'ind') {
+            $('#div_lesson_capacity input, #div_additional_instructors input').prop('disabled', true);
+            $('#div_lesson_capacity select, #div_additional_instructors select').prop('disabled', true);
+        } else if (selectedType === 'group') {
+            $('#div_lesson_capacity input, #div_additional_instructors input').prop('disabled', false);
+            $('#div_lesson_capacity select, #div_additional_instructors select').prop('disabled', false);
+        }
+    }
+
+    toggleFields();
+    $('#lesson_type').change(toggleFields);
 
     fetchLessons(currentPage);
 });

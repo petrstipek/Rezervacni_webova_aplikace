@@ -37,7 +37,8 @@ header {
     text-align: center;
 }
 
-.containers-reservations input {
+.containers-reservations input,
+select {
     border-radius: 8px;
     border: 1px solid #ccc;
     padding: 4px;
@@ -123,4 +124,61 @@ header {
 
 .table-all-reservations {
     height: 310px;
+}
+
+.lessons-admin-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.horizontal-fields-container-admin-lessons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.additional-parametrs {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.lessons-admin-grid .horizontal-fields-container-admin-lessons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.capacity-lessons {
+    max-width: 50%;
+}
+
+.containers-lessons {
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+}
+
+.containers-lessons input,
+select {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 10px
+}
+
+.table-all-lessons {
+    height: 400px;
+}
+
+.invisible-label {
+    display: block;
+    visibility: hidden;
+    height: auto;
+    margin: 0;
+    padding: 0;
 }
