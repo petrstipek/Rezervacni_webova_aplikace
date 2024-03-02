@@ -135,7 +135,7 @@ $(document).ready(function () {
             timesHtml += `<div class="time-slot">
                         <label class="time-slot-label d-flex justify-content-between align-items-center">
                             <span class="time">${time}</span>
-                            <span class="count">Volné: ${count}</span>
+                            <span class="count">Volné hodiny k rezervaci: ${count}</span>
                             <input class="form-check-input" type="radio" name="time" value="${time}" />
                         </label>
                     </div>`;

@@ -21,13 +21,6 @@ section {
     margin-bottom: 10px;
 }
 
-.horizontal-fields-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
 .field-container .form-select {
     flex-basis: 70%;
 }
@@ -60,7 +53,7 @@ section {
     width: 70%;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
     resize: vertical;
 }
 
@@ -223,12 +216,6 @@ hr {
     flex-basis: 55%;
 }
 
-.horizontal-fields-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
 .field-container {
     flex: 1 1 200px;
     display: flex;
@@ -340,6 +327,7 @@ hr {
 
     .horizontal-fields-container-header {
         flex-wrap: wrap;
+        display: block;
     }
 
     .field-container {
@@ -365,10 +353,6 @@ hr {
     .global-margin {
         margin-left: 40px;
         margin-right: 40px;
-    }
-
-    .horizontal-fields-container-header {
-        display: block;
     }
 
     .horizontal-fields-container-header .field-container {
@@ -451,4 +435,39 @@ hr {
 
 .count {
     margin-left: 50px;
+}
+
+.horizontal-fields-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.horizontal-fields-container-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.field-container-pi {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.field-container-pi input,
+.field-container-pi select {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 10px;
 }
