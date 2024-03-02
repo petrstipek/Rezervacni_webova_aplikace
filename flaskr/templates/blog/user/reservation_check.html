@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="global-margin">
+<div class="global-margin body-height">
     <div class="grid-container reservation-check-container">
         <div class="left-column">
             <form id="reservationForm" method="post" class="reservation-form">
@@ -16,7 +16,10 @@
                         <label for="reservation_id">{{ form.reservation_id.label }}</label>
                         {{ form.reservation_id(id="reservation_id") }}
                     </div>
-                    <button class="btn btn-warning" type="submit">Zkontrolovat rezervaci</button>
+                    <div class="field-container-res-check">
+                        <label class="invisible-label" aria-hidden="true">adsfs</label> 
+                        <button class="btn btn-warning" type="submit">Zkontrolovat rezervaci</button>
+                    </div>
                 </div>
             </form>
         </div>

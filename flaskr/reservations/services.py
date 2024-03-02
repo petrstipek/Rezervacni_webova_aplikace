@@ -40,6 +40,9 @@ def process_reservation(form):
     db = get_db()
 
     name, surname, email, phone, experience, age, lesson_type, reservation_note, lesson_length, instructor_selected, language_selection, time_plus_one, student_client, more_students, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields, date, time = handle_form(form)
+    if date == None or time == None:
+        return False, "Je potřeba vyplnit čas a datum lekce!", "danger"
+    
     client_id = get_or_create_klient(name, surname, email, phone)
     student_count = handle_number_student(student_client, more_students, client_name_fields)
     identifier = generate_unique_reservation_identifier()

@@ -39,8 +39,8 @@ class PersonalInformationForm(FlaskForm):
 
     note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu"})
 
-    date = HiddenField("date")
-    time = HiddenField("time")
+    date = HiddenField("date", validators=[DataRequired()])
+    time = HiddenField("time", validators=[DataRequired()])
 
     submit = SubmitField('Odeslat rezervaci')
 

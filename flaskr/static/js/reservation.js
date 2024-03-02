@@ -158,18 +158,18 @@ $(document).ready(function () {
         }
     });
 
+    $('.times-container').on('click', '.time-slot', function () {
+        $('.times-container .time-slot').removeClass('selected');
+        $(this).addClass('selected');
+        var radioButton = $(this).find('input[type="radio"]');
+        radioButton.prop('checked', true);
+        radioButton.change();
+    });
+
     $('.times-container').on('change', 'input[name="time"]', function () {
         if (this.checked) {
             $("input[name='time']").val($(this).val());
         }
-    });
-
-    $(document).ready(function () {
-        $('.times-container').on('click', '.time-slot', function () {
-            console.log("I hear you");
-            $('.times-container .time-slot').removeClass('selected');
-            $(this).addClass('selected');
-        });
     });
 
     $(document).ready(function () {
