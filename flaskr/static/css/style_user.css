@@ -13,7 +13,7 @@ section {
     margin-bottom: 15px;
 }
 
-.horizontal-fields-container-lessontype {
+.horizontal-fields-container-header {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -143,24 +143,6 @@ section {
     flex-basis: 110%;
 }
 
-@media (max-width: 768px) {
-    .field-container {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .field-container label {
-        flex-basis: auto;
-        text-align: left;
-        margin-bottom: 5px;
-    }
-
-    .field-container .form-select {
-        flex-basis: auto;
-        width: 100%;
-    }
-}
-
 .section-blue {
     background-color: #E0F4FF;
     margin-bottom: 0px;
@@ -253,26 +235,15 @@ hr {
     flex-direction: column;
 }
 
-@media (max-width: 900px) {
-    .field-container {
-        flex-basis: calc(50% - 20px);
-    }
-}
-
-@media (max-width: 600px) {
-    .field-container {
-        flex-basis: 100%;
-    }
-}
-
 .custom-date-picker-container .ui-datepicker {
-    width: 500px;
+    width: 100%;
     border-radius: 8px;
     background-color: #E0F4FF !important;
 }
 
 .custom-date-picker-container .ui-datepicker table {
     width: 100%;
+    height: 100%;
 }
 
 .custom-date-picker-container .ui-datepicker td {
@@ -292,8 +263,8 @@ hr {
 }
 
 .custom-date-picker-container #datepicker .ui-datepicker td a:hover {
-    background-color: #0D69B0 !important;
-    color: white !important;
+    background-color: #E0E0E0 !important;
+    color: black !important;
 }
 
 .custom-date-picker-container #datepicker .ui-datepicker td a.ui-state-highlight {
@@ -328,4 +299,156 @@ hr {
     text-align: center;
     padding: 5px 0;
     border-radius: 8px;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 48%;
+}
+
+.horizontal-fields-container-header,
+.times-container,
+.custom-date-picker-container {
+    width: 100%;
+}
+
+.field-container {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 1400px) {
+
+    .global-margin {
+        margin-left: 180px;
+        margin-right: 180px;
+    }
+
+    .horizontal-fields-container-header .field-container,
+    .custom-date-picker-container,
+    .times-container {
+        width: 100%;
+    }
+
+    .horizontal-fields-container-header {
+        flex-wrap: wrap;
+    }
+
+    .field-container {
+        flex-basis: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .global-margin {
+        margin-left: 95px;
+        margin-right: 95px;
+    }
+
+    .horizontal-fields-container-header .field-container {
+        flex-basis: 100%;
+        margin-right: 0%;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 660px) {
+    .global-margin {
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .horizontal-fields-container-header {
+        display: block;
+    }
+
+    .horizontal-fields-container-header .field-container {
+        flex-basis: 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .custom-date-picker-container,
+    .times-container {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .left-column,
+    .right-column {
+        flex-basis: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+.times-grid-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.time-slot {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.custom-date-picker-container,
+.times-container {
+    min-height: 430px;
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.left-column,
+.right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.time-slot {
+    display: block;
+    margin-bottom: 5px;
+    width: 100%;
+    align-items: center;
+}
+
+.time-slot-label {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    cursor: pointer;
+}
+
+.time-slot:hover {
+    background-color: #E0E0E0;
+}
+
+.time-slot.selected {
+    background-color: #0D69B0;
+}
+
+.form-check-input {
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.count {
+    margin-left: 50px;
 }

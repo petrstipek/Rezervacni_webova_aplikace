@@ -19,27 +19,34 @@
         <div class="global-margin">
             <h2 class="h2-headers">Výběr termínu rezervace</h2>
             <div class="grid-container">
-                <div class="horizontal-fields-container-lessontype">
-                    <div class="field-container d-flex align-items-center">
-                        <label for="lesson_type" class="me-2 no-wrap">{{ form.lesson_type.label }}</label>
-                        {{ form.lesson_type(id="lesson_type", class="form-select") }}
+                <!-- First Column -->
+                <div class="left-column">
+                    <div class="horizontal-fields-container-header">
+                        <div class="field-container d-flex align-items-center">
+                            <label for="lesson_type" class="me-2 no-wrap">{{ form.lesson_type.label }}</label>
+                            {{ form.lesson_type(id="lesson_type", class="form-select") }}
+                        </div>
+                        <div class="field-container d-flex align-items-center">
+                            <label for="lesson_length" class="me-2 no-wrap">{{ form.lesson_length.label }}</label>
+                            {{ form.lesson_length(id="lesson_length", class="form-select") }}
+                        </div>
                     </div>
-                    <div class="field-container d-flex align-items-center">
-                        <label for="lesson_length" class="me-2 no-wrap">{{ form.lesson_length.label }}</label>
-                        {{ form.lesson_length(id="lesson_length", class="form-select") }}
-                    </div>
-                    <div class="field-container d-flex align-items-center">
-                        <label for="lesson_instructor_choices" class="me-2">{{ form.lesson_instructor_choices.label }}</label>
-                        {{ form.lesson_instructor_choices(id="lesson_instructor", class="form-select") }}
-                    </div>
-                    <div class="field-container d-flex align-items-center">
-                        <label for="language_selection" class="me-2">{{ form.language_selection.label }}</label>
-                        {{ form.language_selection(id="language_selection", class="form-select") }}
-                    </div>
-                </div>
-                <div class="date-and-times-container">
                     <div class="custom-date-picker-container">
                         <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
+                    </div>
+                </div>
+        
+                <!-- Second Column -->
+                <div class="right-column">
+                    <div class="horizontal-fields-container-header">
+                        <div class="field-container d-flex align-items-center">
+                            <label for="lesson_instructor_choices" class="me-2">{{ form.lesson_instructor_choices.label }}</label>
+                            {{ form.lesson_instructor_choices(id="lesson_instructor", class="form-select") }}
+                        </div>
+                        <div class="field-container d-flex align-items-center">
+                            <label for="language_selection" class="me-2">{{ form.language_selection.label }}</label>
+                            {{ form.language_selection(id="language_selection", class="form-select") }}
+                        </div>
                     </div>
                     <div class="times-container">
                         {{ form.time }}

@@ -39,14 +39,11 @@
                             <a href="{{ url_for('information.instructors_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a>
                         </li>
                     </ul>
+                    <div class="d-none d-lg-block"> <!-- 'd-none d-lg-block' makes it appear only on larger screens -->
+                        <a href="{{ url_for('reservations.reservation_check') }}" class="btn btn-warning button-right-margin btn-select-reservation" role="button">Správa rezervace</a>
+                    </div>
                 </div>
             </nav>
-
-            <div class="col-md-3 text-end d-flex justify-content-end">
-                <div>
-                    <a href="{{ url_for('reservations.reservation_check') }}" class="btn btn-warning button-right-margin btn-select-reservation" role="button">Správa rezervace</a>
-                </div>
-            </div>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}

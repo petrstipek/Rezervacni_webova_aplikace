@@ -106,7 +106,7 @@ $(document).ready(function () {
         selectedDate = selectedDate.trim();
 
         if (!data_times.hasOwnProperty(selectedDate)) {
-            $('.times-container').html("No available times for selected date.");
+            $('.times-container').html("Pro vybrané parametry není dostupná žádná hodina.");
             return;
         }
 
@@ -133,11 +133,12 @@ $(document).ready(function () {
             var time = timeCountPair[0];
             var count = timeCountPair[1];
             timesHtml += `<div class="time-slot">
-                            <label>
-                                <input class="form-check-input" type="radio" name="time" value="${time}" />
-                                ${time} - Volné: ${count}
-                            </label>
-                            </div>`;
+                        <label class="time-slot-label d-flex justify-content-between align-items-center">
+                            <span class="time">${time}</span>
+                            <span class="count">Volné: ${count}</span>
+                            <input class="form-check-input" type="radio" name="time" value="${time}" />
+                        </label>
+                    </div>`;
 
             if (index === timesForSelectedDate.length - 1) {
                 timesHtml += '</div>';
@@ -162,4 +163,28 @@ $(document).ready(function () {
             $("input[name='time']").val($(this).val());
         }
     });
+
+    $(document).ready(function () {
+        $('.times-container').on('click', '.time-slot', function () {
+            console.log("I hear you");
+            $('.times-container .time-slot').removeClass('selected');
+            $(this).addClass('selected');
+        });
+    });
+
+    $(document).ready(function () {
+        $('#lesson_type').change(function () {
+            const lessonType = $(this).val();
+
+            if (lessonType === 'group') {
+                $('#lesson_length').prop('disabled', true);
+                $('#lesson_instructor').prop('disabled', true);
+            } else {
+                $('#lesson_length').prop('disabled', false);
+                $('#lesson_instructor').prop('disabled', false);
+                $('#lesson_language').prop('disabled', false);
+            }
+        });
+    });
+
 });

@@ -75,8 +75,6 @@ def lessons_admin():
         else:
             flash(message, category="danger")
 
-        return redirect(url_for("administration.lessons_admin"))
-
     lessons_dict = get_all_lessons()
 
     return render_template("blog/admin/lessons_admin.html", form=form, lessons_dict=lessons_dict)
