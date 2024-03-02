@@ -1,0 +1,51 @@
+.reservation-check-container {
+    margin-top: 20px !important;
+}
+
+.field-container-res-check input {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    width: 80%;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 10px;
+}
+
+.reservation-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.reservation-table,
+.reservation-table th,
+.reservation-table td {
+    border: 1px solid #ccc;
+}
+
+.reservation-table th,
+.reservation-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.deleteReservationButton {
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.deleteReservationButton:hover {
+    background-color: #d32f2f;
+}
+
+.reservation-table tr:last-child td {
+    text-align: center;
+    padding: 10px;
+}

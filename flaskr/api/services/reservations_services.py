@@ -1,7 +1,33 @@
 from flaskr.db import get_db
 import sqlite3
+import datetime
 
-def delete_reservation_by_id(reservation_id):
+def delete_reservation_by_reservation_code(reservation_id):
+    db = get_db()
+    cur = db.cursor()
+    
+    try:
+        cur.execute("SELECT 1 FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,))
+        if cur.fetchone() is None:
+            return False, "Rezervace nebyla nalezena!"
+        query_result = db.execute("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
+        reservation_id = query_result["ID_rezervace"]
+
+        lesson_ids = cur.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchall()
+        for lesson_id_tuple in lesson_ids:
+            cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id_tuple[0],))
+        
+        cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
+        cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
+        cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
+        db.commit()
+
+        return True, "Ok"
+    except sqlite3.Error as e:
+        db.rollback()
+        return False, "nok"
+    
+def delete_reservation_by_reservation_id(reservation_id):
     db = get_db()
     cur = db.cursor()
     
@@ -19,10 +45,10 @@ def delete_reservation_by_id(reservation_id):
         cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
         db.commit()
 
-        return True, "Rezervace úspěšně odstraněna!"
+        return True, "Ok"
     except sqlite3.Error as e:
         db.rollback()
-        return False, str(e)
+        return False, "nok"
     
 def get_paginated_reservation_details(identifier, identifier_type, page, per_page):
     db = get_db()
@@ -97,3 +123,19 @@ def fetch_available_times_for_individual_instructor(instructor_id=None):
     base_query += " GROUP BY datum, cas_zacatku ORDER BY datum, cas_zacatku"
     query_result = db.execute(base_query, parameters).fetchall()
     return query_result
+
+def get_reservation_detail(identifier):
+    db = get_db()
+    query_result = db.execute("SELECT termin, cas_zacatku, pocet_zaku, doba_vyuky, platba FROM Rezervace LEFT JOIN Instruktor USING (ID_osoba) WHERE rezervacni_kod = ?", (identifier,)).fetchone()
+    columns = ["Termín", "Čas začátku", "Počet žáků", "Doba výuky", "Stav platby"]
+    if query_result:
+        result_dict = {}
+        for i, column in enumerate(columns):
+            if isinstance(query_result[i], datetime.date):
+                formatted_date = query_result[i].strftime('%d.%m.%Y')
+                result_dict[column] = formatted_date
+            else:
+                result_dict[column] = query_result[i]
+        print(result_dict)
+        return result_dict
+    return False

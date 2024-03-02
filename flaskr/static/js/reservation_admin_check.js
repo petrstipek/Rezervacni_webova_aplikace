@@ -190,7 +190,7 @@ $(document).ready(function () {
     $(document).on('click', '.deleteReservation', function () {
         var reservationId = $(this).data('id');
         $.ajax({
-            url: `/reservations-api/delete-reservation/${reservationId}`,
+            url: `/reservations-api/delete-reservation-by-id/${reservationId}`,
             type: "POST",
             headers: {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')

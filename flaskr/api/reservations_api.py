@@ -6,22 +6,21 @@ from flaskr.api.services.reservations_services import *
 
 reservations_api_bp = Blueprint('reservations_api', __name__, template_folder='templates')
 
-@reservations_api_bp.route('/delete-reservation/<reservation_id>', methods=['DELETE', 'POST'])
-def delete_reservation(reservation_id):
-    referer_url = request.headers.get('Referer', 'default_fallback_url')
-    parsed_url = urlparse(referer_url)
-    path = parsed_url.path
-    last_part_url = path.strip('/').split('/')[-1]
-
-    success, message = delete_reservation_by_id(reservation_id)
-
-    if last_part_url == "reservations-admin":
-        flash(message, category="success" if success else "danger")
-        return redirect(url_for("administration.reservations_admin"))
+@reservations_api_bp.route('/delete-reservation-by-code/<reservation_id>', methods=['DELETE', 'POST'])
+def delete_reservation_by_code(reservation_id):
+    success, message = delete_reservation_by_reservation_code(reservation_id)
+    if success:
+        return jsonify({"success": True, "message": "Rezervace zrušena!"})
     else:
-        response = {"message": message} if success else {"error": message}
-        status_code = 200 if success else 404 if message == "Rezervace nebyla nalezena!" else 500
-        return jsonify(response), status_code
+        return jsonify({"error": message}), 400 
+    
+@reservations_api_bp.route('/delete-reservation-by-id/<reservation_id>', methods=['DELETE', 'POST'])
+def delete_reservation_by_id(reservation_id):
+    success, message = delete_reservation_by_reservation_id(reservation_id)
+    if success:
+        return jsonify({"success": True, "message": "Rezervace zrušena!"})
+    else:
+        return jsonify({"error": message}), 400 
     
 @reservations_api_bp.route('/get-reservation-details/<reservation_identifiers>', defaults={'identifier': None})
 @reservations_api_bp.route('/get-reservation-details/<reservation_identifiers>/<identifier>')
@@ -36,6 +35,14 @@ def get_reservation_details(reservation_identifiers, identifier):
         return jsonify(response), status_code
     else:
         return jsonify(data)
+    
+@reservations_api_bp.route('/get-reservation/<reservation_identifier>')
+def get_reservation(reservation_identifier):
+    data = get_reservation_detail(reservation_identifier)
+    if data:
+        return jsonify(data)
+    else: 
+        return jsonify({"error": "Při hledání rezervace nastala chyba"}), 404
 
 @reservations_api_bp.route('/get-available-times/group')
 def get_available_times_group():

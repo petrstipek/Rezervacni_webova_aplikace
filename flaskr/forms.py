@@ -45,8 +45,8 @@ class PersonalInformationForm(FlaskForm):
     submit = SubmitField('Odeslat rezervaci')
 
 class ReservationInformationForm(FlaskForm):
-    reservation_id = StringField("Reservation ID", validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    reservation_id = StringField("ID rezervace", validators=[DataRequired()])
+    submit = SubmitField('Získat informace')
 
 class LoginForm(FlaskForm):
     username = StringField(label="Přihlašovací jméno: ", validators=[DataRequired()])
