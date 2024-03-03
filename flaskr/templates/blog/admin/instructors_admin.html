@@ -2,71 +2,92 @@
 
 {% block head %}
     <title> Instruktoři </title>
-    <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_admin_instructors.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
 
-<section class="section_blue global-margin">
-    <h3>Správa instruktora</h3>
+<section class="section-blue">
+    <div class="global-margin">
+        <h2>Správa instruktora</h2>
     <form method="post" action="{{ url_for('administration.instructors_admin') }}">
         {{ form.hidden_tag() }}
-        <div class="horizontal-fields-container">
-            <label for="name">{{ form.name.label }}</label>
-            {{ form.name }}
-            <br>
-            <label for="surname">{{ form.surname.label }}</label>
-            {{ form.surname }}
-            <br>
-            <label for="tel_number">{{ form.tel_number.label }}</label>
-            {{ form.tel_number }}
-            <br>
-            <label for="email">{{ form.email.label }}</label>
-            {{ form.email }}
-            <br>
-            <label for="experience">{{ form.experience.label }}</label>
-            {{ form.experience }}
-            <br>
-            <label for="date_birth">{{ form.date_birth.label }}</label>
-            {{ form.date_birth }}
-            <br>
-            <label for="date_started">{{ form.date_started.label }}</label>
-            {{ form.date_started }}
+        <div class="instructors-admin-grid">
+            <div class="horizontal-fields-container-admin-instructors">
+                <div class="containers-instructors">
+                    <label for="name">{{ form.name.label }}</label>
+                    {{ form.name }}
+                </div>
+                <div class="containers-instructors">
+                    <label for="surname">{{ form.surname.label }}</label>
+                    {{ form.surname }}
+                </div>
+                <div class="containers-instructors">
+                    <label for="tel_number">{{ form.tel_number.label }}</label>
+                    {{ form.tel_number }}
+                </div>
+                <div class="containers-instructors">
+                    <label for="email">{{ form.email.label }}</label>
+                    {{ form.email }}
+                </div>
+            </div>
+            <div class="horizontal-fields-container-admin-instructors">
+                <div class="containers-instructors">
+                    <label for="date_birth">{{ form.date_birth.label }}</label>
+                    {{ form.date_birth }}
+                </div>
+                <div class="containers-instructors">
+                    <label for="date_started">{{ form.date_started.label }}</label>
+                    {{ form.date_started }}
+                </div>
+                <div class="containers-instructors">
+                    <label for="experience">{{ form.experience.label }}</label>
+                    {{ form.experience }}
+                </div>
+                <div class="containers-instructors">
+                    <label class="invisible-label" aria-hidden="true">schovane pole</label> 
+                    <button class="btn btn-warning" type="submit">Vložit instruktora</button>
+                </div>
+            </div>
         </div>
-        {{ form.submit }}
     </form>
+    </div>
 </section>
-<section class="section_white global-margin">
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Jméno</th>
-                <th>Příjmení</th>
-                <th>Seniorita</th>
-                <th>tel. číslo</th>
-                <th>email</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for instructor in instructors_dict %}
+<section class="section-grey">
+    <div class="global-margin">
+        <h2>Přehled instruktorů</h2>
+        <table border="1" class="instructor-table">
+            <thead>
                 <tr>
-                    <td>{{ instructor['jmeno'] }}</td>
-                    <td>{{ instructor['prijmeni'] }}</td>
-                    <td>{{ instructor['seniorita'] }}</td>
-                    <td>{{ instructor['tel_cislo'] }}</td>
-                    <td>{{ instructor['email'] }}</td>
-                    <td>
-                        <form action="{{ url_for('admin_api_instructors.delete_instructor_admin', instructor_id=instructor['ID_osoba']) }}" method="post">
-                            {{ form.hidden_tag() }}
-                            <input type="submit" value="Delete">
-                        </form>
-                    </td>
+                    <th>Jméno</th>
+                    <th>Příjmení</th>
+                    <th>Seniorita</th>
+                    <th>tel. číslo</th>
+                    <th>email</th>
+                    <th>Odstranit instruktora</th>
                 </tr>
-            {% else %}
-                <tr><td colspan="2">No instructors found.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for instructor in instructors_dict %}
+                    <tr>
+                        <td>{{ instructor['jmeno'] }}</td>
+                        <td>{{ instructor['prijmeni'] }}</td>
+                        <td>{{ instructor['seniorita'] }}</td>
+                        <td>{{ instructor['tel_cislo'] }}</td>
+                        <td>{{ instructor['email'] }}</td>
+                        <td>
+                            <form action="{{ url_for('admin_api_instructors.delete_instructor_admin', instructor_id=instructor['ID_osoba']) }}" method="post">
+                                {{ form.hidden_tag() }}
+                                <input type="submit" value="Delete">
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="2">No instructors found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </section>
 
 {% endblock %}

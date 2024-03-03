@@ -1,0 +1,90 @@
+.section-blue {
+    background-color: #E0F4FF;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.section-grey {
+    background-color: #F5F5F5;
+    margin-bottom: 0px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+}
+
+.horizontal-fields-container-admin-instructors {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.global-margin {
+    margin-left: 190px;
+    margin-right: 190px;
+}
+
+.containers-instructors {
+    text-align: center;
+}
+
+.containers-instructors input,
+select {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 10px
+}
+
+.instructors-admin-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.instructor-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    background-color: #f9f9f9;
+}
+
+.instructor-table th,
+.instructor-table td {
+    border: 1px solid #000;
+    padding: 8px;
+}
+
+.instructor-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.instructor-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.instructor-table tr:hover {
+    background-color: #e8e8e8;
+}
+
+.instructor-table input[type="submit"] {
+    background-color: #ff6666;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.instructor-table input[type="submit"]:hover {
+    background-color: #cc5555;
+}
