@@ -12,6 +12,7 @@ from flaskr.information.information import information_bp
 from flaskr.api.instructors_api import admin_instructors_bp
 from flaskr.api.lessons_api import admin_lessons_bp
 from flaskr.api.reservations_api import reservations_api_bp
+from flaskr.extensions import recaptcha_private, recaptcha_public
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -47,6 +48,8 @@ def create_app(test_config=None):
 
     mail.init_app(app)
 
+    app.config["RECAPTCHA_PUBLIC_KEY"] = recaptcha_public
+    app.config["RECAPTCHA_PRIVATE_KEY"]= recaptcha_private
 
     if test_config is None:
         app.config.from_pyfile('config.py', silent=True)

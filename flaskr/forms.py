@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional, ValidationError
+from flask_wtf.recaptcha import RecaptchaField
 
 class PersonalInformationForm(FlaskForm):
     name = StringField(label="Jméno", validators=[Length(min=2, max=30), DataRequired()])
@@ -42,6 +43,7 @@ class PersonalInformationForm(FlaskForm):
     date = HiddenField("date", validators=[DataRequired()])
     time = HiddenField("time", validators=[DataRequired()])
 
+    recaptcha = RecaptchaField()
     submit = SubmitField('Odeslat rezervaci')
 
 class ReservationInformationForm(FlaskForm):
