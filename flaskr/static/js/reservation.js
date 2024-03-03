@@ -21,8 +21,6 @@ $(document).ready(function () {
     function fetchAvailableTimes() {
         var instructorId = $('#lesson_instructor').val();
         var lessonType = $('#lesson_type').val();
-        var lessonLength = $('#lesson_length').val();
-
 
         if (lessonType === 'individual' && instructorId) {
             $.ajax({
@@ -30,7 +28,6 @@ $(document).ready(function () {
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);
-                    //return data;
                 },
                 error: function (error) {
                     console.error('Error fetching available times:', error);
@@ -106,7 +103,7 @@ $(document).ready(function () {
         selectedDate = selectedDate.trim();
 
         if (!data_times.hasOwnProperty(selectedDate)) {
-            $('.times-container').html("Pro vybrané parametry není dostupná žádná hodina.");
+            $('.times-container').html("Pro vybrané parametry není dostupná žádná hodina!");
             return;
         }
 
@@ -114,6 +111,7 @@ $(document).ready(function () {
 
         if (!Array.isArray(timesForSelectedDate)) {
             console.log("Times for selected date is not an array:", timesForSelectedDate);
+            $('.times-container').html("Chyba při zobrazování dostupných hodin!");
             return;
         }
         var timesHtml = '<div class="times-grid">';

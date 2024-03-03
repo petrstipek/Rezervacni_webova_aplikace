@@ -7,7 +7,7 @@ class PersonalInformationForm(FlaskForm):
     surname = StringField(label="Příjmení", validators=[Length(min=2, max=30), DataRequired()])
     tel_number = StringField('Telefonní číslo', validators=[
         DataRequired(),
-        Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+        Regexp(r'^\+?1?\d{9,15}$', message="Formát telefonního čísla: '+999999999'!")
     ], render_kw={"type": "tel"})
     email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
     age_client = IntegerField('Věk', validators=[Optional(), NumberRange(min=0, max=120)])

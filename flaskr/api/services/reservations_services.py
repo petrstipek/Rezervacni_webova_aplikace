@@ -136,6 +136,5 @@ def get_reservation_detail(identifier):
                 result_dict[column] = formatted_date
             else:
                 result_dict[column] = query_result[i]
-        print(result_dict)
         return result_dict
     return False

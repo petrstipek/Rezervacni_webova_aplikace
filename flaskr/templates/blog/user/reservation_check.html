@@ -6,27 +6,30 @@
 {% endblock %}
 
 {% block body %}
-<div class="global-margin body-height">
-    <div class="grid-container reservation-check-container">
-        <div class="left-column">
-            <form id="reservationForm" method="post" class="reservation-form">
-                {{ form.hidden_tag() }}
-                <div class="horizontal-fields-container-res-check">
-                    <div class="field-container-res-check">
-                        <label for="reservation_id">{{ form.reservation_id.label }}</label>
-                        {{ form.reservation_id(id="reservation_id") }}
+<section class="section-blue reservation-check-section">
+    <div class="global-margin body-height">
+        <h2>Informace o rezervaci</h2>
+        <div class="grid-container reservation-check-container">
+            <div class="left-column col-md-6 col-sm-12 order-md-1 order-1">
+                <form id="reservationForm" method="post" class="reservation-form">
+                    {{ form.hidden_tag() }}
+                    <div class="horizontal-fields-container-res-check">
+                        <div class="field-container-res-check">
+                            <label for="reservation_id">{{ form.reservation_id.label }}</label>
+                            {{ form.reservation_id(id="reservation_id") }}
+                        </div>
+                        <div class="field-container-res-check">
+                            <label class="invisible-label" aria-hidden="true">schovane pole</label> 
+                            <button class="btn btn-warning" type="submit">Zkontrolovat rezervaci</button>
+                        </div>
                     </div>
-                    <div class="field-container-res-check">
-                        <label class="invisible-label" aria-hidden="true">schovane pole</label> 
-                        <button class="btn btn-warning" type="submit">Zkontrolovat rezervaci</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="right-column">
-            <div id="reservationDetails" class="reservation-details col-md-8"></div>
+                </form>
+            </div>
+            <div class="right-column col-md-6 col-sm-12 order-md-2 order-2">
+                <div id="reservationDetails" class="reservation-details col-md-8"></div>
+            </div>
         </div>
     </div>
-</div>
+</section>
     <script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
 {% endblock %}

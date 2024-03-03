@@ -99,11 +99,11 @@ select {
 }
 
 .reservations-section-search {
-    height: 390px;
+    height: 480px;
 }
 
 .reservations-section-all {
-    height: 400px;
+    height: 500px;
 }
 
 .pagination-controls button {
@@ -124,7 +124,7 @@ select {
 }
 
 .table-all-reservations {
-    height: 310px;
+    height: 390px;
 }
 
 .lessons-admin-grid {
@@ -195,4 +195,88 @@ select {
     color: black;
     border-radius: 8px;
     transition: none;
+}
+
+/* new table styling - will have to delete the previous on! */
+.reservation-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.reservation-table th {
+    background-color: #0D69B0 !important;
+    color: white;
+    border-bottom: 2px solid white;
+}
+
+.reservation-table thead th {
+    border: none;
+}
+
+.reservation-table th,
+.reservation-table td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.reservation-table tr:last-child td {
+    border-bottom: none;
+}
+
+.deleteReservation,
+.markAsPaid {
+    cursor: pointer;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.deleteReservation {
+    background-color: #f44336;
+    color: white;
+}
+
+.markAsPaid {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.table-specific-reservations {
+    height: 250px;
+}
+
+@media screen and (max-width: 600px) {
+
+    .reservation-table,
+    .reservation-table thead,
+    .reservation-table tbody,
+    .reservation-table th,
+    .reservation-table td,
+    .reservation-table tr {
+        display: block;
+    }
+
+    .reservation-table th,
+    .reservation-table td {
+        text-align: right;
+        padding-left: 50%;
+    }
+
+    .reservation-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
 }

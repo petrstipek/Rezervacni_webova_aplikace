@@ -47,6 +47,8 @@ $(document).ready(function () {
                 $.each(response.reservations[0], function (key) {
                     headerRow.append($('<th></th>').text(key));
                 });
+                headerRow.append($('<th></th>').text('Platba'));
+                headerRow.append($('<th></th>').text('Storno'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
@@ -57,6 +59,11 @@ $(document).ready(function () {
                         }
                         row.append($('<td></td>').text(value));
                     });
+                    var deleteButton = $(`<button class="deleteReservation" data-id="${reservation.ID_rezervace}">Storno</button>`);
+                    var paymentButton = $(`<button class="markAsPaid" data-id="${reservation.ID_rezervace}">Označit zaplaceno</button>`);
+
+                    row.append($('<td></td>').append(paymentButton));
+                    row.append($('<td></td>').append(deleteButton));
                     tbody.append(row);
                 });
 
@@ -111,7 +118,7 @@ $(document).ready(function () {
                         }
                         row.append($('<td></td>').text(value));
                     });
-                    var deleteButton = $(`<button class="deleteReservation" data-id="${reservation.ID_rezervace}">Delete</button>`);
+                    var deleteButton = $(`<button class="deleteReservation" data-id="${reservation.ID_rezervace}">Storno</button>`);
                     var paymentButton = $(`<button class="markAsPaid" data-id="${reservation.ID_rezervace}">Označit zaplaceno</button>`);
 
                     row.append($('<td></td>').append(paymentButton));
@@ -193,6 +200,7 @@ $(document).ready(function () {
             success: function (response) {
                 alert("Rezervace smazána.");
                 fetchReservationsAll(currentPageFirstTable);
+                fetchReservations(page)
             },
             error: function (xhr, status, error) {
                 alert("Error");

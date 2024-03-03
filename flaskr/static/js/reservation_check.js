@@ -3,22 +3,6 @@ $(document).ready(function () {
         event.preventDefault();
 
         var reservationId = $('#reservation_id').val();
-        var reservation_name = $('#reservation_name').val();
-        var reservation_email = $('#reservation_email').val();
-        var reservation_tel_number = $('#reservation_tel_number').val();
-
-        var baseUrl = "/reservations-api/get-reservation-details/";
-        var url;
-
-        if (reservationId) {
-            url = baseUrl + "reservationID/" + reservationId;
-        } else if (reservation_name) {
-            url = baseUrl + "name/" + reservation_name;
-        } else if (reservation_email) {
-            url = baseUrl + "email/" + reservation_email;
-        } else if (reservation_tel_number) {
-            url = baseUrl + "tel-number/" + reservation_tel_number
-        }
 
         $.ajax({
             url: "reservations-api/get-reservation/" + reservationId,
@@ -41,7 +25,7 @@ $(document).ready(function () {
 
                 var deleteRow = $('<tr></tr>');
                 var deleteCell = $('<td></td>').attr('colspan', '2');
-                var deleteButton = $('<button>Delete Reservation</button>')
+                var deleteButton = $('<button>Storno rezervace</button>')
                     .addClass('deleteReservationButton')
                     .data('reservationId', reservation['ID_rezervace']);
                 deleteCell.append(deleteButton);
