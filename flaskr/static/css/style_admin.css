@@ -13,6 +13,7 @@
 
 .navbar-custom {
     margin-bottom: 0 !important;
+    background-color: white !important;
 }
 
 .horizontal-fields-container-admin-reservations {
@@ -193,4 +194,5 @@ select {
     background-color: #ffe3ac;
     color: black;
     border-radius: 8px;
+    transition: none;
 }

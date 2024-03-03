@@ -201,6 +201,7 @@ hr {
     background-color: #ffe3ac;
     color: black;
     border-radius: 8px;
+    transition: none;
 }
 
 .form-layout {
