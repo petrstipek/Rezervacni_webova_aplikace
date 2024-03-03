@@ -156,7 +156,10 @@ $(document).ready(function () {
             $("input[name='date']").val(dateText);
             updateAvailableTimes(fetchAvailableTimes());
         }
-    });
+    }).datepicker("setDate", new Date());
+
+    selectedDate = $('#datepicker').val();
+    updateAvailableTimes(fetchAvailableTimes());
 
     $('.times-container').on('click', '.time-slot', function () {
         $('.times-container .time-slot').removeClass('selected');
