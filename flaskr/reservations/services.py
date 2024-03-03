@@ -75,7 +75,6 @@ def individual_reservation_1hour(reservation_id, instructor_selected, student_co
         found_number = 0
         for student in range(student_count):
             lesson_id = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ? AND typ_hodiny = ?', (date, time, "volno", "ind")).fetchone()
-            print(student, lesson_id, "jsem tady", student)
             if lesson_id == None:
                 message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
                 return False, message, message_type
@@ -201,12 +200,9 @@ def insert_students(student_count, reservation_id, client_name_fields, client_su
 
 def handle_number_student(student_client, more_students, client_name_fields):
     student_count = 0
-    if student_client:
-        student_count += 1
-    if more_students:
-        for i in range(len(client_name_fields)-1):
-            if client_name_fields[i] != "":
-                student_count += 1
+    for name_field in client_name_fields:
+        if name_field != "":
+            student_count += 1
     return student_count
 
 def handle_form(form):

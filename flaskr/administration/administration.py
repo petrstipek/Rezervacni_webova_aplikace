@@ -35,7 +35,7 @@ def instructors_admin():
 
     instructors_dict = get_all_instructors()
 
-    return render_template("blog/admin/instructors_admin.html", form=form, instructors_dict=instructors_dict)
+    return render_template("blog/admin/instructors_admin.html", form=form, instructors_dict=instructors_dict, active_page="instructors_admin")
 
 @administration_bp.route('/lessons-admin', methods=["POST", "GET"])
 @login_required
@@ -78,13 +78,13 @@ def lessons_admin():
 
     lessons_dict = get_all_lessons()
 
-    return render_template("blog/admin/lessons_admin.html", form=form, lessons_dict=lessons_dict)
+    return render_template("blog/admin/lessons_admin.html", form=form, lessons_dict=lessons_dict, active_page="lessons_admin")
 
 @administration_bp.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 def reservations_admin():
     form = ReservationInformationAdmin()
     reservations_dict = get_reservations()
-    return render_template("blog/admin/reservations_admin.html", form=form, reservations_dict=reservations_dict)
+    return render_template("blog/admin/reservations_admin.html", form=form, reservations_dict=reservations_dict, active_page="reservations_admin")
 
 @administration_bp.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
 @login_required

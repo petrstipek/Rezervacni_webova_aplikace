@@ -12,28 +12,37 @@
         {% block head %} {% endblock %}
     </head>
     <body>
-        <header class=" navbar-custom d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom header-no-margin global-margin">
+        <header class="navbar-custom d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom header-no-margin global-margin">
             <div class="col-md-3 mb-2 mb-md-0">
                 <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
-                    <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
+                    
                     <h1>Lyžařská škola</h1>
                 </a>
             </div>
-
-                <ul class="navbar-custom nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="{{ url_for('administration.reservations_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a></li>
-                    <li><a href="{{ url_for('administration.lessons_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Dostupné hodiny</a></li>
-                    <li><a href="{{ url_for('administration.instructors_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'school' else '' }}">Instruktoři</a></li>
-                    <li><a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a></li>
-                </ul>
-
-            <div class="col-md-3 text-end d-flex justify-content-end">
-                <div>
-                    {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('auth.logout') }}" class="btn btn-primary button-right-margin" role="button">Odhlášení</a>
-                    {% endif %}
-                </div>
-            </div>
+                <nav class="navbar-custom navbar navbar-expand-lg navbar-light bg-light">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarContent">
+                        <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a href="{{ url_for('administration.reservations_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservations_admin' else '' }}">Rezervace</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('administration.lessons_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'lessons_admin' else '' }}">Dostupné hodiny</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('administration.instructors_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'instructors_admin' else '' }}">Instruktoři</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
+                            </li>
+                        </ul>
+                        <div class="d-none d-lg-block">
+                            <a href="{{ url_for('auth.logout') }}" class="btn btn-warning button-right-margin btn-select-reservation" role="button">Odhlášení</a>
+                        </div>
+                    </div>
+                </nav>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}

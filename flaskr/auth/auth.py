@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flaskr.forms import LoginForm
 from flask_login import logout_user
-from flaskr.db import get_db
-from flaskr.models import User
 from flaskr.extensions import login_manager
 from flaskr.auth.services import *
 
