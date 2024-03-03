@@ -151,6 +151,7 @@ $(document).ready(function () {
 
     $('#datepicker').datepicker({
         dateFormat: 'yy-mm-dd',
+        minDate: 0,
         onSelect: function (dateText) {
             selectedDate = dateText;
             $("input[name='date']").val(dateText);

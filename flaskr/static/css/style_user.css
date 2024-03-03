@@ -229,12 +229,6 @@ hr {
     height: 100%;
 }
 
-.custom-date-picker-container .ui-datepicker td {
-    width: 90px;
-    background-color: #E0F4FF;
-    color: red !important;
-}
-
 .custom-date-picker-container .ui-datepicker a {
     text-align: center;
     padding: 4px 0;
@@ -466,4 +460,21 @@ hr {
     box-sizing: border-box;
     text-align: center;
     margin: 10px;
+}
+
+.ui-datepicker-unselectable.ui-state-disabled .ui-state-default {
+    color: #ff1010 !important;
+    background-color: #f2f2f2 !important;
+    flex: 0 0 calc(40% - 10px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    border-radius: 8px;
+    background-color: #ebeef0 !important;
+    text-align: center;
 }
