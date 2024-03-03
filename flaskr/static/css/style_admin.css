@@ -280,3 +280,7 @@ select {
         text-align: left;
     }
 }
+
+.lessons-admin-section {
+    height: 100%;
+}

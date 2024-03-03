@@ -116,4 +116,4 @@ def delete_lesson_admin(lesson_id):
             delete_lesson(lesson_id)
             return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
     except Exception as e:
-        return jsonify({"error": True, "message": "An error occurred. Please try again."}), 500
+        return jsonify({"error": True, "message": "Nastala chyba."}), 500

@@ -1,6 +1,6 @@
 $(document).ready(function () {
     var currentPage = 1;
-    var perPage = 7;
+    var perPage = 5;
     var totalPages = 0;
     var selectedDate = null;
 
@@ -22,7 +22,6 @@ $(document).ready(function () {
         if (date) {
             url += `&date=${date}`;
         }
-        console.log("Request URL:", url);
 
         $.ajax({
             url: url,
@@ -32,7 +31,7 @@ $(document).ready(function () {
                 $('#lessonsAll').empty();
 
                 if (response.lessons.length === 0) {
-                    $('#lessonsAll').text('Žádné lekce nejsou vypsané');
+                    $('#lessonsAll').text('Žádné lekce nejsou vypsané!');
                     return;
                 }
 
@@ -55,7 +54,7 @@ $(document).ready(function () {
                         }
                         row.append($('<td></td>').text(value));
                     });
-                    row.append($(`<td><button class="deleteReservation" onclick="deleteLesson(${lesson.ID_hodiny})">Smazání hodiny</button></td>`));
+                    row.append($(`<td><button class="deleteReservation" onclick="deleteLesson(${lesson.ID_hodiny})">Odstranění hodiny</button></td>`));
                     tbody.append(row);
                 });
 
@@ -105,7 +104,7 @@ $(document).ready(function () {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
-                alert("success");
+                alert(response.message);
                 fetchLessons(currentPage, selectedDate);
             },
             error: function (xhr, status, error) {
