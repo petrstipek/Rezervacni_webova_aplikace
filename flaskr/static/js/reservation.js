@@ -158,6 +158,7 @@ $(document).ready(function () {
     }).datepicker("setDate", new Date());
 
     selectedDate = $('#datepicker').val();
+    $("input[name='date']").val(selectedDate);
     updateAvailableTimes(fetchAvailableTimes());
 
     $('.times-container').on('click', '.time-slot', function () {

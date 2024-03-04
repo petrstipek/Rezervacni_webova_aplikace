@@ -75,7 +75,6 @@ def get_paginated_reservation_details(identifier, identifier_type, page, per_pag
     if query_result:
         results_list = [{column: row[i] for i, column in enumerate(columns)} for row in query_result]
         total_pages = (total_items + per_page - 1) // per_page
-        print(results_list)
         return {
             "reservations": results_list,
             "total_items": total_items,
