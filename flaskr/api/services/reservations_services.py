@@ -52,13 +52,14 @@ def delete_reservation_by_reservation_id(reservation_id):
     
 def get_paginated_reservation_details(identifier, identifier_type, page, per_page):
     db = get_db()
-    columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "platba", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
+    #columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "platba", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
+    columns = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "jméno instruktora", "příjmení instruktora"]
     query_map = {
-    "reservationID": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace WHERE rezervacni_kod = ?", (identifier,)),
-    "name": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE prijmeni = ?", (identifier,)),
-    "email": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE email = ?", (identifier,)),
-    "tel-number": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba) WHERE tel_cislo = ?", (identifier,)),
-    "all": ("SELECT ID_rezervace, ID_osoba, typ_rezervace, termin, platba, cas_zacatku, doba_vyuky, jazyk, pocet_zaku FROM rezervace LEFT JOIN Klient USING (ID_osoba)", ())
+    "reservationID": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where R.rezervacni_kod = ? order by R.termin, R.cas_zacatku", (identifier,)),
+    "name": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.prijmeni = ? order by R.termin, R.cas_zacatku", (identifier,)),
+    "email": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.email = ? order by R.termin, R.cas_zacatku", (identifier,)),
+    "tel-number": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.tel_cislo = ? order by R.termin, R.cas_zacatku", (identifier,)),
+    "all": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba order by R.termin, R.cas_zacatku", ()),
 }
 
     if identifier_type not in query_map:
@@ -74,6 +75,7 @@ def get_paginated_reservation_details(identifier, identifier_type, page, per_pag
     if query_result:
         results_list = [{column: row[i] for i, column in enumerate(columns)} for row in query_result]
         total_pages = (total_items + per_page - 1) // per_page
+        print(results_list)
         return {
             "reservations": results_list,
             "total_items": total_items,

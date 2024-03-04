@@ -39,21 +39,31 @@ $(document).ready(function () {
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
+                var keyOrder = ["Termín", "Čas začátku", "Jméno", "Příjmení", "Stav", "Typ hodiny", "Obsazenost"]
 
-                $.each(response.lessons[0], function (key) {
+                $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));
                 });
-                headerRow.append($('<th></th>').text('Odstranění výuky'));
-                thead.append(headerRow);
 
+                headerRow.append($('<th></th>').text('Instruktor'));
+                headerRow.append($('<th></th>').text('Odstranění výuky'));
+
+                thead.append(headerRow);
+                console.log(response.lessons)
                 $.each(response.lessons, function (index, lesson) {
                     var row = $('<tr></tr>');
-                    $.each(lesson, function (key, value) {
-                        if (key === 'datum') {
+                    $.each(keyOrder, function (index, key) {
+                        var value = lesson[key]
+                        console.log(value)
+                        if (key === 'Termín') {
                             value = formatDate(value);
                         }
                         row.append($('<td></td>').text(value));
                     });
+
+                    var instructorFullName = lesson['Jméno'] + ' ' + lesson['Příjmení'];
+                    row.append($('<td></td>').text(instructorFullName));
+
                     row.append($(`<td><button class="deleteReservation" onclick="deleteLesson(${lesson.ID_hodiny})">Odstranění hodiny</button></td>`));
                     tbody.append(row);
                 });

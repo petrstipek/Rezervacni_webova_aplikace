@@ -43,22 +43,29 @@ $(document).ready(function () {
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
+                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky"]
 
-                $.each(response.reservations[0], function (key) {
+                $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));
                 });
+                headerRow.append($('<th></th>').text('Instruktor'));
                 headerRow.append($('<th></th>').text('Platba'));
                 headerRow.append($('<th></th>').text('Storno'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
                     var row = $('<tr></tr>');
-                    $.each(reservation, function (key, value) {
-                        if (key === 'termin') {
+                    $.each(keyOrder, function (index, key) {
+                        var value = reservation[key];
+                        if (key === 'termín rezervace') {
                             value = formatDate(value);
                         }
                         row.append($('<td></td>').text(value));
                     });
+
+                    var instructorFullName = reservation['jméno instruktora'] + ' ' + reservation['příjmení instruktora'];
+                    row.append($('<td></td>').text(instructorFullName));
+
                     var deleteButton = $(`<button class="deleteReservation" data-id="${reservation.ID_rezervace}">Storno</button>`);
                     var paymentButton = $(`<button class="markAsPaid" data-id="${reservation.ID_rezervace}">Označit zaplaceno</button>`);
 
@@ -102,22 +109,29 @@ $(document).ready(function () {
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
+                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky"]
 
-                $.each(response.reservations[0], function (key) {
+                $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));
                 });
+                headerRow.append($('<th></th>').text('Instruktor'));
                 headerRow.append($('<th></th>').text('Platba'));
                 headerRow.append($('<th></th>').text('Storno'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
                     var row = $('<tr></tr>');
-                    $.each(reservation, function (key, value) {
-                        if (key === 'termin') {
+                    $.each(keyOrder, function (index, key) {
+                        var value = reservation[key];
+                        if (key === 'termín rezervace') {
                             value = formatDate(value);
                         }
                         row.append($('<td></td>').text(value));
                     });
+
+                    var instructorFullName = reservation['jméno instruktora'] + ' ' + reservation['příjmení instruktora'];
+                    row.append($('<td></td>').text(instructorFullName));
+
                     var deleteButton = $(`<button class="deleteReservation" data-id="${reservation.ID_rezervace}">Storno</button>`);
                     var paymentButton = $(`<button class="markAsPaid" data-id="${reservation.ID_rezervace}">Označit zaplaceno</button>`);
 
