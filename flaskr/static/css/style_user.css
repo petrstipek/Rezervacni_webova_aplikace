@@ -275,7 +275,7 @@ hr {
     background-color: #F5F5F5;
     color: black;
     text-align: center;
-    padding: 5px 0;
+    padding: 0px !important;
     border-radius: 8px;
 }
 
@@ -478,4 +478,8 @@ hr {
     border-radius: 8px;
     background-color: #ebeef0 !important;
     text-align: center;
+}
+
+.ui-datepicker {
+    padding: 0px !important;
 }

@@ -2,8 +2,9 @@ from flaskr.db import get_db
 
 def get_paginated_lessons(page, per_page, selected_date=None):
     db = get_db()
-    base_query = 'SELECT datum, cas_zacatku, jmeno, prijmeni, stav, typ_hodiny, obsazenost FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) LEFT JOIN Instruktor USING (ID_osoba)'
-    columns = ["Termín", "Čas začátku", "Jméno", "Příjmení", "Stav", "Typ hodiny", "Obsazenost"]
+    #base_query = 'SELECT datum, cas_zacatku, jmeno, prijmeni, stav, typ_hodiny, obsazenost FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) LEFT JOIN Instruktor USING (ID_osoba)'
+    base_query = 'SELECT datum, cas_zacatku, jmeno, prijmeni, stav, typ_hodiny, (kapacita - obsazenost) AS Zbyvajici FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny) LEFT JOIN Instruktor USING (ID_osoba)'
+    columns = ["Termín", "Čas začátku", "Jméno", "Příjmení", "Stav", "Typ hodiny", "Zbývající kapacita"]
     if selected_date:
         lessons = db.execute(f"{base_query} WHERE datum = ? LIMIT ? OFFSET ?", (selected_date, per_page, (page - 1) * per_page)).fetchall()
         total = db.execute('SELECT COUNT(*) FROM dostupne_hodiny WHERE datum = ?', (selected_date,)).fetchone()[0]

@@ -24,9 +24,9 @@ class PersonalInformationForm(FlaskForm):
     surname_client2 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
     surname_client3 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
 
-    age_client1 = IntegerField('Věk', validators=[Optional(), NumberRange(min=0, max=120)])
-    age_client2 = IntegerField('Věk', validators=[Optional(), NumberRange(min=0, max=120)])
-    age_client3 = IntegerField('Věk', validators=[Optional(), NumberRange(min=0, max=120)])
+    age_client1 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
+    age_client2 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
+    age_client3 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
 
     experience_client1 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
     experience_client2 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
