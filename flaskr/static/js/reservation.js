@@ -196,5 +196,4 @@ $(document).ready(function () {
         $('#lesson_length').prop('disabled', false);
         $('#lesson_instructor').prop('disabled', false);
     });
-
 });

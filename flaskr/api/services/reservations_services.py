@@ -11,6 +11,7 @@ def delete_reservation_by_reservation_code(reservation_id):
         if cur.fetchone() is None:
             return False, "Rezervace nebyla nalezena!"
         query_result = db.execute("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
+        lesson_id = db.execute("select * from rezervace left join prirazeno using (ID_rezervace) left join Dostupne_hodiny using (ID_hodiny) where rezervacni_kod = ? ", (reservation_id,)).fetchone()
         reservation_id = query_result["ID_rezervace"]
 
         if query_result["typ_rezervace"] == "individual":
@@ -24,10 +25,12 @@ def delete_reservation_by_reservation_code(reservation_id):
             db.commit()
         elif query_result["typ_rezervace"] == "group":
             student_count = query_result["pocet_zaku"]
-            lesson = db.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchone()
+            lesson = db.execute("SELECT * from Dostupne_hodiny WHERE ID_hodiny = ?", (lesson_id["ID_hodiny"],)).fetchone()
             lesson_occupancy = lesson["obsazenost"]
             new_availability = lesson_occupancy - student_count
-            db.execute("UPDATE Dostupne_hodiny SET obsazenost = ? WHERE ID_hodiny = ?", (new_availability, lesson_id_tuple[0],))
+            print(lesson_occupancy, "lesson ocupancy")
+            print(new_availability, "new avail")
+            db.execute("UPDATE Dostupne_hodiny SET obsazenost = ? WHERE ID_hodiny = ?", (new_availability, lesson["ID_hodiny"],))
 
             cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
             cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
