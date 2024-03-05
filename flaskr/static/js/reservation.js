@@ -182,14 +182,9 @@ $(document).ready(function () {
             if (lessonType === 'group') {
                 $('#lesson_length').val('1hodina');
                 $('#lesson_instructor_choices').val('0');
+                $('#lesson_instructor').val('0');
                 $('#lesson_length').prop('disabled', true);
-
                 $('#lesson_instructor').prop('disabled', true);
-                //$('#lesson_length').prop('disabled', true);
-
-                //$('#lesson_length_hidden').val('1hodina');
-                //$('#lesson_instructor_choices_hidden').val('0');
-
             } else {
                 $('#lesson_length').prop('disabled', false);
                 $('#lesson_instructor').prop('disabled', false);
