@@ -8,6 +8,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+    <link href="{{ url_for('static', filename='css/reservation_page.css') }}" rel="stylesheet">
+
 {% endblock %}
 
 
@@ -71,7 +73,8 @@
                 </div>
                 <div class="field-container-pi">
                     <label for="tel_number">{{ form.tel_number.label }}</label>
-                    {{ form.tel_number }}
+                    {{ form.tel_number(id="reservation_tel_number") }}
+                    <span id="tel_error" class="error-message"></span>
                 </div>
                 <div class="field-container-pi">
                     <label for="email">{{ form.email.label }}</label>

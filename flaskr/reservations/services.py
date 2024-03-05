@@ -119,8 +119,8 @@ def individual_reservation_2hour(reservation_id, instructor_selected, student_co
         if found_number < student_count:
             message, message_type = "Nebyly nalezeny dvě po sobě jdoucí hodiny se stejným instruktorem!", "danger"
             return False, message, message_type
-    message, message_type = "Dvou hodinové lekce zarezervovány!", "succes"
-    return False, message, message_type
+    message, message_type = "Dvou hodinové lekce zarezervovány!", "success"
+    return True, message, message_type
 
 def check_two_hour_availability(fixed_iteration_type, instructor_selected, date, time, time_plus_one, instructors=None):
     db = get_db()

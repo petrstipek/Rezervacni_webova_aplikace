@@ -13,14 +13,27 @@ def delete_reservation_by_reservation_code(reservation_id):
         query_result = db.execute("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
         reservation_id = query_result["ID_rezervace"]
 
-        lesson_ids = cur.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchall()
-        for lesson_id_tuple in lesson_ids:
-            cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id_tuple[0],))
-        
-        cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-        cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
-        cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
-        db.commit()
+        if query_result["typ_rezervace"] == "individual":
+            lesson_ids = cur.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchall()
+            for lesson_id_tuple in lesson_ids:
+                cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id_tuple[0],))
+            
+            cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
+            cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
+            cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
+            db.commit()
+        elif query_result["typ_rezervace"] == "group":
+            student_count = query_result["pocet_zaku"]
+            lesson = db.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchone()
+            lesson_occupancy = lesson["obsazenost"]
+            new_availability = lesson_occupancy - student_count
+            db.execute("UPDATE Dostupne_hodiny SET obsazenost = ? WHERE ID_hodiny = ?", (new_availability, lesson_id_tuple[0],))
+
+            cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
+            cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
+            cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
+
+            db.commit()
 
         return True, "Ok"
     except sqlite3.Error as e:
@@ -59,7 +72,7 @@ def get_paginated_reservation_details(identifier, identifier_type, page, per_pag
     "name": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.prijmeni = ? order by R.termin, R.cas_zacatku", (identifier,)),
     "email": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.email = ? order by R.termin, R.cas_zacatku", (identifier,)),
     "tel-number": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.tel_cislo = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "all": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba order by R.termin, R.cas_zacatku", ()),
+    "all": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where R.termin >= date('now') order by R.termin, R.cas_zacatku", ()),
 }
 
     if identifier_type not in query_map:

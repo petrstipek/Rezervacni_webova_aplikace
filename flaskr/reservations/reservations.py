@@ -17,10 +17,14 @@ def main_page():
     available_instructors = get_all_instructors()
     available_instructors = handle_all_instructors(available_instructors)
     form.lesson_instructor_choices.choices = available_instructors
-
+    print(available_instructors)
+    print(form.validate_on_submit())
     if form.validate_on_submit():
         message, message_type = process_reservation(form)
         flash(message, category=message_type)
         return redirect(url_for('reservations.main_page'))
+    else:
+        flash("Rezervace neproběhla úspěšně!", category="danger")
+        print(form.errors)
 
     return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form)

@@ -1,19 +1,13 @@
 $(document).ready(function () {
-
-    const lessonTypeSelect = document.getElementById('lesson_type');
-    const additionalField1Container = document.getElementById('div_lesson_length');
-    const additionalField2Container = document.getElementById('div_lesson_instructor');
-    const additionalField3Container = document.getElementById('div_lesson_language')
-
-    lessonTypeSelect.addEventListener('change', function () {
-        if (this.value === 'individual') {
-            additionalField1Container.style.display = '';
-            additionalField2Container.style.display = '';
-            additionalField3Container.style.display = '';
-        } else if (this.value === 'group') {
-            additionalField1Container.style.display = 'none';
-            additionalField2Container.style.display = 'none';
-            additionalField3Container.style.display = 'none';
+    var selectedDate = '';
+    $('#reservation_tel_number').on('input', function () {
+        var isPhone = /^\d{10}$/.test($(this).val());
+        if (isPhone) {
+            $(this).css('border', '2px solid green');
+            $('#tel_error').hide();
+        } else {
+            $(this).css('border', '2px solid red');
+            $('#tel_error').show().text('Please enter a valid 10-digit telephone number.');
         }
     });
 
@@ -28,6 +22,8 @@ $(document).ready(function () {
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);
+                    selectedDate = $('#datepicker').val();
+                    $("input[name='date']").val(selectedDate);
                 },
                 error: function (error) {
                     console.error('Error fetching available times:', error);
@@ -38,7 +34,11 @@ $(document).ready(function () {
                 url: '/reservations-api/get-available-times/group',
                 type: 'GET',
                 success: function (data) {
+                    console.log("group function ")
                     updateAvailableTimes(data);
+                    //selectedDate = $('#datepicker').val();
+                    //$("input[name='date']").val(selectedDate);
+                    console.log(selectedDate)
                 },
                 error: function (error) {
                     console.error('Error fetching available times:', error);
@@ -93,7 +93,6 @@ $(document).ready(function () {
 
     var availableTimesInd = ($('#datepicker').data('available-times-ind'));
     var availableTimesGroup = ($('#datepicker').data('available-times-group'));
-    var selectedDate = '';
 
     function updateAvailableTimes(data_times) {
         if (!selectedDate || typeof data_times === 'undefined') {
@@ -131,12 +130,12 @@ $(document).ready(function () {
             var time = timeCountPair[0];
             var count = timeCountPair[1];
             timesHtml += `<div class="time-slot">
-                        <label class="time-slot-label d-flex justify-content-between align-items-center">
-                            <span class="time">${time}</span>
-                            <span class="count">Volné hodiny k rezervaci: ${count}</span>
-                            <input class="form-check-input" type="radio" name="time" value="${time}" />
-                        </label>
-                    </div>`;
+                            <label class="time-slot-label d-flex justify-content-between align-items-center">
+                                <span class="time">${time}</span>
+                                <span class="count">Volné hodiny k rezervaci: ${count}</span>
+                                <input class="form-check-input" type="radio" name="time" value="${time}" />
+                            </label>
+                        </div>`;
 
             if (index === timesForSelectedDate.length - 1) {
                 timesHtml += '</div>';
@@ -172,6 +171,7 @@ $(document).ready(function () {
     $('.times-container').on('change', 'input[name="time"]', function () {
         if (this.checked) {
             $("input[name='time']").val($(this).val());
+            console.log($(this).val())
         }
     });
 
@@ -180,14 +180,26 @@ $(document).ready(function () {
             const lessonType = $(this).val();
 
             if (lessonType === 'group') {
+                $('#lesson_length').val('1hodina');
+                $('#lesson_instructor_choices').val('0');
                 $('#lesson_length').prop('disabled', true);
+
                 $('#lesson_instructor').prop('disabled', true);
+                //$('#lesson_length').prop('disabled', true);
+
+                //$('#lesson_length_hidden').val('1hodina');
+                //$('#lesson_instructor_choices_hidden').val('0');
+
             } else {
                 $('#lesson_length').prop('disabled', false);
                 $('#lesson_instructor').prop('disabled', false);
-                $('#lesson_language').prop('disabled', false);
             }
         });
+    });
+    //flask wont submit disabled fields
+    $('form').submit(function () {
+        $('#lesson_length').prop('disabled', false);
+        $('#lesson_instructor').prop('disabled', false);
     });
 
 });
