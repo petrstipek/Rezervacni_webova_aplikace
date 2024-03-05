@@ -64,8 +64,9 @@ $(document).ready(function () {
                     location.reload();
                 },
                 error: function (xhr, status, error) {
-                    console.error("Error: " + status + " - " + error);
-                    alert('Error, rezervace nebyla zrušena!');
+                    var response = JSON.parse(xhr.responseText);
+                    var errorMessage = response.error;
+                    alert('Error, rezervace nebyla zrušena! Detail: ' + errorMessage);
                 }
             });
         }

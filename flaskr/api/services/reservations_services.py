@@ -1,6 +1,6 @@
 from flaskr.db import get_db
 import sqlite3
-import datetime
+from datetime import datetime, timedelta, date
 
 def delete_reservation_by_reservation_code(reservation_id):
     db = get_db()
@@ -11,6 +11,17 @@ def delete_reservation_by_reservation_code(reservation_id):
         if cur.fetchone() is None:
             return False, "Rezervace nebyla nalezena!"
         query_result = db.execute("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
+
+        today = datetime.now().date()
+        combined_datetime_str = f'{query_result["termin"]} {query_result["cas_zacatku"]}'
+        time_now = datetime.now()
+        lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M')
+        time_difference = lesson_time - time_now
+
+        if time_difference < timedelta(hours=2):
+            print("jo jsem tady")
+            return False, "Rezervace nemůže být zrušena! Zbývá méně jak 2 hodiny do hodiny."
+
         lesson_id = db.execute("select * from rezervace left join prirazeno using (ID_rezervace) left join Dostupne_hodiny using (ID_hodiny) where rezervacni_kod = ? ", (reservation_id,)).fetchone()
         reservation_id = query_result["ID_rezervace"]
 
@@ -28,8 +39,6 @@ def delete_reservation_by_reservation_code(reservation_id):
             lesson = db.execute("SELECT * from Dostupne_hodiny WHERE ID_hodiny = ?", (lesson_id["ID_hodiny"],)).fetchone()
             lesson_occupancy = lesson["obsazenost"]
             new_availability = lesson_occupancy - student_count
-            print(lesson_occupancy, "lesson ocupancy")
-            print(new_availability, "new avail")
             db.execute("UPDATE Dostupne_hodiny SET obsazenost = ? WHERE ID_hodiny = ?", (new_availability, lesson["ID_hodiny"],))
 
             cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
@@ -148,7 +157,7 @@ def get_reservation_detail(identifier):
     if query_result:
         result_dict = {}
         for i, column in enumerate(columns):
-            if isinstance(query_result[i], datetime.date):
+            if isinstance(query_result[i], date):
                 formatted_date = query_result[i].strftime('%d.%m.%Y')
                 result_dict[column] = formatted_date
             else:
