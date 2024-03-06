@@ -1,6 +1,10 @@
 from flaskr.db import get_db
 import sqlite3
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
+from flaskr.extensions import database
+from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Prirazeno, DostupneHodiny
+from sqlalchemy.orm import aliased
+from sqlalchemy.exc import SQLAlchemyError
 
 def delete_reservation_by_reservation_code(reservation_id):
     db = get_db()
@@ -53,61 +57,76 @@ def delete_reservation_by_reservation_code(reservation_id):
         return False, "nok"
     
 def delete_reservation_by_reservation_id(reservation_id):
-    db = get_db()
-    cur = db.cursor()
-    
     try:
-        cur.execute("SELECT 1 FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-        if cur.fetchone() is None:
+        reservation = database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).first()
+        if reservation is None:
             return False, "Rezervace nebyla nalezena!"
 
-        lesson_ids = cur.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchall()
-        for lesson_id_tuple in lesson_ids:
-            cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id_tuple[0],))
+        lesson_ids = database.session.query(Prirazeno.ID_hodiny).filter_by(ID_rezervace=reservation_id).all()
+        lesson_ids = [id_tuple[0] for id_tuple in lesson_ids]
         
-        cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-        cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
-        cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
-        db.commit()
+        database.session.query(DostupneHodiny).filter(DostupneHodiny.ID_hodiny.in_(lesson_ids)).update({'stav': 'volno'}, synchronize_session='fetch')
+        
+        database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+        database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
+        database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
+
+        database.session.commit()
 
         return True, "Ok"
-    except sqlite3.Error as e:
-        db.rollback()
-        return False, "nok"
+    except SQLAlchemyError as e:
+        database.session.rollback()
+        return False, str(e)
     
-def get_paginated_reservation_details(identifier, identifier_type, page, per_page):
-    db = get_db()
-    #columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "platba", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
-    columns = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "jméno instruktora", "příjmení instruktora"]
-    query_map = {
-    "reservationID": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where R.rezervacni_kod = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "name": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.prijmeni = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "email": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.email = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "tel-number": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.tel_cislo = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "all": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where R.termin >= date('now') order by R.termin, R.cas_zacatku", ()),
-}
+def get_paginated_reservation_details(page, per_page, identifier=None, identifier_type=None):
+    KlientOsoba = aliased(Osoba)
+    InstruktorOsoba = aliased(Osoba)
 
-    if identifier_type not in query_map:
-        return None, "Invalid reservation identifier"
+    base_query = database.session.query(
+        Rezervace.ID_rezervace,
+        KlientOsoba.jmeno.label('jméno klienta'),
+        KlientOsoba.prijmeni.label('příjmení klienta'),
+        Rezervace.termin.label('termín rezervace'),
+        Rezervace.cas_zacatku.label('čas začátku'),
+        Rezervace.doba_vyuky.label('doba výuky'),
+        InstruktorOsoba.jmeno.label('jméno instruktora'),
+        InstruktorOsoba.prijmeni.label('příjmení instruktora')
+    ).join(KlientOsoba, Rezervace.ID_osoba == KlientOsoba.ID_osoba)\
+    .outerjoin(MaVyuku, Rezervace.ID_rezervace == MaVyuku.ID_rezervace)\
+    .outerjoin(InstruktorOsoba, MaVyuku.ID_osoba == InstruktorOsoba.ID_osoba)
 
-    sql_query, params = query_map[identifier_type]
-    paginated_sql_query = f"{sql_query} LIMIT ? OFFSET ?"
-    paginated_params = params + (per_page, (page - 1) * per_page)
+    if identifier_type and identifier:
+        if identifier_type == 'reservationID':
+            base_query = base_query.filter(Rezervace.rezervacni_kod == identifier)
+        elif identifier_type == 'name':
+            base_query = base_query.filter(KlientOsoba.prijmeni == identifier)
+        elif identifier_type == 'email':
+            base_query = base_query.filter(KlientOsoba.email == identifier)
+        elif identifier_type == 'tel-number':
+            base_query = base_query.filter(KlientOsoba.tel_cislo == identifier)
 
-    query_result = db.execute(paginated_sql_query, paginated_params).fetchall()
-    total_items = db.execute(f"SELECT COUNT(*) FROM ({sql_query})", params).fetchone()[0]
-    
-    if query_result:
-        results_list = [{column: row[i] for i, column in enumerate(columns)} for row in query_result]
-        total_pages = (total_items + per_page - 1) // per_page
-        return {
-            "reservations": results_list,
-            "total_items": total_items,
-            "total_pages": total_pages,
-            "current_page": page
-        }, None
-    else:
-        return None, "Žádné rezervace nenalezeny!"
+    total_items = base_query.count()
+    lessons = base_query.order_by(Rezervace.termin, Rezervace.cas_zacatku)\
+                        .limit(per_page)\
+                        .offset((page - 1) * per_page)\
+                        .all()
+
+    results_list = [{
+        'jméno klienta': lesson[1],
+        'příjmení klienta': lesson[2],
+        'termín rezervace': lesson[3].isoformat() if lesson[3] else '',
+        'čas začátku': lesson[4].strftime('%H:%M') if lesson[4] else '',
+        'doba výuky': lesson[5],
+        'jméno instruktora': lesson[6],
+        'příjmení instruktora': lesson[7]
+    } for lesson in lessons]
+
+    return {
+        "reservations": results_list,
+        "total_items": total_items,
+        "total_pages": (total_items + per_page - 1) // per_page,
+        "current_page": page
+    }, None
     
 def fetch_available_group_times():
     db = get_db()
@@ -151,16 +170,31 @@ def fetch_available_times_for_individual_instructor(instructor_id=None):
     return query_result
 
 def get_reservation_detail(identifier):
-    db = get_db()
-    query_result = db.execute("SELECT termin, cas_zacatku, pocet_zaku, doba_vyuky, platba FROM Rezervace LEFT JOIN Instruktor USING (ID_osoba) WHERE rezervacni_kod = ?", (identifier,)).fetchone()
+    query_result = database.session.query(
+        Rezervace.termin,
+        Rezervace.cas_zacatku,
+        Rezervace.pocet_zaku,
+        Rezervace.doba_vyuky,
+        Rezervace.platba
+    ).outerjoin(Instruktor, Rezervace.ID_osoba == Instruktor.ID_osoba)\
+    .filter(Rezervace.rezervacni_kod == identifier)\
+    .first()
+
     columns = ["Termín", "Čas začátku", "Počet žáků", "Doba výuky", "Stav platby"]
+    
     if query_result:
         result_dict = {}
+        attrs = ['termin', 'cas_zacatku', 'pocet_zaku', 'doba_vyuky', 'platba']
         for i, column in enumerate(columns):
-            if isinstance(query_result[i], date):
-                formatted_date = query_result[i].strftime('%d.%m.%Y')
+            value = getattr(query_result, attrs[i])
+            if isinstance(value, date):
+                formatted_date = value.strftime('%d.%m.%Y')
                 result_dict[column] = formatted_date
+            elif isinstance(value, time):
+                formatted_time = value.strftime('%H:%M')
+                result_dict[column] = formatted_time
             else:
-                result_dict[column] = query_result[i]
+                result_dict[column] = value
         return result_dict
+
     return False

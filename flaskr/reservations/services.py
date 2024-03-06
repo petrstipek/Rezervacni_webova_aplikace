@@ -3,6 +3,8 @@ from flask_mail import Message
 from flaskr.extensions import mail
 from flaskr.db import get_db
 from datetime import datetime, timedelta
+from flaskr.models import Rezervace
+from flaskr.extensions import database
 
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=[recipients])
@@ -48,6 +50,27 @@ def process_reservation(form):
     identifier = generate_unique_reservation_identifier()
 
     cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, platba, rezervacni_kod, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (client_id, lesson_type, date, time , lesson_length, language_selection, student_count, "nezaplaceno", identifier, reservation_note))
+    
+    termin_date = datetime.strptime(date, '%Y-%m-%d').date()
+    cas_zacatku_time = datetime.strptime(time, '%H:%M').time() 
+
+    new_reservation = Rezervace(
+    ID_osoba=client_id,
+    typ_rezervace=lesson_type,
+    termin=termin_date,
+    cas_zacatku=cas_zacatku_time,
+    doba_vyuky=lesson_length,
+    jazyk=language_selection,
+    pocet_zaku=student_count,
+    platba='nezaplaceno',
+    rezervacni_kod=identifier,
+    poznamka=reservation_note 
+    )
+
+    database.session.add(new_reservation)
+    #database.session.commit()
+
+
     reservation_id = cursor.lastrowid
     insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields)
 

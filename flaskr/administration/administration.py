@@ -4,6 +4,7 @@ from flaskr.db import get_db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin
 from flaskr.administration.services import *
 from flaskr.api.services.instructor_services import get_all_instructors
+from datetime import datetime
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
@@ -65,26 +66,27 @@ def lessons_admin():
                 return redirect(url_for("administration.lessons_admin"))
 
         date_str = date.strftime("%Y-%m-%d")
+        time_obj = datetime.strptime(time_start, '%H:%M').time()
 
         if lesson_type == "ind":
-            success, message = add_individual_lesson(db, date_str, time_start, instructor_id, lesson_type, capacity)
+            success, message = add_individual_lesson(db, date, time_obj, instructor_id, lesson_type, capacity)
         elif lesson_type == "group":
-            success, message = add_group_lesson(db, date_str, time_start, instructor_ids, lesson_type, capacity)
+            success, message = add_group_lesson(db, date, time_obj, instructor_ids, lesson_type, capacity)
 
         if success:
             flash(message, category="success")
         else:
             flash(message, category="danger")
 
-    lessons_dict = get_all_lessons()
+    #lessons_dict = get_all_lessons()
 
-    return render_template("blog/admin/lessons_admin.html", form=form, lessons_dict=lessons_dict, active_page="lessons_admin")
+    return render_template("blog/admin/lessons_admin.html", form=form, active_page="lessons_admin")
 
 @administration_bp.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 def reservations_admin():
     form = ReservationInformationAdmin()
-    reservations_dict = get_reservations()
-    return render_template("blog/admin/reservations_admin.html", form=form, reservations_dict=reservations_dict, active_page="reservations_admin")
+    #reservations_dict = get_reservations()
+    return render_template("blog/admin/reservations_admin.html", form=form, active_page="reservations_admin")
 
 @administration_bp.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
 @login_required

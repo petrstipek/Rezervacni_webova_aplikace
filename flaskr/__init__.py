@@ -22,6 +22,11 @@ def create_app(test_config=None):
     bootstrap = Bootstrap5(app)
     csrf = CSRFProtect(app)
 
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'database.sqlite')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    database.init_app(app)
+
     db.init_app(app)
     login_manager.init_app(app)
 
@@ -46,6 +51,9 @@ def create_app(test_config=None):
     app.config['MAIL_DEFAULT_SENDER'] = 'jl6701543@gmail.com'
 
     mail.init_app(app)
+
+    with app.app_context():
+        database.create_all()
 
 
     if test_config is None:

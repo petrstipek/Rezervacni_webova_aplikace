@@ -28,7 +28,7 @@ def get_reservation_details(reservation_identifiers, identifier):
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 5, type=int)
 
-    data, error = get_paginated_reservation_details(identifier, reservation_identifiers, page, per_page)
+    data, error = get_paginated_reservation_details(page, per_page, identifier, reservation_identifiers)
     if error:
         response = {"error": error}
         status_code = 404 if error == "Žádné rezervace nenalezeny!" else 400
