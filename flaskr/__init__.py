@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap5
 from flaskr.forms import CSRFProtect
 from flaskr.extensions import mail
 from . import db
-from flaskr.extensions import login_manager
+from flaskr.extensions import login_manager, database
 from flaskr.auth.auth import auth_bp
 from flaskr.reservations.reservations import reservations_bp
 from flaskr.administration.administration import administration_bp

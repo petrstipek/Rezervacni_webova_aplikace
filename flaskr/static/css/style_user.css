@@ -138,7 +138,7 @@ section {
 }
 
 .section-grey {
-    background-color: #F5F5F5;
+    background-color: white;
     margin-bottom: 0px;
 }
 
@@ -249,6 +249,7 @@ hr {
     background-color: #F5F5F5 !important;
     border-color: black;
     color: black;
+    width: 100%;
 }
 
 .custom-date-picker-container #datepicker .ui-datepicker td a.ui-state-active {
@@ -378,22 +379,10 @@ hr {
     margin-bottom: 5px;
 }
 
-.custom-date-picker-container,
-.times-container {
-    min-height: 430px;
-}
-
 .grid-container {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-}
-
-.left-column,
-.right-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
 }
 
 .time-slot {
@@ -482,4 +471,83 @@ hr {
 
 .ui-datepicker {
     padding: 0px !important;
+}
+
+.times-container,
+.custom-date-picker-container {
+    width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.times-container .time-slot {
+    width: 100% !important;
+    padding: 10px !important;
+}
+
+.times-grid {
+    width: 100%
+}
+
+.time-slot {
+    width: 100%;
+}
+
+.ui-datepicker-inline {
+    width: 100% !important;
+}
+
+.ui-datepicker table {
+    width: 100%;
+}
+
+.ui-datepicker-inline,
+.ui-datepicker.ui-widget-content {
+    display: block !important;
+    width: 100% !important;
+}
+
+.hasDatepicker {
+    width: 100%;
+}
+
+.times-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+}
+
+.time-slot {
+    padding: 10px;
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 48%;
+    min-height: 50vh;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+
+    .left-column,
+    .right-column {
+        width: 100%;
+        min-height: auto;
+        overflow: visible;
+    }
+}
+
+.times-container {
+    max-height: 385px;
 }
