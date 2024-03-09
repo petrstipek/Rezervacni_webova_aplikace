@@ -109,7 +109,7 @@ $(document).ready(function () {
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
-                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky"]
+                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "stav platby"]
 
                 $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));

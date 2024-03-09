@@ -1,21 +1,3 @@
-
-class User:
-    def __init__(self, id, username):
-        self.id = id
-        self.username = username
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return str(self.id)
-    
 from sqlalchemy import create_engine, Column, Integer, String, Date, Time, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
@@ -46,6 +28,22 @@ class Osoba(Base):
 
     def get_id(self):
         return str(self.ID_osoba)
+    
+    def __init__(self, id, username):
+        self.id = id
+        self.username = username
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
 
 class SpravceSkoly(Base):
     __tablename__ = 'spravce_skoly'

@@ -1,25 +1,20 @@
-from flaskr.db import get_db
 from flaskr.extensions import database
-from flaskr.models import Osoba, Instruktor
+from flaskr.models import Osoba, Instruktor, MaVyuku
 
 def instructor_has_lessons(instructor_id):
-    db = get_db()
-    query_result = db.execute('SELECT * FROM ma_vyuku WHERE ID_osoba = ?', (instructor_id,)).fetchone()
+    query_result = database.session.query(MaVyuku).filter_by(ID_osoba=instructor_id)
     return query_result is not None
 
 def delete_instructor_by_id(instructor_id):
-    db = get_db()
     try:
-        db.execute('DELETE FROM Instruktor WHERE ID_osoba = ?', (instructor_id,))
-        db.commit()
+        database.session.query(Instruktor).filter_by(ID_osoba=instructor_id).delete()
+        database.session.commit()
     except Exception as e:
-        db.rollback()  
+        database.session.rollback()
         return False, e
     return True
 
 def get_all_instructors():
-    #db = get_db()
-    #query_result = db.execute('SELECT * FROM Instruktor').fetchall()
     query_result = database.session.query(Instruktor).all()
 
     instructors_list = []
@@ -34,4 +29,3 @@ def get_all_instructors():
         }
         instructors_list.append(instruktor_dict)
     return instructors_list
-    return [dict(row) for row in query_result]

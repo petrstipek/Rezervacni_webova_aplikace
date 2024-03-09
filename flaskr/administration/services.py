@@ -126,33 +126,33 @@ def add_group_lesson(db, date_str, time_start, instructor_ids, lesson_type, capa
     return True, "Lesson added successfully"
 
 def get_reservations():
-    #db = get_db()
-    #query_result = db.execute('SELECT * FROM rezervace left join Klient USING (ID_osoba)').fetchall()
-    #Kontrola, asi není používané už!
     query_result = database.session.query(Rezervace).join(Klient, Rezervace.ID_osoba == Klient.ID_osoba).all()
 
     return [dict(row) for row in query_result]
 
 def get_reservation_payment_status(reservation_id):
-    db = get_db()
-    reservation = db.execute('SELECT platba FROM rezervace WHERE ID_rezervace = ?', (reservation_id,)).fetchone()
+    #db = get_db()
+    #reservation = db.execute('SELECT platba FROM rezervace WHERE ID_rezervace = ?', (reservation_id,)).fetchone()
+    reservation = database.session.query(Rezervace.platba).filter_by(ID_rezervace=reservation_id).first()
     return reservation
 
 def mark_reservation_as_paid(reservation_id):
-    db = get_db()
-    db.execute('UPDATE rezervace SET platba = "zaplaceno" WHERE ID_rezervace = ?', (reservation_id,))
-    db.commit()
+    #db = get_db()
+    #db.execute('UPDATE rezervace SET platba = "zaplaceno" WHERE ID_rezervace = ?', (reservation_id,))
+    #db.commit()
+
+    database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).update({"platba" : "zaplaceno"})
+    database.session.commit()
 
 def get_lesson_status(lesson_id):
-    db = get_db()
-    query_result = db.execute('SELECT stav FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,)).fetchone()
+    query_result = database.session.query(DostupneHodiny.stav).filter_by(ID_hodiny=lesson_id).first()
     return query_result
 
 def delete_lesson(lesson_id):
-    db = get_db()
-    db.execute('DELETE FROM dostupne_hodiny WHERE ID_hodiny = ?', (lesson_id,))
-    db.execute('DELETE FROM ma_vypsane WHERE ID_hodiny = ?', (lesson_id,))
-    db.commit()
+    database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_id).delete()
+    database.session.query(MaVypsane).filter_by(ID_hodiny=lesson_id).delete()
+    database.session.commit()
+
 
 def get_all_lessons():
     #nepouziva se?

@@ -5,6 +5,7 @@ from datetime import date, time
 
 def get_paginated_lessons(page, per_page, selected_date=None):
     base_query = database.session.query(
+            DostupneHodiny.ID_hodiny,
             DostupneHodiny.datum,
             DostupneHodiny.cas_zacatku,
             Osoba.jmeno,
@@ -15,7 +16,6 @@ def get_paginated_lessons(page, per_page, selected_date=None):
         ).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny
         ).outerjoin(Instruktor, MaVypsane.ID_osoba == Instruktor.ID_osoba
         ).outerjoin(Osoba, Instruktor.ID_osoba == Osoba.ID_osoba)
-    print(base_query, "base qeury here")
     if selected_date:
         filtered_query = base_query.filter(DostupneHodiny.datum == selected_date)
         lessons = filtered_query.limit(per_page).offset((page - 1) * per_page).all()
@@ -27,13 +27,14 @@ def get_paginated_lessons(page, per_page, selected_date=None):
     results_list = []
     for lesson in lessons:
         lesson_dict = {
-            'Termín': lesson[0].strftime('%Y-%m-%d') if isinstance(lesson[0], date) else lesson[0],
-            'Čas začátku': lesson[1].strftime('%H:%M') if isinstance(lesson[1], time) else lesson[1], 
-            'Jméno': lesson[2],
-            'Příjmení': lesson[3],
-            'Stav': lesson[4],
-            'Typ hodiny': lesson[5],
-            'Zbývající kapacita': lesson[6]
+            'ID_hodiny': lesson[0],
+            'Termín': lesson[1].strftime('%Y-%m-%d') if isinstance(lesson[1], date) else lesson[1],
+            'Čas začátku': lesson[2].strftime('%H:%M') if isinstance(lesson[2], time) else lesson[2], 
+            'Jméno': lesson[3],
+            'Příjmení': lesson[4],
+            'Stav': lesson[5],
+            'Typ hodiny': lesson[6],
+            'Zbývající kapacita': lesson[7]
         }
         results_list.append(lesson_dict)
 

@@ -2,9 +2,10 @@ from flaskr.db import get_db
 import sqlite3
 from datetime import datetime, timedelta, date, time
 from flaskr.extensions import database
-from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Prirazeno, DostupneHodiny
+from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Prirazeno, DostupneHodiny, MaVypsane
 from sqlalchemy.orm import aliased
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
 
 def delete_reservation_by_reservation_code(reservation_id):
     db = get_db()
@@ -90,7 +91,8 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         Rezervace.cas_zacatku.label('čas začátku'),
         Rezervace.doba_vyuky.label('doba výuky'),
         InstruktorOsoba.jmeno.label('jméno instruktora'),
-        InstruktorOsoba.prijmeni.label('příjmení instruktora')
+        InstruktorOsoba.prijmeni.label('příjmení instruktora'),
+        Rezervace.platba.label('stav platby')
     ).join(KlientOsoba, Rezervace.ID_osoba == KlientOsoba.ID_osoba)\
     .outerjoin(MaVyuku, Rezervace.ID_rezervace == MaVyuku.ID_rezervace)\
     .outerjoin(InstruktorOsoba, MaVyuku.ID_osoba == InstruktorOsoba.ID_osoba)
@@ -112,13 +114,15 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
                         .all()
 
     results_list = [{
+        'ID_rezervace': lesson[0],
         'jméno klienta': lesson[1],
         'příjmení klienta': lesson[2],
         'termín rezervace': lesson[3].isoformat() if lesson[3] else '',
         'čas začátku': lesson[4].strftime('%H:%M') if lesson[4] else '',
         'doba výuky': lesson[5],
         'jméno instruktora': lesson[6],
-        'příjmení instruktora': lesson[7]
+        'příjmení instruktora': lesson[7],
+        'stav platby': lesson[8]
     } for lesson in lessons]
 
     return {
@@ -129,44 +133,49 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
     }, None
     
 def fetch_available_group_times():
-    db = get_db()
-    query_result = db.execute("""
-        SELECT datum, cas_zacatku, (kapacita - obsazenost) as count
-        FROM dostupne_hodiny
-        WHERE stav = 'volno' AND typ_hodiny = 'group' AND obsazenost < kapacita
-        GROUP BY datum, cas_zacatku
-        ORDER BY datum, cas_zacatku;
-    """).fetchall()
+    query_result = database.session.query(
+        DostupneHodiny.datum,
+        DostupneHodiny.cas_zacatku,
+        (DostupneHodiny.kapacita - DostupneHodiny.obsazenost).label('count')
+    ).filter(
+        DostupneHodiny.stav == 'volno',
+        DostupneHodiny.typ_hodiny == 'group',
+        DostupneHodiny.obsazenost < DostupneHodiny.kapacita
+    ).group_by(
+        DostupneHodiny.datum, DostupneHodiny.cas_zacatku
+    ).order_by(
+        DostupneHodiny.datum, DostupneHodiny.cas_zacatku
+    ).all()
+
     return query_result
 
 def format_available_times(query_results):
     available_times = {}
     for row in query_results:
-        date_str = row['datum'].strftime('%Y-%m-%d')
-        time_str = row['cas_zacatku']
-        count = row['count']
-        
+        date_str = row[0].strftime('%Y-%m-%d')  
+        time_str = row[1].strftime('%H:%M')   
+        count = row[2]                        
+
         if date_str not in available_times:
             available_times[date_str] = []
-        
+
         available_times[date_str].append((time_str, count))
-    
+
     return available_times
 
 def fetch_available_times_for_individual_instructor(instructor_id=None):
-    db = get_db()
-    base_query = """
-        SELECT datum, cas_zacatku, COUNT(*) as count
-        FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny)
-        WHERE stav = 'volno' AND typ_hodiny = 'ind'
-    """
-    parameters = ()
-    if instructor_id and instructor_id != 0:
-        base_query += " AND ID_osoba = ?"
-        parameters = (instructor_id,)
+    base_query = database.session.query(
+        DostupneHodiny.datum,
+        DostupneHodiny.cas_zacatku,
+        func.count().label('count')
+    ).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny)\
+    .filter(DostupneHodiny.stav == 'volno', DostupneHodiny.typ_hodiny == 'ind')
     
-    base_query += " GROUP BY datum, cas_zacatku ORDER BY datum, cas_zacatku"
-    query_result = db.execute(base_query, parameters).fetchall()
+    if instructor_id and instructor_id != 0:
+        base_query = base_query.filter(MaVypsane.ID_osoba == instructor_id)
+
+    query_result = base_query.group_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).order_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).all()
+    print(query_result)
     return query_result
 
 def get_reservation_detail(identifier):

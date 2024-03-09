@@ -5,6 +5,7 @@ from flaskr.db import get_db
 from datetime import datetime, timedelta
 from flaskr.models import Rezervace
 from flaskr.extensions import database
+from sqlalchemy.orm.exc import NoResultFound 
 
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=[recipients])
@@ -13,16 +14,14 @@ def send_email(subject, sender, recipients, text_body, html_body):
     mail.send(msg)
 
 def generate_unique_reservation_identifier():
-    identifier = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-    db = get_db()
-
-    query_result = db.execute('SELECT rezervacni_kod FROM rezervace').fetchall()
-
-    existing_identifiers = [row['rezervacni_kod'] for row in query_result]
-
-    while identifier in existing_identifiers:
+    while True:
         identifier = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-    
+
+        try:
+            database.session.query(Rezervace).filter_by(rezervacni_kod=identifier).one()
+        except NoResultFound:
+            break
+
     return identifier
 
 def get_or_create_klient(name, surname, email, phone):

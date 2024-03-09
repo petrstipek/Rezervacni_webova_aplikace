@@ -83,6 +83,7 @@ def lessons_admin():
     return render_template("blog/admin/lessons_admin.html", form=form, active_page="lessons_admin")
 
 @administration_bp.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
+@login_required
 def reservations_admin():
     form = ReservationInformationAdmin()
     #reservations_dict = get_reservations()
@@ -96,8 +97,7 @@ def reservation_payment_status(reservation_id):
 
         if not reservation:
             return jsonify({'status': 'error', 'message': 'Rezervace nenalezena!'}), 404
-
-        payment_status = reservation["platba"]
+        payment_status = reservation[0]
         if payment_status == "nezaplaceno":
             mark_reservation_as_paid(reservation_id)
             return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
@@ -111,10 +111,9 @@ def reservation_payment_status(reservation_id):
 def delete_lesson_admin(lesson_id):
     try:
         lesson_status = get_lesson_status(lesson_id)
-
-        if lesson_status and lesson_status["stav"] == "obsazeno":
+        if lesson_status and lesson_status[0] == "obsazeno":
             return jsonify({"error": True, "message": "Hodina je obsazena, nelze smazat, nejdřív smažte rezervaci."}), 400
-        else:
+        elif lesson_status and lesson_status[0] == "volno":
             delete_lesson(lesson_id)
             return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
     except Exception as e:
