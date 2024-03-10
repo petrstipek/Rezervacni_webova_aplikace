@@ -28,10 +28,6 @@ class Osoba(Base):
 
     def get_id(self):
         return str(self.ID_osoba)
-    
-    def __init__(self, id, username):
-        self.id = id
-        self.username = username
 
     def is_authenticated(self):
         return True
@@ -43,7 +39,7 @@ class Osoba(Base):
         return False
 
     def get_id(self):
-        return str(self.id)
+        return str(self.ID_osoba)
 
 class SpravceSkoly(Base):
     __tablename__ = 'spravce_skoly'
@@ -101,9 +97,10 @@ class Prirazeno(Base):
 
 class Zak(Base):
     __tablename__ = 'zak'
-    ID_rezervace = Column(Integer, ForeignKey('rezervace.ID_rezervace'), primary_key=True)
+    ID_zak = Column(Integer, primary_key=True, autoincrement=True)
+    ID_rezervace = Column(Integer, ForeignKey('rezervace.ID_rezervace'), nullable=False)
     jmeno = Column(String(20), nullable=False)
     prijmeni = Column(String(30), nullable=False)
     zkusenost = Column(String(20), nullable=False)
     vek = Column(Integer, nullable=False)
-    rezervace = relationship(Rezervace, backref='zak')
+    rezervace = relationship("Rezervace", backref='zak')

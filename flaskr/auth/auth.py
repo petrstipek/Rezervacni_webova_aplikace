@@ -10,7 +10,7 @@ auth_bp = Blueprint('auth', __name__, template_folder='templates')
 def load_user(user_id):
     user_result = get_user_by_id(user_id)
     if user_result:
-        return create_user_object(user_result)
+        return user_result
     return None
 
 @auth_bp.route('/login-page-admin', methods=['GET', 'POST'])

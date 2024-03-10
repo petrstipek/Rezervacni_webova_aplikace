@@ -3,9 +3,11 @@ from flask_mail import Message
 from flaskr.extensions import mail
 from flaskr.db import get_db
 from datetime import datetime, timedelta
-from flaskr.models import Rezervace
+from flaskr.models import Rezervace, Osoba, Klient, Instruktor, DostupneHodiny, MaVypsane, MaVyuku, Prirazeno, Zak
 from flaskr.extensions import database
 from sqlalchemy.orm.exc import NoResultFound 
+from sqlalchemy import and_
+from sqlalchemy.exc import SQLAlchemyError
 
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=[recipients])
@@ -25,15 +27,20 @@ def generate_unique_reservation_identifier():
     return identifier
 
 def get_or_create_klient(name, surname, email, phone):
-    db = get_db()
-    result = db.execute('SELECT ID_osoba FROM klient WHERE email = ?', (email,)).fetchone()
+    query_result = database.session.query(Osoba).filter_by(email=email).first()
 
-    if result:
-        klient_id = result[0]
+    if query_result:
+        klient_id = query_result.ID_osoba
     else:
-        cursor = db.execute('INSERT INTO klient (jmeno, prijmeni, email, tel_cislo) VALUES (?, ?, ?, ?)', (name, surname, email, phone))
-        db.commit()
-        klient_id = cursor.lastrowid
+        new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=phone,)
+        database.session.add(new_osoba)
+        database.session.flush()
+
+        klient_id = new_osoba.ID_osoba
+
+        new_client = Klient(ID_osoba=new_osoba.ID_osoba,)
+        database.session.add(new_client)
+        database.session.commit()
 
     return klient_id
 
@@ -48,30 +55,33 @@ def process_reservation(form):
     student_count = handle_number_student(student_client, more_students, client_name_fields)
     identifier = generate_unique_reservation_identifier()
 
-    cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, platba, rezervacni_kod, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (client_id, lesson_type, date, time , lesson_length, language_selection, student_count, "nezaplaceno", identifier, reservation_note))
+    #cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, platba, rezervacni_kod, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (client_id, lesson_type, date, time , lesson_length, language_selection, student_count, "nezaplaceno", identifier, reservation_note))
     
     termin_date = datetime.strptime(date, '%Y-%m-%d').date()
     cas_zacatku_time = datetime.strptime(time, '%H:%M').time() 
 
     new_reservation = Rezervace(
-    ID_osoba=client_id,
-    typ_rezervace=lesson_type,
-    termin=termin_date,
-    cas_zacatku=cas_zacatku_time,
-    doba_vyuky=lesson_length,
-    jazyk=language_selection,
-    pocet_zaku=student_count,
-    platba='nezaplaceno',
-    rezervacni_kod=identifier,
-    poznamka=reservation_note 
-    )
+        ID_osoba=client_id,
+        typ_rezervace=lesson_type,
+        termin=termin_date,
+        cas_zacatku=cas_zacatku_time,
+        doba_vyuky=lesson_length,
+        jazyk=language_selection,
+        pocet_zaku=student_count,
+        platba='nezaplaceno',
+        rezervacni_kod=identifier,
+        poznamka=reservation_note 
+)
 
     database.session.add(new_reservation)
-    #database.session.commit()
+    database.session.flush()
 
+    reservation_id = new_reservation.ID_rezervace
+    print("resevationid", reservation_id)
 
-    reservation_id = cursor.lastrowid
     insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields)
+    
+    #database.session.commit()
 
     if lesson_type == "individual":
         result, message, message_type = individual_reservation(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one)
@@ -81,7 +91,7 @@ def process_reservation(form):
     
     if result:
         send_email('Rezervace lyžařské hodiny', 'jl6701543@gmail.com', 'felixgrent@gmail.com', 'text body emailu', "Vaše rezervace má ID: "  + identifier)
-        db.commit()
+        database.session.commit()
     
     return message, message_type
 
@@ -92,15 +102,23 @@ def individual_reservation(reservation_id, instructor_selected, lesson_length, s
         return individual_reservation_2hour(reservation_id, instructor_selected, student_count, date, time, time_plus_one)
 
 def individual_reservation_1hour(reservation_id, instructor_selected, student_count, date, time):
-    db = get_db()
+    #db = get_db()
+    termin_date = datetime.strptime(date, '%Y-%m-%d').date()
+    cas_zacatku_time = datetime.strptime(time, '%H:%M').time() 
     if instructor_selected == "0":
         found_number = 0
         for student in range(student_count):
-            lesson_id = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ? AND typ_hodiny = ?', (date, time, "volno", "ind")).fetchone()
+            #lesson_id = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ? AND typ_hodiny = ?', (date, time, "volno", "ind")).fetchone()
+            lesson_id = database.session.query(DostupneHodiny.ID_hodiny).filter(
+                        DostupneHodiny.datum == termin_date,
+                        DostupneHodiny.cas_zacatku == cas_zacatku_time,
+                        DostupneHodiny.stav == 'volno',
+                        DostupneHodiny.typ_hodiny == 'ind'
+                        ).first()
             if lesson_id == None:
                 message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
                 return False, message, message_type
-            assign_instructor_lesson_1hour(lesson_id["ID_hodiny"], reservation_id)
+            assign_instructor_lesson_1hour(lesson_id, reservation_id)
             found_number += 1
         if found_number < student_count:
             message, message_type = "Nedostatečný počet dostupných hodin pro zvolený počet žáků!", "danger"
@@ -109,11 +127,12 @@ def individual_reservation_1hour(reservation_id, instructor_selected, student_co
         if student_count > 1:
             message, message_type = "Pro volbu instruktora je možné mít pouze jednoho žáka!", "danger"
             return False, message, message_type
-        lesson = db.execute('SELECT ID_hodiny, ID_osoba from dostupne_hodiny left join ma_vypsane using("ID_hodiny") WHERE ID_osoba = ? AND datum = ? AND cas_zacatku = ? and stav = ? AND typ_hodiny = ?', (instructor_selected, date, time, "volno", "ind")).fetchone()
+        #lesson = db.execute('SELECT ID_hodiny, ID_osoba from dostupne_hodiny left join ma_vypsane using("ID_hodiny") WHERE ID_osoba = ? AND datum = ? AND cas_zacatku = ? and stav = ? AND typ_hodiny = ?', (instructor_selected, date, time, "volno", "ind")).fetchone()
+        lesson = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny).filter(and_(MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time, DostupneHodiny.stav=="volno", DostupneHodiny.typ_hodiny=="ind")).first()
         if lesson == None:
             message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
             return False, message, message_type
-        assign_instructor_lesson_1hour(lesson["ID_hodiny"], reservation_id)
+        assign_instructor_lesson_1hour(lesson.ID_hodiny, reservation_id)
     
     message, message_type = "Rezervace proběhla úspěšně!", "success"
     return True, message, message_type
@@ -145,81 +164,169 @@ def individual_reservation_2hour(reservation_id, instructor_selected, student_co
     return True, message, message_type
 
 def check_two_hour_availability(fixed_iteration_type, instructor_selected, date, time, time_plus_one, instructors=None):
-    db = get_db()
+    termin_date = datetime.strptime(date, '%Y-%m-%d').date()
+    cas_zacatku_time = datetime.strptime(time, '%H:%M').time()
+    cas_zacatku_time_plus_one = datetime.strptime(time_plus_one, '%H:%M').time() 
+    #db = get_db()
     if fixed_iteration_type:
         for i in range(2):
-            query_result = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = ? and cas_zacatku = ? AND ID_osoba = ? AND typ_hodiny = ? order by ID_osoba', (date, time, instructor_selected, "ind")).fetchone()    
+            #query_result = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = ? and cas_zacatku = ? AND ID_osoba = ? AND typ_hodiny = ? order by ID_osoba', (date, time, instructor_selected, "ind")).fetchone()    
+            query_result = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time, MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result is None:
                 continue
-            query_result2 = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = ? and cas_zacatku = ? AND typ_hodiny = ?', (instructor_selected, date, time_plus_one, "ind")).fetchone()        
+            #query_result2 = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = ? and cas_zacatku = ? AND typ_hodiny = ?', (instructor_selected, date, time_plus_one, "ind")).fetchone()        
+            query_result2 = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time_plus_one, MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result2 is None:
                 continue
-            instructor_id = query_result["ID_osoba"]
-            lessons_id = (query_result["ID_hodiny"], query_result2["ID_hodiny"])
+            #instructor_id = query_result["ID_osoba"]
+            instructor_id = query_result.ID_osoba
+            lessons_id = (query_result.ID_hodiny, query_result2.ID_hodiny)
             return instructor_id, lessons_id
     else:
         for id_osoba in instructors:
-            query_result = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = ? and cas_zacatku = ? AND ID_osoba = ? AND typ_hodiny = ? order by ID_osoba', (date, time, id_osoba, "ind")).fetchone()    
+            #query_result = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = ? and cas_zacatku = ? AND ID_osoba = ? AND typ_hodiny = ? order by ID_osoba', (date, time, id_osoba, "ind")).fetchone()    
+            query_result = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, MaVypsane.ID_osoba==id_osoba, DostupneHodiny.cas_zacatku==cas_zacatku_time, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result is None:
                 continue
-            query_result2 = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = ? and cas_zacatku = ? AND typ_hodiny = ?', (id_osoba, date, time_plus_one, "ind")).fetchone()        
+            #query_result2 = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = ? and cas_zacatku = ? AND typ_hodiny = ?', (id_osoba, date, time_plus_one, "ind")).fetchone()        
+            query_result2 = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time_plus_one, MaVypsane.ID_osoba==id_osoba, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result2 is None:
                 continue
-            instructor_id = query_result["ID_osoba"]
-            lessons_id = (query_result["ID_hodiny"], query_result2["ID_hodiny"])
+            instructor_id = query_result.ID_osoba
+            lessons_id = (query_result.ID_hodiny, query_result2.ID_hodiny)
             return instructor_id, lessons_id
     return False     
 
 
 def assign_instructor_lesson_2hour(instructor_id, lessons_id, reservation_id):
-    db = get_db()
-    db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (lessons_id[0],))
-    db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (lessons_id[1],))
-    db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (instructor_id,reservation_id))
-    db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, lessons_id[0]))
-    db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, lessons_id[1]))
+    try:
+        for lesson_id in lessons_id:
+            lesson = database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_id).first()
+            if lesson:
+                lesson.stav = 'obsazeno'
+
+        new_ma_vyuku = MaVyuku(ID_osoba=instructor_id, ID_rezervace=reservation_id)
+        database.session.add(new_ma_vyuku)
+
+        for lesson_id in lessons_id:
+            new_prirazeno = Prirazeno(ID_rezervace=reservation_id, ID_hodiny=lesson_id)
+            database.session.add(new_prirazeno)
+
+        database.session.commit()
+    
+    except Exception as e:
+        database.session.rollback()
+        raise e 
 
 
 def unique_instructors():
-    db = get_db()
-    unique_ids = db.execute('SELECT DISTINCT ID_osoba FROM ma_vypsane').fetchall()
-    return [row['ID_osoba'] for row in unique_ids]
+    unique_ids = database.session.query(MaVypsane.ID_osoba).distinct().all()
+    return [row.ID_osoba for row in unique_ids]
 
 def assign_instructor_lesson_1hour(lesson_id, reservation_id):
-    db = get_db()
+    lesson_id = lesson_id.ID_hodiny
+    try:
+        database.session.query(DostupneHodiny)\
+            .filter(DostupneHodiny.ID_hodiny == lesson_id)\
+            .update({DostupneHodiny.stav: "obsazeno"})
+        
+        instructor_result = database.session.query(MaVypsane.ID_osoba)\
+            .filter(MaVypsane.ID_hodiny == lesson_id).first()
+        
+        if instructor_result is None:
+            raise Exception("nenalezen instruktor pro tuto hodinu")
+        
+        instructor_id = instructor_result.ID_osoba
 
-    db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (lesson_id,))
-    instructor_id = db.execute('SELECT ID_osoba FROM ma_vypsane WHERE ID_hodiny = ?', (lesson_id,)).fetchone()
-    db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (instructor_id["ID_osoba"],reservation_id))
-    db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, lesson_id))
+        new_ma_vyuku = MaVyuku(ID_osoba=instructor_id, ID_rezervace=reservation_id)
+        database.session.add(new_ma_vyuku)
+
+        new_prirazeno = Prirazeno(ID_rezervace=reservation_id, ID_hodiny=lesson_id)
+        database.session.add(new_prirazeno)
+
+        database.session.commit()
+        
+    except SQLAlchemyError as e:
+        database.session.rollback()
+        raise e
 
 def group_reservation(reservation_id, student_count, date, time):
-    db = get_db()
-    for student in range(student_count):
-        query_result = db.execute('SELECT ID_hodiny, ID_osoba, obsazenost, kapacita FROM dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND stav = ? AND typ_hodiny = ? AND obsazenost < kapacita', (date, time, "volno", "group")).fetchone()
-        if query_result == None:
-            message, message_type = 'Pozor - kapacita lekce byla překročena. Zvolte menší počet žáků!', "danger"
-            return False, message, message_type
-        obsazenost = query_result["obsazenost"] + 1
-        db.execute('UPDATE Dostupne_hodiny SET obsazenost = ? WHERE ID_hodiny = ?', (obsazenost, query_result["ID_hodiny"],))
-    db.execute('INSERT INTO ma_vyuku (ID_osoba, ID_rezervace) VALUES (?, ?)', (query_result["ID_osoba"],reservation_id))
-    db.execute('INSERT INTO prirazeno (ID_rezervace, ID_hodiny) VALUES (?, ?)', (reservation_id, query_result["ID_hodiny"]))
-    handle_group_lesson_state(query_result["obsazenost"], query_result["kapacita"], query_result["ID_hodiny"])
-    message, message_type = "Rezervace byla úspěšně uložena, detail najdete v emailu!", "success"
-    return True, message, message_type
+    try:
+        termin_date = datetime.strptime(date, '%Y-%m-%d').date()
+        cas_zacatku_time = datetime.strptime(time, '%H:%M').time()
+        
+        instructor_id = None
+        lesson_id = None
+
+        for student in range(student_count):
+            lesson = database.session.query(DostupneHodiny)\
+                .outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny)\
+                .filter(
+                    DostupneHodiny.datum == termin_date,
+                    DostupneHodiny.cas_zacatku == cas_zacatku_time,
+                    DostupneHodiny.stav == 'volno',
+                    DostupneHodiny.typ_hodiny == 'group',
+                    DostupneHodiny.obsazenost < DostupneHodiny.kapacita
+                ).first()
+
+            if lesson is None:
+                message, message_type = 'Pozor - kapacita lekce byla překročena. Zvolte menší počet žáků!', "danger"
+                return False, message, message_type
+            
+            lesson.obsazenost += 1
+            if student == 0:
+                instructor_id = lesson.ID_osoba
+                lesson_id = lesson.ID_hodiny
+
+        if instructor_id and lesson_id:
+            new_ma_vyuku = MaVyuku(ID_osoba=instructor_id, ID_rezervace=reservation_id)
+            new_prirazeno = Prirazeno(ID_rezervace=reservation_id, ID_hodiny=lesson_id)
+            database.session.add(new_ma_vyuku)
+            database.session.add(new_prirazeno)
+
+        database.session.commit()
+        handle_group_lesson_state(lesson.obsazenost, lesson.kapacita, lesson_id)
+        message, message_type = "Rezervace byla úspěšně uložena, detail najdete v emailu!", "success"
+        return True, message, message_type
+
+    except SQLAlchemyError as e:
+        database.session.rollback()
+        return False, "Database error: " + str(e), "danger"
 
 def handle_group_lesson_state(occupancy, capacity, ID_lesson):
-    db = get_db()
-    if occupancy == capacity:
-        db.execute('UPDATE Dostupne_hodiny SET stav = "obsazeno" WHERE ID_hodiny = ?', (ID_lesson,))
+    try:
+        if occupancy == capacity:
+            database.session.query(DostupneHodiny)\
+                .filter(DostupneHodiny.ID_hodiny == ID_lesson)\
+                .update({DostupneHodiny.stav: 'obsazeno'})
+            
+            database.session.commit()
+
+    except SQLAlchemyError as e:
+        database.session.rollback()
+        raise e
 
 def insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields):
-    db = get_db()
-    for i in range(student_count):
-        if client_age_fields[i] == None:
-            continue
-        db.execute('INSERT INTO zak (ID_rezervace, jmeno, prijmeni, zkusenost, vek) VALUES (?, ?, ?, ?, ?)', (reservation_id, client_name_fields[i], client_surname_fields[i], client_experience_fields[i], client_age_fields[i]))
-
+    try:
+        for i in range(student_count):
+            if client_age_fields[i] is None:
+                continue
+        
+            new_student = Zak(
+                ID_rezervace=reservation_id,
+                jmeno=client_name_fields[i],
+                prijmeni=client_surname_fields[i],
+                zkusenost=client_experience_fields[i],
+                vek=client_age_fields[i]
+            )
+            database.session.add(new_student)
+        
+        database.session.commit()
+    
+    except Exception as e:
+        database.session.rollback()
+        raise e
+    
 def handle_number_student(student_client, more_students, client_name_fields):
     student_count = 0
     for name_field in client_name_fields:
