@@ -2,59 +2,70 @@ from flaskr.db import get_db
 import sqlite3
 from datetime import datetime, timedelta, date, time
 from flaskr.extensions import database
-from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Prirazeno, DostupneHodiny, MaVypsane
+from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Prirazeno, DostupneHodiny, MaVypsane, Zak
 from sqlalchemy.orm import aliased
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 
 def delete_reservation_by_reservation_code(reservation_id):
-    db = get_db()
-    cur = db.cursor()
-    
     try:
-        cur.execute("SELECT 1 FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,))
-        if cur.fetchone() is None:
+        reservation = database.session.query(Rezervace).filter_by(rezervacni_kod=reservation_id).first()
+        if reservation is None:
             return False, "Rezervace nebyla nalezena!"
-        query_result = db.execute("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
 
         today = datetime.now().date()
-        combined_datetime_str = f'{query_result["termin"]} {query_result["cas_zacatku"]}'
+        combined_datetime_str = f'{reservation.termin} {reservation.cas_zacatku}'
+        print(combined_datetime_str, "combined datetim str")
         time_now = datetime.now()
-        lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M')
+        lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
+        print(lesson_time, "lesson_time")
         time_difference = lesson_time - time_now
 
         if time_difference < timedelta(hours=2):
-            print("jo jsem tady")
             return False, "Rezervace nemůže být zrušena! Zbývá méně jak 2 hodiny do hodiny."
 
-        lesson_id = db.execute("select * from rezervace left join prirazeno using (ID_rezervace) left join Dostupne_hodiny using (ID_hodiny) where rezervacni_kod = ? ", (reservation_id,)).fetchone()
-        reservation_id = query_result["ID_rezervace"]
+        reservation_id = reservation.ID_rezervace
 
-        if query_result["typ_rezervace"] == "individual":
-            lesson_ids = cur.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchall()
-            for lesson_id_tuple in lesson_ids:
-                cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id_tuple[0],))
+        if reservation.typ_rezervace == "individual":
+            lessons = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).all()
+            for lesson in lessons:
+                database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson.ID_hodiny).update({"stav" : "volno"})
+
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
+
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
             
-            cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
-            db.commit()
-        elif query_result["typ_rezervace"] == "group":
-            student_count = query_result["pocet_zaku"]
-            lesson = db.execute("SELECT * from Dostupne_hodiny WHERE ID_hodiny = ?", (lesson_id["ID_hodiny"],)).fetchone()
-            lesson_occupancy = lesson["obsazenost"]
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+
+            database.session.commit()
+
+        elif reservation.typ_rezervace == "group":
+            student_count = reservation.pocet_zaku
+            lesson_group = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).first()
+            lesson = database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).first()
+            lesson_occupancy = lesson.obsazenost
             new_availability = lesson_occupancy - student_count
-            db.execute("UPDATE Dostupne_hodiny SET obsazenost = ? WHERE ID_hodiny = ?", (new_availability, lesson["ID_hodiny"],))
+            database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).update({"obsazenost": new_availability})
 
-            cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
 
-            db.commit()
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
+
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id)
+            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id)
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+
+            database.session.commit()
 
         return True, "Ok"
     except sqlite3.Error as e:
-        db.rollback()
+        database.session.rollback()
         return False, "nok"
     
 def delete_reservation_by_reservation_id(reservation_id):
@@ -63,21 +74,58 @@ def delete_reservation_by_reservation_id(reservation_id):
         if reservation is None:
             return False, "Rezervace nebyla nalezena!"
 
-        lesson_ids = database.session.query(Prirazeno.ID_hodiny).filter_by(ID_rezervace=reservation_id).all()
-        lesson_ids = [id_tuple[0] for id_tuple in lesson_ids]
-        
-        database.session.query(DostupneHodiny).filter(DostupneHodiny.ID_hodiny.in_(lesson_ids)).update({'stav': 'volno'}, synchronize_session='fetch')
-        
-        database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
-        database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
-        database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
+        today = datetime.now().date()
+        combined_datetime_str = f'{reservation.termin} {reservation.cas_zacatku}'
+        print(combined_datetime_str, "combined datetim str")
+        time_now = datetime.now()
+        lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
+        print(lesson_time, "lesson_time")
+        time_difference = lesson_time - time_now
 
-        database.session.commit()
+        if time_difference < timedelta(hours=2):
+            return False, "Rezervace nemůže být zrušena! Zbývá méně jak 2 hodiny do hodiny."
+
+        if reservation.typ_rezervace == "individual":
+            lessons = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).all()
+            for lesson in lessons:
+                database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson.ID_hodiny).update({"stav" : "volno"})
+
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
+
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
+            
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+
+            database.session.commit()
+
+        elif reservation.typ_rezervace == "group":
+            student_count = reservation.pocet_zaku
+            lesson_group = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).first()
+            lesson = database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).first()
+            lesson_occupancy = lesson.obsazenost
+            new_availability = lesson_occupancy - student_count
+            database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).update({"obsazenost": new_availability})
+
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
+
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
+
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id)
+            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id)
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+
+            database.session.commit()
 
         return True, "Ok"
-    except SQLAlchemyError as e:
+    except sqlite3.Error as e:
         database.session.rollback()
-        return False, str(e)
+        return False, "nok"
     
 def get_paginated_reservation_details(page, per_page, identifier=None, identifier_type=None):
     KlientOsoba = aliased(Osoba)
@@ -133,6 +181,7 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
     }, None
     
 def fetch_available_group_times():
+
     query_result = database.session.query(
         DostupneHodiny.datum,
         DostupneHodiny.cas_zacatku,
