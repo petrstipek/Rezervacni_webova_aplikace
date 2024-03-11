@@ -31,13 +31,28 @@ def main_page():
         else:
             flash("Captcha chyba. Opakujte odeslání!", category="danger")
             return render_template("blog/user/reservation_page.html", form=form, active_page="reservation_page")
-
+        
         if form.validate_on_submit():
             message, message_type = process_reservation(form)
             flash(message, category=message_type)
             return redirect(url_for('reservations.main_page'))
         else:
-            flash("Chyba ve formuláři!", category="danger")
-            print("form errors:", form.errors)
+            custom_messages = {
+            'name': 'Doplňtě Vaše jméno.',
+            'surname': 'Doplňte Vaše příjmení.',
+            'tel_number': 'Doplňte vaše telefonní číslo.',
+            'email': 'Doplňte vaší emailovou adresu.',
+            'age_client': 'Doplňte věk.',
+            'time': 'Doplňte čas výuky.',
+            }
+        
+            error_messages = []
+            for field, errors in form.errors.items():
+                message = custom_messages.get(field, '; '.join(errors))
+                error_messages.append(f"{message}")
+            
+            flash("Prosím, opravte následující chyby: " + ", ".join(error_messages), category="danger")
+            print("Form errors:", form.errors)
+            
 
     return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form)

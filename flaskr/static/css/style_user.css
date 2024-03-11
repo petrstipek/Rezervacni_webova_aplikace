@@ -559,3 +559,17 @@ hr {
     color: red;
     font-size: 14px;
 }
+
+.no-times-available {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    box-sizing: border-box;
+    font-size: smaller;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    color: red;
+    text-align: center;
+}

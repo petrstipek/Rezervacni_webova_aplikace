@@ -70,7 +70,7 @@
             <div class="horizontal-fields-container-info">
                 <div class="field-container-pi">
                     <label for="name">{{ form.name.label }}</label>
-                    <span class="input-field-pi">{{ form.name(id="name") }}</span>
+                    <span class="input-field-pi">{{ form.name(id="name", required=True) }}</span>
                 </div>
                 <div class="field-container-pi">
                     <label for="surname">{{ form.surname.label }}</label>
@@ -115,17 +115,11 @@
                     </div>
                     <div class="field-container-pi">
                         {{ form.age_client.label }}
-                        {{ form.age_client(class_="age-field") }}
-                        {% for error in form.age_client.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
+                        {{ form.age_client(class_="age-field", id="age_client_main") }}
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client.label }}
                         {{ form.experience_client(class_="selector-field") }}
-                        {% for error in form.experience_client.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -194,7 +188,7 @@
                 data-sitekey="6LdmUpQpAAAAALHcMy_U6mDJ78OJuptLW9muSk23" 
                 data-callback='onSubmit' 
                 data-action='submit'
-                type="submit">Odeslat rezervaci</button>
+                type="button">Odeslat rezervaci</button>
             </div>
         </div>
     </section>

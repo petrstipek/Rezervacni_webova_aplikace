@@ -11,7 +11,7 @@ $(document).ready(function () {
             }, 2000);
         } else {
             $(this).css('border', '2px solid red');
-            $('#tel_error').css('visibility', 'visible').text('Please enter a valid telephone number.');
+            $('#tel_error').css('visibility', 'visible').text('phone error');
         }
     });
 
@@ -25,7 +25,7 @@ $(document).ready(function () {
             }, 2000);
         } else {
             $(this).css('border', '2px solid red');
-            $('#name_error').css('visibility', 'visible').text('Please enter a valid name.');
+            $('#name_error').css('visibility', 'visible').text('name error');
         }
     });
 
@@ -39,7 +39,7 @@ $(document).ready(function () {
             }, 2000);
         } else {
             $(this).css('border', '2px solid red');
-            $('#surname_error').css('visibility', 'visible').text('Please enter a valid surname.');
+            $('#surname_error').css('visibility', 'visible').text('surname error');
         }
     });
 
@@ -53,7 +53,20 @@ $(document).ready(function () {
             }, 2000);
         } else {
             $(this).css('border', '2px solid red');
-            $('#email_error').css('visibility', 'visible').text('Please enter a valid email address.');
+            $('#email_error').css('visibility', 'visible').text('email error');
+        }
+    });
+
+    $('#age_client_main').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $(this).css('border', '2px solid green');
+            $('#age_error').css('visibility', 'hidden');
+            setTimeout(() => {
+                $(this).css('border-color', '#cccccc');
+            }, 2000);
+        } else {
+            $(this).css('border', '2px solid red');
+            $('#age_error').css('visibility', 'visible').text('age error');
         }
     });
 
@@ -147,7 +160,7 @@ $(document).ready(function () {
         selectedDate = selectedDate.trim();
 
         if (!data_times.hasOwnProperty(selectedDate)) {
-            $('.times-container').html("Pro vybrané parametry není dostupná žádná hodina!");
+            $('.times-container').html('<div class="no-times-available">Pro vybrané parametry není dostupná žádná hodina!</div>');
             return;
         }
 
@@ -236,6 +249,7 @@ $(document).ready(function () {
             }
         });
     });
+
     //flask wont submit disabled fields
     $('form').submit(function () {
         $('#lesson_length').prop('disabled', false);
@@ -263,4 +277,41 @@ $(document).ready(function () {
             return false;
         }
     }
+
+    var isFormValid = false;
+
+    $('.btn-send-reservation').click(function (event) {
+        event.preventDefault();
+
+        isFormValid = true;
+        var fields = ['#name', '#surname', '#email', '#reservation_tel_number, #age_client_main'];
+
+        fields.forEach(function (selector) {
+            var input = $(selector);
+            if (!input.val().trim()) {
+                isFormValid = false;
+                input.css('border', '2px solid red');
+            } else {
+                input.css('border', '');
+            }
+        });
+
+        if (!isFormValid) {
+            alert("Prosím, vyplňte všechna povinná pole.");
+        } else {
+            if (typeof grecaptcha !== 'undefined') {
+                grecaptcha.execute();
+            } else {
+                $('#reservation-form').submit();
+            }
+        }
+    });
+
+    window.onSubmit = function (token) {
+        if (isFormValid) {
+            $('#reservation-form').submit();
+        } else {
+            console.log('Chyba validace!');
+        }
+    };
 });

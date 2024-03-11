@@ -49,11 +49,13 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
+                <div class="global-margin">
                     <div class="alert alert-{{ category }}">
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </button>
                         {{ message }}
                     </div>
+                </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
