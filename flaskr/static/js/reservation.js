@@ -241,4 +241,26 @@ $(document).ready(function () {
         $('#lesson_length').prop('disabled', false);
         $('#lesson_instructor').prop('disabled', false);
     });
+
+    $('#name').keypress(restrictInputToText);
+    $('#surname').keypress(restrictInputToText);
+    $('#reservation_tel_number').keypress(restrictInputToNumbers);
+
+    function restrictInputToText(event) {
+        var regex = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]*$/;
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    }
+
+    function restrictInputToNumbers(event) {
+        var regex = /^[0-9]*$/;
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    }
 });
