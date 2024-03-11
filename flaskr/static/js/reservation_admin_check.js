@@ -217,7 +217,9 @@ $(document).ready(function () {
                 fetchReservations(page)
             },
             error: function (xhr, status, error) {
-                alert("Error");
+                var response = JSON.parse(xhr.responseText);
+                var errorMessage = response.error;
+                alert('Error, rezervace nebyla zrušena! Detail: ' + errorMessage);
             }
         });
     });

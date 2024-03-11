@@ -77,7 +77,6 @@ def process_reservation(form):
     database.session.flush()
 
     reservation_id = new_reservation.ID_rezervace
-    print("resevationid", reservation_id)
 
     insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields)
     

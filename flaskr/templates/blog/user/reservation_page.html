@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+
+    <script>
+        function onSubmit(token) {document.getElementById("reservation-form").submit();}
+    </script>
 
     <link href="{{ url_for('static', filename='css/reservation_page.css') }}" rel="stylesheet">
 
@@ -15,7 +20,7 @@
 
 
 {% block body %}
-<form method="post" action="{{ url_for('reservations.main_page') }}">
+<form id="reservation-form" method="post" action="{{ url_for('reservations.main_page') }}">
     {{ form.hidden_tag() }}
     <section class="section-blue" id="date_picker">
         <div class="global-margin">
@@ -184,7 +189,12 @@
             <h2 class="h2-headers">Odeslání rezervace</h2>
             <div class="form-row">
                 {{ form.note(class="notes-field") }}
-                {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}
+                <!--{{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}-->
+                <button class="g-recaptcha btn btn-warning btn btn-lg btn-send-reservation" 
+                data-sitekey="6LdmUpQpAAAAALHcMy_U6mDJ78OJuptLW9muSk23" 
+                data-callback='onSubmit' 
+                data-action='submit'
+                type="submit">Odeslat rezervaci</button>
             </div>
         </div>
     </section>
@@ -192,5 +202,11 @@
 
 
 <script src="{{ url_for('static', filename='js/reservation.js') }}"></script>
+
+<script>
+    function onSubmit(token) {
+        document.getElementById("reservation-form").submit();
+    }
+</script>
 
 {% endblock %}

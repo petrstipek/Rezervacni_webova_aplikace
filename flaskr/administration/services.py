@@ -41,7 +41,6 @@ def get_available_instructors():
     available_instructors = [(0, "Instruktor")]
     for row in query_result_instructors:
         available_instructors.append((row.ID_osoba ,row.jmeno + " " + row.prijmeni))
-    print("jsem tady", available_instructors)
     return available_instructors
 
 def add_individual_lesson(db, date_str, time_start, instructor_id, lesson_type, capacity):
