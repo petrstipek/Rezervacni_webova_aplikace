@@ -15,10 +15,8 @@ def delete_reservation_by_reservation_code(reservation_id):
 
         today = datetime.now().date()
         combined_datetime_str = f'{reservation.termin} {reservation.cas_zacatku}'
-        print(combined_datetime_str, "combined datetim str")
         time_now = datetime.now()
         lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
-        print(lesson_time, "lesson_time")
         time_difference = lesson_time - time_now
 
         if time_difference < timedelta(hours=2):
@@ -39,7 +37,7 @@ def delete_reservation_by_reservation_code(reservation_id):
             
             database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
             database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
-            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
 
@@ -57,9 +55,9 @@ def delete_reservation_by_reservation_code(reservation_id):
             for zak_id in zak_ids:
                 database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
 
-            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id)
-            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id)
-            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
 
@@ -98,7 +96,7 @@ def delete_reservation_by_reservation_id(reservation_id):
             
             database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
             database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
-            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
 
@@ -116,9 +114,9 @@ def delete_reservation_by_reservation_id(reservation_id):
             for zak_id in zak_ids:
                 database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
 
-            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id)
-            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id)
-            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id)
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
 

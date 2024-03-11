@@ -70,20 +70,20 @@
             <div class="horizontal-fields-container-info">
                 <div class="field-container-pi">
                     <label for="name">{{ form.name.label }}</label>
-                    {{ form.name }}
+                    <span class="input-field-pi">{{ form.name(id="name") }}</span>
                 </div>
                 <div class="field-container-pi">
                     <label for="surname">{{ form.surname.label }}</label>
-                    <span class="input-field-pi">{{ form.surname }}</span>
+                    <span class="input-field-pi">{{ form.surname(id="surname") }}</span>
                 </div>
                 <div class="field-container-pi">
                     <label for="tel_number">{{ form.tel_number.label }}</label>
-                    {{ form.tel_number(id="reservation_tel_number") }}
+                    <span class="input-field-pi reservation_tel_number">{{ form.tel_number(title="Please fill in number", id="reservation_tel_number") }}</span>
                     <span id="tel_error" class="error-message"></span>
                 </div>
                 <div class="field-container-pi">
                     <label for="email">{{ form.email.label }}</label>
-                    {{ form.email }}
+                    <span class="input-field-pi">{{ form.email(id="email") }}</span>
                 </div>
             </div>
         </div>

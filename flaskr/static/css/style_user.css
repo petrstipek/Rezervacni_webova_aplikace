@@ -550,4 +550,12 @@ hr {
 
 .times-container {
     max-height: 385px;
+    overflow-y: scroll;
+}
+
+.error-message {
+    visibility: hidden;
+    height: 20px;
+    color: red;
+    font-size: 14px;
 }

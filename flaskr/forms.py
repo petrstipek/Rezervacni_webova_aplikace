@@ -1,10 +1,15 @@
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField
+from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional, ValidationError
 
 class PersonalInformationForm(FlaskForm):
-    name = StringField(label="Jméno", validators=[Length(min=2, max=30), DataRequired()])
-    surname = StringField(label="Příjmení", validators=[Length(min=2, max=30), DataRequired()])
+
+    name_validator = Regexp(r"^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ]+([-' ][a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ]+)*$",
+    message="Jméno může obsahovat pouze písmena, pomlčky, apostrofy a mezery.")
+
+    name = StringField(label="Jméno", validators=[Length(min=2, max=20), DataRequired(),name_validator])
+    surname = StringField(label="Příjmení", validators=[Length(min=2, max=30), DataRequired(),name_validator])
+    
     tel_number = StringField('Telefonní číslo', validators=[
         DataRequired(),
         Regexp(r'^\+?1?\d{9,15}$', message="Formát telefonního čísla: '+999999999'!")

@@ -1,16 +1,61 @@
 $(document).ready(function () {
     var selectedDate = '';
+
     $('#reservation_tel_number').on('input', function () {
-        var isPhone = /^\d{10}$/.test($(this).val());
+        var isPhone = /^(\+?\d{1,4}\s?)?(\d{3}\s?){3}$|^\d{9}$/.test($(this).val());
         if (isPhone) {
             $(this).css('border', '2px solid green');
-            $('#tel_error').hide();
+            $('#tel_error').css('visibility', 'hidden');
+            setTimeout(() => {
+                $(this).animate({ borderColor: '#cccccc' }, 'slow');
+            }, 2000);
         } else {
             $(this).css('border', '2px solid red');
-            $('#tel_error').show().text('Please enter a valid 10-digit telephone number.');
+            $('#tel_error').css('visibility', 'visible').text('Please enter a valid telephone number.');
         }
     });
 
+    $('#name').on('input', function () {
+        var isValidName = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
+        if (isValidName) {
+            $(this).css('border', '2px solid green');
+            $('#name_error').css('visibility', 'hidden');
+            setTimeout(() => {
+                $(this).animate({ borderColor: '#cccccc' }, 'slow');
+            }, 2000);
+        } else {
+            $(this).css('border', '2px solid red');
+            $('#name_error').css('visibility', 'visible').text('Please enter a valid name.');
+        }
+    });
+
+    $('#surname').on('input', function () {
+        var isValidSurname = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
+        if (isValidSurname) {
+            $(this).css('border', '2px solid green');
+            $('#surname_error').css('visibility', 'hidden');
+            setTimeout(() => {
+                $(this).animate({ borderColor: '#cccccc' }, 'slow');
+            }, 2000);
+        } else {
+            $(this).css('border', '2px solid red');
+            $('#surname_error').css('visibility', 'visible').text('Please enter a valid surname.');
+        }
+    });
+
+    $('#email').on('input', function () {
+        var isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($(this).val());
+        if (isValidEmail) {
+            $(this).css('border', '2px solid green');
+            $('#email_error').css('visibility', 'hidden');
+            setTimeout(() => {
+                $(this).animate({ borderColor: '#cccccc' }, 'slow');
+            }, 2000);
+        } else {
+            $(this).css('border', '2px solid red');
+            $('#email_error').css('visibility', 'visible').text('Please enter a valid email address.');
+        }
+    });
 
     function fetchAvailableTimes() {
         var instructorId = $('#lesson_instructor').val();
