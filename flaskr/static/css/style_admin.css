@@ -284,3 +284,75 @@ select {
 .lessons-admin-section {
     height: 100%;
 }
+
+.horizontal-fields-container-admin-reservations {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.containers-reservations {
+    flex-basis: calc(25% - 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.containers-reservations label {
+    margin-bottom: 5px;
+}
+
+.containers-reservations input,
+.containers-reservations select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.btn-send-reservation {
+    cursor: pointer;
+}
+
+.horizontal-fields-container-admin-lessons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.containers-lessons {
+    flex: 1;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+}
+
+.containers-lessons label {
+    margin-bottom: 5px;
+}
+
+.containers-lessons input,
+.containers-lessons select {
+    width: 100%;
+    box-sizing: border-box;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 6px 12px;
+}
+
+.btn-send-reservation {
+    height: 38px;
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.btn-send-reservation:hover {
+    background-color: #0056b3;
+}

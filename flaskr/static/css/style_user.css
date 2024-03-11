@@ -458,7 +458,6 @@ hr {
     flex: 0 0 calc(40% - 10px);
     padding: 10px;
     border: 1px solid #ddd;
-    margin-right: 10px;
     box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
