@@ -56,7 +56,7 @@ def delete_reservation_by_reservation_code(reservation_id):
                 database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
 
             database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
-            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
             database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
@@ -115,7 +115,7 @@ def delete_reservation_by_reservation_id(reservation_id):
                 database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
 
             database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
-            database.session.query(Prirazeno).filter_by(ID_rezerevace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
             database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
@@ -147,6 +147,7 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         if identifier_type == 'reservationID':
             base_query = base_query.filter(Rezervace.rezervacni_kod == identifier)
         elif identifier_type == 'name':
+            print("jsem tady, pridavam", identifier)
             base_query = base_query.filter(KlientOsoba.prijmeni == identifier)
         elif identifier_type == 'email':
             base_query = base_query.filter(KlientOsoba.email == identifier)
@@ -158,7 +159,6 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
                         .limit(per_page)\
                         .offset((page - 1) * per_page)\
                         .all()
-
     results_list = [{
         'ID_rezervace': lesson[0],
         'jméno klienta': lesson[1],
@@ -171,6 +171,7 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         'stav platby': lesson[8]
     } for lesson in lessons]
 
+    print("results list", results_list)
     return {
         "reservations": results_list,
         "total_items": total_items,

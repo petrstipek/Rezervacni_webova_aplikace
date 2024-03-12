@@ -45,7 +45,7 @@ def get_or_create_klient(name, surname, email, phone):
     return klient_id
 
 def process_reservation(form):
-    db = get_db()
+    #db = get_db()
 
     name, surname, email, phone, experience, age, lesson_type, reservation_note, lesson_length, instructor_selected, language_selection, time_plus_one, student_client, more_students, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields, date, time = handle_form(form)
     if date == None or time == None:
@@ -107,6 +107,7 @@ def individual_reservation_1hour(reservation_id, instructor_selected, student_co
     if instructor_selected == "0":
         found_number = 0
         for student in range(student_count):
+            print(student, "student count")
             #lesson_id = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ? AND typ_hodiny = ?', (date, time, "volno", "ind")).fetchone()
             lesson_id = database.session.query(DostupneHodiny.ID_hodiny).filter(
                         DostupneHodiny.datum == termin_date,
@@ -242,8 +243,6 @@ def assign_instructor_lesson_1hour(lesson_id, reservation_id):
 
         new_prirazeno = Prirazeno(ID_rezervace=reservation_id, ID_hodiny=lesson_id)
         database.session.add(new_prirazeno)
-
-        database.session.commit()
         
     except SQLAlchemyError as e:
         database.session.rollback()
@@ -258,23 +257,23 @@ def group_reservation(reservation_id, student_count, date, time):
         lesson_id = None
 
         for student in range(student_count):
-            lesson = database.session.query(DostupneHodiny)\
-                .outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny)\
-                .filter(
-                    DostupneHodiny.datum == termin_date,
+            lesson = database.session.query(DostupneHodiny).join(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(DostupneHodiny.datum == termin_date,
                     DostupneHodiny.cas_zacatku == cas_zacatku_time,
                     DostupneHodiny.stav == 'volno',
                     DostupneHodiny.typ_hodiny == 'group',
-                    DostupneHodiny.obsazenost < DostupneHodiny.kapacita
-                ).first()
+                    DostupneHodiny.obsazenost < DostupneHodiny.kapacita).first()
 
             if lesson is None:
                 message, message_type = 'Pozor - kapacita lekce byla překročena. Zvolte menší počet žáků!', "danger"
                 return False, message, message_type
             
+            lesson_id = lesson.ID_hodiny
+            instructor = database.session.query(Osoba).join(MaVypsane, Osoba.ID_osoba == MaVypsane.ID_osoba).filter(MaVypsane.ID_hodiny == lesson_id).first()
+
+            
             lesson.obsazenost += 1
             if student == 0:
-                instructor_id = lesson.ID_osoba
+                instructor_id = instructor.ID_osoba
                 lesson_id = lesson.ID_hodiny
 
         if instructor_id and lesson_id:
@@ -320,7 +319,7 @@ def insert_students(student_count, reservation_id, client_name_fields, client_su
             )
             database.session.add(new_student)
         
-        database.session.commit()
+        #database.session.commit()
     
     except Exception as e:
         database.session.rollback()
@@ -331,6 +330,8 @@ def handle_number_student(student_client, more_students, client_name_fields):
     for name_field in client_name_fields:
         if name_field != "":
             student_count += 1
+    if student_client == False:
+        student_count -= 1
     return student_count
 
 def handle_form(form):

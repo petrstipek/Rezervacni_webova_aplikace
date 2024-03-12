@@ -19,7 +19,7 @@ def check_password(stored_password, user_password):
         return False 
 
 def authenticate_user(username, password):
-    #print(hash_password("password123"))
+    print(hash_password("password123"))
     user = database.session.query(Osoba).filter_by(prihl_jmeno=username).first()
     if user and check_password(user.heslo, password):
         user = database.session.query(Osoba).filter(Osoba.prihl_jmeno == username).first()

@@ -219,19 +219,16 @@ $(document).ready(function () {
     updateAvailableTimes(fetchAvailableTimes());
 
     $('.times-container').on('click', '.time-slot', function () {
+        console.log("Time slot clicked");
         $('.times-container .time-slot').removeClass('selected');
         $(this).addClass('selected');
         var radioButton = $(this).find('input[type="radio"]');
+        console.log("New time selected:", radioButton.val());
         radioButton.prop('checked', true);
         radioButton.change();
+        $("input[name='time']").val(radioButton.val());
     });
 
-    $('.times-container').on('change', 'input[name="time"]', function () {
-        if (this.checked) {
-            $("input[name='time']").val($(this).val());
-            console.log($(this).val())
-        }
-    });
 
     $(document).ready(function () {
         $('#lesson_type').change(function () {
@@ -298,12 +295,6 @@ $(document).ready(function () {
 
         if (!isFormValid) {
             alert("Prosím, vyplňte všechna povinná pole.");
-        } else {
-            if (typeof grecaptcha !== 'undefined') {
-                grecaptcha.execute();
-            } else {
-                $('#reservation-form').submit();
-            }
         }
     });
 
