@@ -226,7 +226,7 @@ $(document).ready(function () {
         console.log("New time selected:", radioButton.val());
         radioButton.prop('checked', true);
         radioButton.change();
-        $("input[name='time']").val(radioButton.val());
+        $("input[name='time_reservation']").val(radioButton.val());
     });
 
 

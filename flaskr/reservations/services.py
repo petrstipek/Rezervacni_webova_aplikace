@@ -336,7 +336,7 @@ def handle_number_student(student_client, more_students, client_name_fields):
 
 def handle_form(form):
     date = form.date.data
-    time_to_split = form.time.data
+    time_to_split = form.time_reservation.data
     time_parts = time_to_split.split(",")
     time = time_parts[0]
     #datetime_str = f"{date} {time}:00"
