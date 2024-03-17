@@ -74,10 +74,8 @@ def delete_reservation_by_reservation_id(reservation_id):
 
         today = datetime.now().date()
         combined_datetime_str = f'{reservation.termin} {reservation.cas_zacatku}'
-        print(combined_datetime_str, "combined datetim str")
         time_now = datetime.now()
         lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
-        print(lesson_time, "lesson_time")
         time_difference = lesson_time - time_now
 
         if time_difference < timedelta(hours=2):
@@ -147,7 +145,6 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         if identifier_type == 'reservationID':
             base_query = base_query.filter(Rezervace.rezervacni_kod == identifier)
         elif identifier_type == 'name':
-            print("jsem tady, pridavam", identifier)
             base_query = base_query.filter(KlientOsoba.prijmeni == identifier)
         elif identifier_type == 'email':
             base_query = base_query.filter(KlientOsoba.email == identifier)
@@ -171,7 +168,6 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         'stav platby': lesson[8]
     } for lesson in lessons]
 
-    print("results list", results_list)
     return {
         "reservations": results_list,
         "total_items": total_items,
@@ -223,7 +219,6 @@ def fetch_available_times_for_individual_instructor(instructor_id=None):
         base_query = base_query.filter(MaVypsane.ID_osoba == instructor_id)
 
     query_result = base_query.group_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).order_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).all()
-    print(query_result)
     return query_result
 
 def get_reservation_detail(identifier):

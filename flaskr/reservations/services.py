@@ -107,7 +107,6 @@ def individual_reservation_1hour(reservation_id, instructor_selected, student_co
     if instructor_selected == "0":
         found_number = 0
         for student in range(student_count):
-            print(student, "student count")
             #lesson_id = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ? AND typ_hodiny = ?', (date, time, "volno", "ind")).fetchone()
             lesson_id = database.session.query(DostupneHodiny.ID_hodiny).filter(
                         DostupneHodiny.datum == termin_date,
