@@ -17,9 +17,9 @@ def instructor_exists(email):
     return query_result is not None
 
 def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started):
-    db = get_db()
-    db.execute('INSERT INTO Instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', (name, surname, email, tel_number, experience, date_birth, date_started) )
-    db.commit()
+    #db = get_db()
+    #db.execute('INSERT INTO Instruktor (jmeno, prijmeni, email, tel_cislo, seniorita, datum_narozeni, datum_nastupu) VALUES (?, ?, ?, ?, ?, ?, ?)', (name, surname, email, tel_number, experience, date_birth, date_started) )
+    #db.commit()
 
     new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number,)
 
@@ -32,7 +32,7 @@ def add_instructor(name, surname, email, tel_number, experience, date_birth, dat
 
 
 def get_available_instructors():
-    db = get_db()
+    #db = get_db()
     #query_result_instructors = db.execute("SELECT DISTINCT jmeno, prijmeni, ID_osoba from instruktor")
 
     query_result_instructors = database.session.query(Instruktor.ID_osoba, Osoba.jmeno, Osoba.prijmeni)\

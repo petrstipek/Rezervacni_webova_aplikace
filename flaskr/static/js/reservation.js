@@ -76,6 +76,7 @@ $(document).ready(function () {
 
         if (lessonType === 'individual' && instructorId) {
             $.ajax({
+                ///reservations-api/lessons/instructorid/available-times
                 url: '/reservations-api/get-available-times/individual/' + instructorId,
                 type: 'GET',
                 success: function (data) {
@@ -89,6 +90,7 @@ $(document).ready(function () {
             });
         } else if (lessonType === 'group') {
             $.ajax({
+                //reservations-api/lessons/available-times
                 url: '/reservations-api/get-available-times/group',
                 type: 'GET',
                 success: function (data) {
@@ -204,9 +206,32 @@ $(document).ready(function () {
         document.querySelector('.times-container').innerHTML = timesHtml;
     }
 
+    $.datepicker.regional['cs'] = {
+        closeText: 'Zavřít',
+        prevText: '&#x3C;Dříve',
+        nextText: 'Později&#x3E;',
+        currentText: 'Nyní',
+        monthNames: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen',
+            'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'],
+        monthNamesShort: ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn',
+            'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'],
+        dayNames: ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota'],
+        dayNamesShort: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
+        dayNamesMin: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
+        weekHeader: 'Tyd',
+        dateFormat: 'dd.mm.yy',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+    };
+
+    $.datepicker.setDefaults($.datepicker.regional['cs']);
+
     $('#datepicker').datepicker({
         dateFormat: 'yy-mm-dd',
         minDate: 0,
+        firstDay: 1,
         onSelect: function (dateText) {
             selectedDate = dateText;
             $("input[name='date']").val(dateText);

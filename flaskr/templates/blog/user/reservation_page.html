@@ -9,6 +9,11 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://www.google.com/recaptcha/api.js"></script>
 
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/i18n/jquery-ui-i18n.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/i18n/jquery-ui-i18n.min.js"></script>
+
     <script>
         function onSubmit(token) {document.getElementById("reservation-form").submit();}
     </script>
@@ -26,11 +31,10 @@
         <div class="global-margin">
             <h2 class="h2-headers">Výběr termínu rezervace</h2>
             <div class="grid-container">
-                <!-- First Column -->
-                <div class="left-column">
-                    <div class="horizontal-fields-container-header">
+                <div class="horizontal-fields-group">
+                    <div class="horizontal-fields-container-header-test">
                         <div class="field-container d-flex align-items-center">
-                            <label for="lesson_type" class="me-2 no-wrap">{{ form.lesson_type.label }}</label>
+                            <label for="lesson_type" class="me-2 no-wrap label-class">{{ form.lesson_type.label }}</label>
                             {{ form.lesson_type(id="lesson_type", class="form-select") }}
                         </div>
                         <div class="field-container d-flex align-items-center">
@@ -38,23 +42,25 @@
                             {{ form.lesson_length(id="lesson_length", class="form-select") }}
                         </div>
                     </div>
+                    <div class="horizontal-fields-container-header-test">
+                        <div class="field-container d-flex align-items-center">
+                            <label for="lesson_instructor_choices" class="me-2 no-wrap">{{ form.lesson_instructor_choices.label }}</label>
+                            {{ form.lesson_instructor_choices(id="lesson_instructor", class="form-select") }}
+                        </div>
+                        <div class="field-container d-flex align-items-center">
+                            <label for="language_selection" class="me-2 no-wrap">{{ form.language_selection.label }}</label>
+                            {{ form.language_selection(id="language_selection", class="form-select") }}
+                        </div>
+                    </div>
+                </div>
+                <!-- First Column -->
+                <div class="left-column">
                     <div class="custom-date-picker-container">
                         <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
                     </div>
                 </div>
-        
                 <!-- Second Column -->
                 <div class="right-column">
-                    <div class="horizontal-fields-container-header">
-                        <div class="field-container d-flex align-items-center">
-                            <label for="lesson_instructor_choices" class="me-2">{{ form.lesson_instructor_choices.label }}</label>
-                            {{ form.lesson_instructor_choices(id="lesson_instructor", class="form-select") }}
-                        </div>
-                        <div class="field-container d-flex align-items-center">
-                            <label for="language_selection" class="me-2">{{ form.language_selection.label }}</label>
-                            {{ form.language_selection(id="language_selection", class="form-select") }}
-                        </div>
-                    </div>
                     <div class="times-container">
                         {{ form.time_reservation }}
                     </div>
@@ -181,10 +187,9 @@
     <section class="section-grey last-section" id="reservation_send">
         <div class="global-margin">
             <h2 class="h2-headers">Odeslání rezervace</h2>
-            <div class="form-row">
+            <div class="form-grid">
                 {{ form.note(class="notes-field") }}
-                <!--{{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}-->
-                <button class="g-recaptcha btn btn-warning btn btn-lg btn-send-reservation" 
+                <button class="submit-reservation-button g-recaptcha btn btn-warning btn btn-lg btn-send-reservation" 
                 data-sitekey="6LdmUpQpAAAAALHcMy_U6mDJ78OJuptLW9muSk23" 
                 data-callback='onSubmit' 
                 data-action='submit'

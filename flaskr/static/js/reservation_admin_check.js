@@ -14,6 +14,7 @@ $(document).ready(function () {
         var reservation_tel_number = $('#reservation_tel_number').val();
 
         var baseUrl = "/reservations-api/get-reservation-details/";
+        //reservations-api/reservation/detail/
         var url = baseUrl;
 
         if (reservationId) {
