@@ -157,3 +157,39 @@
 .deleteReservationButton:hover {
     background-color: #c12e2a;
 }
+
+.horizontal-fields-container-res-check {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+
+}
+
+.field-container-res-check {
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.field-container-res-check label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.btn-warning {
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 5px
+}
+
+@media (max-width: 768px) {
+    .horizontal-fields-container-res-check {
+        width: 90%;
+    }
+}

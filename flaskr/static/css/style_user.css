@@ -133,12 +133,12 @@ section {
 }
 
 .section-blue {
-    background-color: #E0F4FF;
+    background-color: #ffffff;
     margin-bottom: 0px;
 }
 
 .section-grey {
-    background-color: white;
+    background-color: #ffffff;
     margin-bottom: 0px;
 }
 
@@ -188,7 +188,7 @@ hr {
 }
 
 .navbar-custom {
-    background-color: white !important;
+    background-color: #e0f3ff !important;
 }
 
 .nav-item .active {
@@ -198,7 +198,7 @@ hr {
 }
 
 .nav-link:hover {
-    background-color: #ffe3ac;
+    background-color: #FFE3AC;
     color: black;
     border-radius: 8px;
     transition: none;
@@ -222,12 +222,13 @@ hr {
 .custom-date-picker-container .ui-datepicker {
     width: 100%;
     border-radius: 8px;
-    background-color: #E0F4FF !important;
+    background-color: #F5F5F5 !important;
 }
 
 .custom-date-picker-container .ui-datepicker table {
     width: 100%;
     height: 100%;
+    background: white;
 }
 
 .custom-date-picker-container .ui-datepicker a {
@@ -241,7 +242,7 @@ hr {
 }
 
 .custom-date-picker-container #datepicker .ui-datepicker td a:hover {
-    background-color: #E0E0E0 !important;
+    background-color: #FFE3AC !important;
     color: black !important;
 }
 
@@ -253,8 +254,8 @@ hr {
 }
 
 .custom-date-picker-container #datepicker .ui-datepicker td a.ui-state-active {
-    border-color: blac;
-    background-color: #0D69B0 !important;
+    border-color: black;
+    background-color: #FBC639 !important;
     color: black !important;
 }
 
@@ -263,7 +264,6 @@ hr {
 }
 
 .custom-date-picker-container .ui-datepicker td a {
-    background-color: #E0F4FF !important;
     display: block;
     width: 100%;
     height: 100%;
@@ -375,11 +375,11 @@ hr {
 }
 
 .time-slot:hover {
-    background-color: #E0E0E0;
+    background-color: #FFE3AC;
 }
 
 .time-slot.selected {
-    background-color: #0D69B0;
+    background-color: #FBC639;
 }
 
 .form-check-input {
@@ -452,6 +452,7 @@ hr {
     padding: 10px;
     background-color: #fff;
     border-radius: 10px;
+    border: 1px solid #ccc;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: start;

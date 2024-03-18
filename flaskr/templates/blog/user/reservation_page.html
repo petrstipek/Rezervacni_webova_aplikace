@@ -125,7 +125,7 @@
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client.label }}
-                        {{ form.experience_client(class_="selector-field") }}
+                        {{ form.experience_client(class_="form-select") }}
                     </div>
                 </div>
             </div>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client1.label }}
-                        {{ form.experience_client1(class_="selector-field") }}
+                        {{ form.experience_client1(class_="form-select") }}
                         {% for error in form.experience_client1.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}
@@ -173,7 +173,7 @@
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client2.label }}
-                        {{ form.experience_client2(class_="selector-field") }}
+                        {{ form.experience_client2(class_="form-select") }}
                         {% for error in form.experience_client2.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}
