@@ -76,8 +76,7 @@ $(document).ready(function () {
 
         if (lessonType === 'individual' && instructorId) {
             $.ajax({
-                ///reservations-api/lessons/instructorid/available-times
-                url: '/reservations-api/get-available-times/individual/' + instructorId,
+                url: '/reservations-api/lessons/' + instructorId + '/available-times',
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);
@@ -90,15 +89,10 @@ $(document).ready(function () {
             });
         } else if (lessonType === 'group') {
             $.ajax({
-                //reservations-api/lessons/available-times
-                url: '/reservations-api/get-available-times/group',
+                url: '/reservations-api/lessons/available-times',
                 type: 'GET',
                 success: function (data) {
-                    console.log("group function ")
                     updateAvailableTimes(data);
-                    //selectedDate = $('#datepicker').val();
-                    //$("input[name='date']").val(selectedDate);
-                    console.log(selectedDate)
                 },
                 error: function (error) {
                     console.error('Error fetching available times:', error);

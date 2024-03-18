@@ -5,8 +5,7 @@ $(document).ready(function () {
         var reservationId = $('#reservation_id').val();
 
         $.ajax({
-            ///reservations-api/reservation
-            url: "reservations-api/get-reservation/" + reservationId,
+            url: "reservations-api/reservation/" + reservationId,
             type: "GET",
             success: function (data) {
                 var reservation = data;
@@ -55,8 +54,7 @@ $(document).ready(function () {
             var csrfToken = $('input[name="csrf_token"]').val();
 
             $.ajax({
-                url: "/reservations-api/delete-reservation-by-code/" + reservationId,
-                //reservations-api/reservations/reservation whatever
+                url: "/reservations-api/reservation/code/" + reservationId,
                 type: "DELETE",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", csrfToken);
