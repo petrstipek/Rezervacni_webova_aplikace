@@ -18,7 +18,7 @@ $(document).ready(function () {
     });
 
     function fetchLessons(page, date) {
-        var url = `/admin-api-lessons/get-lessons?page=${page}&per_page=${perPage}`;
+        var url = `/administration-api/lessons?page=${page}&per_page=${perPage}`;
         if (date) {
             url += `&date=${date}`;
         }
@@ -108,8 +108,8 @@ $(document).ready(function () {
 
     window.deleteLesson = function (lessonId) {
         $.ajax({
-            url: `/administration/delete_lesson_admin/` + lessonId,
-            type: "POST",
+            url: `/administration-api/lesson/${lessonId}`,
+            type: "DELETE",
             headers: {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')
             },

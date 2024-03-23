@@ -13,21 +13,26 @@ $(document).ready(function () {
         var reservation_email = $('#reservation_email').val();
         var reservation_tel_number = $('#reservation_tel_number').val();
 
-        var baseUrl = "/reservations-api/get-reservation-details/";
-        //reservations-api/reservation/detail/
-        var url = baseUrl;
+        var baseUrl = "/administration-api/reservations";
+        var queryParams = [];
 
         if (reservationId) {
-            url += "reservationID/" + reservationId;
-        } else if (reservation_name) {
-            url += "name/" + reservation_name;
-        } else if (reservation_email) {
-            url += "email/" + reservation_email;
-        } else if (reservation_tel_number) {
-            url += "tel-number/" + reservation_tel_number;
+            queryParams.push("reservation_id=" + encodeURIComponent(reservationId));
+        }
+        if (reservation_name) {
+            queryParams.push("name=" + encodeURIComponent(reservation_name));
+        }
+        if (reservation_email) {
+            queryParams.push("email=" + encodeURIComponent(reservation_email));
+        }
+        if (reservation_tel_number) {
+            queryParams.push("tel_number=" + encodeURIComponent(reservation_tel_number));
         }
 
-        url += `?page=${page}&per_page=${perPageFirstTable}`;
+        queryParams.push(`page=${page}`);
+        queryParams.push(`per_page=${perPageFirstTable}`);
+
+        var url = baseUrl + "?" + queryParams.join("&");
 
         $.ajax({
             url: url,
@@ -44,7 +49,7 @@ $(document).ready(function () {
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
-                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky"]
+                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "stav platby"]
 
                 $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));
@@ -90,10 +95,15 @@ $(document).ready(function () {
     }
 
     function fetchReservationsAll(page) {
-        var baseUrl = "/reservations-api/get-reservation-details/";
-        var url = baseUrl + "all";
+        var baseUrl = "/administration-api/reservations";
+        var queryParams = [];
 
-        url += `?page=${page}&per_page=${perPageSecondTable}`;
+        queryParams.push(`page=${page}`);
+        queryParams.push(`per_page=${perPageFirstTable}`);
+
+        var url = baseUrl + "?" + queryParams.join("&");
+
+        var baseUrl = "/administration-api/reservations/";
 
         $.ajax({
             url: url,
@@ -105,7 +115,6 @@ $(document).ready(function () {
                     $('#reservationDetailsAll').text('No reservations found.');
                     return;
                 }
-                console.log(response)
                 var table = $('<table></table>').addClass('reservation-table');
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
@@ -207,8 +216,8 @@ $(document).ready(function () {
     $(document).on('click', '.deleteReservation', function () {
         var reservationId = $(this).data('id');
         $.ajax({
-            url: `/reservations-api/delete-reservation-by-id/${reservationId}`,
-            type: "POST",
+            url: `/administration-api/reservation/${reservationId}`,
+            type: "DELETE",
             headers: {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')
             },
@@ -226,9 +235,15 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.markAsPaid', function () {
+        var baseUrl = "/administration-api/reservation/payment";
+        var queryParams = [];
         var reservationId = $(this).data('id');
+        queryParams.push("reservation_id=" + encodeURIComponent(reservationId))
+
+        var url = baseUrl + "?" + queryParams.join("&");
+
         $.ajax({
-            url: `/administration/mark-reservation-paid/${reservationId}`,
+            url: url,
             type: "POST",
             headers: {
                 "X-CSRFToken": $('meta[name="csrf-token"]').attr('content')

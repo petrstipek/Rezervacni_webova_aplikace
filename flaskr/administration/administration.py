@@ -88,33 +88,4 @@ def reservations_admin():
     form = ReservationInformationAdmin()
     #reservations_dict = get_reservations()
     return render_template("blog/admin/reservations_admin.html", form=form, active_page="reservations_admin")
-
-@administration_bp.route('/mark-reservation-paid/<int:reservation_id>', methods=["POST"])
-@login_required
-def reservation_payment_status(reservation_id):
-    try:
-        reservation = get_reservation_payment_status(reservation_id)
-
-        if not reservation:
-            return jsonify({'status': 'error', 'message': 'Rezervace nenalezena!'}), 404
-        payment_status = reservation[0]
-        if payment_status == "nezaplaceno":
-            mark_reservation_as_paid(reservation_id)
-            return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
-        elif payment_status == "zaplaceno":
-            return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': 'Error!'}), 500
     
-@administration_bp.route('/delete_lesson_admin/<int:lesson_id>', methods=["POST"])
-@login_required
-def delete_lesson_admin(lesson_id):
-    try:
-        lesson_status = get_lesson_status(lesson_id)
-        if lesson_status and lesson_status[0] == "obsazeno":
-            return jsonify({"error": True, "message": "Hodina je obsazena, nelze smazat, nejdřív smažte rezervaci."}), 400
-        elif lesson_status and lesson_status[0] == "volno":
-            delete_lesson(lesson_id)
-            return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
-    except Exception as e:
-        return jsonify({"error": True, "message": "Nastala chyba."}), 500

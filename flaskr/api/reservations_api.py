@@ -3,38 +3,17 @@ from flaskr.db import get_db
 from urllib.parse import urlparse
 import sqlite3
 from flaskr.api.services.reservations_services import *
+from flaskr.api.administration_api import administration_api
 
 reservations_api_bp = Blueprint('reservations_api', __name__, template_folder='templates')
 
-@reservations_api_bp.route('/reservation/code/<reservation_id>', methods=['DELETE', 'POST'])
-def delete_reservation_by_code(reservation_id):
-    success, message = delete_reservation_by_reservation_code(reservation_id)
+@reservations_api_bp.route('/reservation/<int:reservation_code>', methods=['DELETE'])
+def delete_reservation_by_code(reservation_code):
+    success, message = delete_reservation_by_reservation_code(reservation_code)
     if success:
         return jsonify({"success": True, "message": "Rezervace zrušena!"})
     else:
         return jsonify({"error": message}), 400 
-    
-@reservations_api_bp.route('/delete-reservation-by-id/<reservation_id>', methods=['DELETE', 'POST'])
-def delete_reservation_by_id(reservation_id):
-    success, message = delete_reservation_by_reservation_id(reservation_id)
-    if success:
-        return jsonify({"success": True, "message": "Rezervace zrušena!"})
-    else:
-        return jsonify({"error": message}), 400 
-    
-@reservations_api_bp.route('/get-reservation-details/<reservation_identifiers>', defaults={'identifier': None})
-@reservations_api_bp.route('/get-reservation-details/<reservation_identifiers>/<identifier>')
-def get_reservation_details(reservation_identifiers, identifier):
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 5, type=int)
-
-    data, error = get_paginated_reservation_details(page, per_page, identifier, reservation_identifiers)
-    if error:
-        response = {"error": error}
-        status_code = 404 if error == "Žádné rezervace nenalezeny!" else 400
-        return jsonify(response), status_code
-    else:
-        return jsonify(data)
     
 @reservations_api_bp.route('/reservation/<reservation_identifier>')
 def get_reservation(reservation_identifier):

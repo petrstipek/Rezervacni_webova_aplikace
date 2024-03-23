@@ -54,7 +54,7 @@ $(document).ready(function () {
             var csrfToken = $('input[name="csrf_token"]').val();
 
             $.ajax({
-                url: "/reservations-api/reservation/code/" + reservationId,
+                url: "/reservations-api/reservation/" + reservationId,
                 type: "DELETE",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("X-CSRFToken", csrfToken);

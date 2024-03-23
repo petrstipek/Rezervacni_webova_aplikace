@@ -10,9 +10,9 @@ from flaskr.reservations.reservations import reservations_bp
 from flaskr.administration.administration import administration_bp
 from flaskr.information.information import information_bp
 from flaskr.api.instructors_api import admin_instructors_bp
-from flaskr.api.lessons_api import admin_lessons_bp
 from flaskr.api.reservations_api import reservations_api_bp
 from flaskr.extensions import recaptcha_private, recaptcha_public
+from flaskr.api.administration_api import administration_api
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -40,9 +40,11 @@ def create_app(test_config=None):
     app.register_blueprint(reservations_bp, url_prefixes="/reservations")
     app.register_blueprint(administration_bp, url_prefix="/administration")
     app.register_blueprint(information_bp, url_prefix="/information")
+
     app.register_blueprint(admin_instructors_bp, url_prefix="/admin-api-instructors")
-    app.register_blueprint(admin_lessons_bp, url_prefix="/admin-api-lessons")
+    
     app.register_blueprint(reservations_api_bp, url_prefix="/reservations-api")
+    app.register_blueprint(administration_api, url_prefix="/administration-api")
 
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
