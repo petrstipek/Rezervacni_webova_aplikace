@@ -6,6 +6,16 @@ from flaskr.api.services.lessons_services import get_paginated_lessons
 
 administration_api = Blueprint('administration-api', __name__, template_folder='templates')
 
+@administration_api.route('/reservation/detail')
+@login_required
+def detail():
+    reservation_id = request.args.get('reservation_id')
+    details = get_reservation_details(reservation_id)
+    if details:
+        return jsonify(details)
+    else:
+        return jsonify({'error': 'Reservation not found'}), 404
+
 #nove-funguje
 @administration_api.route('/reservation/payment', methods=["POST"])
 @login_required

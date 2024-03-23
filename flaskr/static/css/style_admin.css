@@ -356,3 +356,9 @@ select {
 .btn-send-reservation:hover {
     background-color: #0056b3;
 }
+
+.table-all-lessons th,
+.table-all-lessons td {
+    text-align: center;
+    padding: 10px;
+}

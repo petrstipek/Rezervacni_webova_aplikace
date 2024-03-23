@@ -67,8 +67,7 @@ $(document).ready(function () {
                     headerRow.append($('<th></th>').text(key));
                 });
                 headerRow.append($('<th></th>').text('Instruktor'));
-                headerRow.append($('<th></th>').text('Platba'));
-                headerRow.append($('<th></th>').text('Storno'));
+                headerRow.append($('<th></th>').text('Detail rezervace'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
@@ -84,11 +83,9 @@ $(document).ready(function () {
                     var instructorFullName = reservation['jméno instruktora'] + ' ' + reservation['příjmení instruktora'];
                     row.append($('<td></td>').text(instructorFullName));
 
-                    var deleteButton = $(`<button class="deleteReservation" data-id="${reservation.ID_rezervace}">Storno</button>`);
-                    var paymentButton = $(`<button class="markAsPaid" data-id="${reservation.ID_rezervace}">Označit zaplaceno</button>`);
+                    var detailbutton = $(`<button class="detailReservation btn btn-primary" id="reservationDetail" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
 
-                    row.append($('<td></td>').append(paymentButton));
-                    row.append($('<td></td>').append(deleteButton));
+                    row.append($('<td></td>').append(detailbutton));
                     tbody.append(row);
                 });
 
@@ -138,8 +135,7 @@ $(document).ready(function () {
                     headerRow.append($('<th></th>').text(key));
                 });
                 headerRow.append($('<th></th>').text('Instruktor'));
-                headerRow.append($('<th></th>').text('Platba'));
-                headerRow.append($('<th></th>').text('Storno'));
+                headerRow.append($('<th></th>').text('Detail rezervace'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
@@ -155,11 +151,9 @@ $(document).ready(function () {
                     var instructorFullName = reservation['jméno instruktora'] + ' ' + reservation['příjmení instruktora'];
                     row.append($('<td></td>').text(instructorFullName));
 
-                    var deleteButton = $(`<button class="deleteReservation" data-id="${reservation.ID_rezervace}">Storno</button>`);
-                    var paymentButton = $(`<button class="markAsPaid" data-id="${reservation.ID_rezervace}">Označit zaplaceno</button>`);
+                    var detailbutton = $(`<button class="detailReservation btn btn-primary" id="reservationDetail" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
 
-                    row.append($('<td></td>').append(paymentButton));
-                    row.append($('<td></td>').append(deleteButton));
+                    row.append($('<td></td>').append(detailbutton));
                     tbody.append(row);
                 });
 
@@ -264,6 +258,7 @@ $(document).ready(function () {
             success: function (response) {
                 alert(response.message);
                 fetchReservationsAll(currentPageFirstTable, null);
+                $('.detailReservation[data-id="' + reservationId + '"]').trigger('click');
             },
             error: function (xhr, status, error) {
                 if (xhr.responseJSON) {
@@ -291,6 +286,65 @@ $(document).ready(function () {
         const formattedDate = `${year}-${month}-${day}`;
         return formattedDate
     }
+
+    $(document).on('click', '.detailReservation', function () {
+        var baseUrl = "/administration-api/reservation/detail";
+        var reservationId = $(this).data('id');
+        $.ajax({
+            url: baseUrl,
+            type: 'GET',
+            data: {
+                reservation_id: reservationId
+            },
+            success: function (response) {
+                var detailsHtml = '<table class="reservation-details-table">';
+                detailsHtml += '<tr><th>Identifikační kód</th><td>' + response.ID_rezervace + '</td></tr>';
+                detailsHtml += '<tr><th>Jméno a příjmení klienta</th><td>' + response.jmeno_klienta + ' ' + response.prijmeni_klienta + '</td></tr>';
+                detailsHtml += '<tr><th>Datum rezervace</th><td>' + response.termin_rezervace + '</td></tr>';
+                detailsHtml += '<tr><th>Začátek výuky</th><td>' + response.cas_zacatku + '</td></tr>';
+                detailsHtml += '<tr><th>Doba výuky</th><td>' + response.doba_vyuky + '</td></tr>';
+                detailsHtml += '<tr><th>Stav Platby</th><td>' + response.platba + '</td></tr>';
+                detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + response.Instructor.jmeno_instruktora + ' ' + response.Instructor.prijmeni_instruktora + '</td></tr>';
+
+                var zakNames = response.Zak.map(function (zak) { return zak.jmeno_zak; }).join(', ');
+                detailsHtml += '<tr><th>Žáci lekce</th><td>' + (zakNames || 'N/A') + '</td></tr>';
+                detailsHtml += '</table>';
+
+                detailsHtml += '<hr>';
+
+                var deleteButton = $(`<button class="deleteReservation" data-id="${reservationId}">Storno</button>`);
+                var paymentButton = $(`<button class="markAsPaid" data-id="${reservationId}">Označit zaplaceno</button>`);
+
+                detailsHtml += '<table class="action-buttons-table">';
+                detailsHtml += '<tr><th>Zaplatit</th><th>Odstranit</th></tr>';
+                detailsHtml += '<tr><td>' + paymentButton.prop('outerHTML') + '</td><td>' + deleteButton.prop('outerHTML') + '</td></tr>';
+                detailsHtml += '</table>';
+
+                $('#modalBody').html(detailsHtml);
+
+                $('#detailModal').css('display', 'block');
+                $('body').addClass('body-no-scroll');
+            },
+            error: function (xhr, status, error) {
+
+                $('#modalInfo').text('Error - fetchinch reservations!');
+                $('#detailModal').css('display', 'block');
+            }
+        });
+    });
+
+    $(document).on('click', '.close', function () {
+        $('#detailModal').css('display', 'none');
+        $('body').removeClass('body-no-scroll');
+    });
+
+    $(window).click(function (event) {
+        if ($(event.target).hasClass('modal')) {
+            $('.modal').css('display', 'none');
+            ('body').removeClass('body-no-scroll');
+        }
+    });
+
 
     const formattedDate = todayDate()
     $('#reservationDate').val(formattedDate);

@@ -1,5 +1,5 @@
 from flaskr.extensions import database
-from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba
+from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba, Zak, Instruktor
 from sqlalchemy.orm import aliased
 
 
@@ -73,3 +73,36 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         "total_pages": (total_items + per_page - 1) // per_page,
         "current_page": page
     }, None
+
+
+def get_reservation_details(reservation_id):
+    reservation_query = database.session.query(Rezervace).outerjoin(Osoba, Rezervace.ID_osoba==Osoba.ID_osoba).filter(Rezervace.ID_rezervace==reservation_id).first()
+    if reservation_query:
+        reservation_detail = {
+            'ID_rezervace': reservation_query.rezervacni_kod,
+            'termin_rezervace': reservation_query.termin.isoformat() if reservation_query.termin else '',
+            'cas_zacatku': reservation_query.cas_zacatku.strftime('%H:%M') if reservation_query.cas_zacatku else '',
+            'doba_vyuky': reservation_query.doba_vyuky,
+            'platba': reservation_query.platba,
+            'jmeno_klienta': reservation_query.klient.osoba.jmeno,
+            'prijmeni_klienta': reservation_query.klient.osoba.prijmeni
+        }
+
+    instructor_query = database.session.query(Instruktor).outerjoin(Osoba, Instruktor.ID_osoba==Osoba.ID_osoba).outerjoin(MaVyuku, Instruktor.ID_osoba==MaVyuku.ID_osoba).filter(MaVyuku.ID_rezervace==reservation_id).first()
+
+    if instructor_query:
+        instructor_detail = {
+            'jmeno_instruktora': instructor_query.osoba.jmeno,
+            'prijmeni_instruktora' : instructor_query.osoba.prijmeni
+        }
+
+    zaks = database.session.query(Zak).filter(Zak.ID_rezervace == reservation_id).all()
+    zak_list = [{'ID_zak': zak.ID_zak, 'jmeno_zak': zak.jmeno} for zak in zaks]
+
+    combined_details = {
+        **reservation_detail, 
+        'Instructor': instructor_detail,
+        'Zak': zak_list
+    }
+
+    return combined_details

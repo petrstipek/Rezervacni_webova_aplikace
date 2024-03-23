@@ -9,6 +9,7 @@ from datetime import datetime
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
 @administration_bp.route('/reservations-overview')
+@login_required
 def reservations_overview():
     return render_template('/blog/admin/reservation_overview.html', active_page="reservations_overview")
 
@@ -82,14 +83,11 @@ def lessons_admin():
         else:
             flash(message, category="danger")
 
-    #lessons_dict = get_all_lessons()
-
     return render_template("blog/admin/lessons_admin.html", form=form, active_page="lessons_admin")
 
 @administration_bp.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 @login_required
 def reservations_admin():
     form = ReservationInformationAdmin()
-    #reservations_dict = get_reservations()
     return render_template("blog/admin/reservations_admin.html", form=form, active_page="reservations_admin")
     
