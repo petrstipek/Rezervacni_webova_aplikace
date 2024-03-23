@@ -8,6 +8,10 @@ from datetime import datetime
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
+@administration_bp.route('/reservations-search')
+def reservations_search():
+    return render_template('/blog/admin/reservation_search.html', active_page="reservations_search")
+
 @administration_bp.route('/admin-page', methods=["GET", "POST"])
 @login_required
 def admin_page():

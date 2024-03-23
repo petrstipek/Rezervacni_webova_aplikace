@@ -1,6 +1,6 @@
 $(document).ready(function () {
     var currentPageFirstTable = 1;
-    var perPageFirstTable = 3;
+    var perPageFirstTable = 10;
     var totalPagesFirstTable = 0;
 
     var currentPageSecondTable = 1;
