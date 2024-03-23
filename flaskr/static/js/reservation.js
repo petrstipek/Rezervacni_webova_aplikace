@@ -2,7 +2,7 @@ $(document).ready(function () {
     var selectedDate = '';
 
     $('#reservation_tel_number').on('input', function () {
-        var isPhone = /^(\+?\d{1,4}\s?)?(\d{3}\s?){3}$|^\d{9}$/.test($(this).val());
+        var isPhone = /^(\+?\d{1,3}\s?)?(\d{3}\s?){2,3}\d{3}$/.test($(this).val());
         if (isPhone) {
             $(this).css('border', '2px solid green');
             $('#tel_error').css('visibility', 'hidden');
@@ -286,7 +286,7 @@ $(document).ready(function () {
     }
 
     function restrictInputToNumbers(event) {
-        var regex = /^[0-9]*$/;
+        var regex = /^[0-9+ ]*$/;
         var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
         if (!regex.test(key)) {
             event.preventDefault();
