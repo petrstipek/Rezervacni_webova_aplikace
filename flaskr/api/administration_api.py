@@ -55,6 +55,7 @@ def get_reservations():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
 
+    selected_date = request.args.get('selected_date', None)
     reservation_id = request.args.get('reservation_id')
     name = request.args.get('name')
     email = request.args.get('email')
@@ -73,7 +74,7 @@ def get_reservations():
         identifier = tel_number
         reservation_identifier = "tel-number"
 
-    data, error = get_paginated_reservation_details(page, per_page, identifier, reservation_identifier)
+    data, error = get_paginated_reservation_details(page, per_page, identifier, reservation_identifier, selected_date)
 
     if error:
         response = {"error": error}

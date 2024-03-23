@@ -20,7 +20,7 @@ def delete_lesson(lesson_id):
     database.session.query(MaVypsane).filter_by(ID_hodiny=lesson_id).delete()
     database.session.commit()
 
-def get_paginated_reservation_details(page, per_page, identifier=None, identifier_type=None):
+def get_paginated_reservation_details(page, per_page, identifier=None, identifier_type=None, selected_date=None):
     KlientOsoba = aliased(Osoba)
     InstruktorOsoba = aliased(Osoba)
 
@@ -47,6 +47,8 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
             base_query = base_query.filter(KlientOsoba.email == identifier)
         elif identifier_type == 'tel-number':
             base_query = base_query.filter(KlientOsoba.tel_cislo == identifier)
+    if selected_date:
+        base_query = base_query.filter(Rezervace.termin == selected_date)
 
     total_items = base_query.count()
     lessons = base_query.order_by(Rezervace.termin, Rezervace.cas_zacatku)\

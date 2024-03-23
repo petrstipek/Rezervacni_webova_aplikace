@@ -7,6 +7,18 @@ $(document).ready(function () {
     var perPageSecondTable = 5;
     var totalPagesSecondTable = 0;
 
+    $(document).on('change', '#reservationDate', function () {
+        selectedDate = $('#reservationDate').val();
+        fetchReservationsAll(1, selectedDate)
+    });
+
+    $('#allReservations').click(function () {
+        selectedDate = null;
+        $('#reservationDate').val('');
+        fetchReservationsAll(1, null)
+
+    });
+
     function fetchReservations(page) {
         var reservationId = $('#reservation_id').val();
         var reservation_name = $('#reservation_name').val();
@@ -94,15 +106,16 @@ $(document).ready(function () {
         });
     }
 
-    function fetchReservationsAll(page) {
+    function fetchReservationsAll(page, date) {
         var baseUrl = "/administration-api/reservations";
         var queryParams = [];
 
         queryParams.push(`page=${page}`);
         queryParams.push(`per_page=${perPageFirstTable}`);
-
+        if (date) {
+            queryParams.push(`selected_date=${date}`)
+        }
         var url = baseUrl + "?" + queryParams.join("&");
-
         var baseUrl = "/administration-api/reservations/";
 
         $.ajax({
@@ -197,13 +210,13 @@ $(document).ready(function () {
 
     $('#paginationControlsSecondTable').on('click', '#prevPageAll', function () {
         if (currentPageSecondTable > 1) {
-            fetchReservationsAll(--currentPageSecondTable);
+            fetchReservationsAll(--currentPageSecondTable, null);
         }
     });
 
     $('#paginationControlsSecondTable').on('click', '#nextPageAll', function () {
         if (currentPageSecondTable < totalPagesSecondTable) {
-            fetchReservationsAll(++currentPageSecondTable);
+            fetchReservationsAll(++currentPageSecondTable, null);
         }
     });
 
@@ -223,7 +236,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 alert("Rezervace smazána.");
-                fetchReservationsAll(currentPageFirstTable);
+                fetchReservationsAll(currentPageFirstTable, null);
                 fetchReservations(page)
             },
             error: function (xhr, status, error) {
@@ -250,7 +263,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 alert(response.message);
-                fetchReservationsAll(currentPageFirstTable);
+                fetchReservationsAll(currentPageFirstTable, null);
             },
             error: function (xhr, status, error) {
                 if (xhr.responseJSON) {
@@ -270,5 +283,16 @@ $(document).ready(function () {
         return `${day}.${month}.${year}`;
     }
 
-    fetchReservationsAll(currentPageFirstTable);
+    function todayDate() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate
+    }
+
+    const formattedDate = todayDate()
+    $('#reservationDate').val(formattedDate);
+    fetchReservationsAll(currentPageFirstTable, formattedDate);
 });
