@@ -285,6 +285,17 @@ $(document).ready(function () {
         });
     });
 
+    $(document).ready(function () {
+        $('#name').on('input', function () {
+            var inputData = $(this).val();
+            $('#name_client_hidden').val(inputData);
+        });
+        $('#surname').on('input', function () {
+            var inputData = $(this).val();
+            $('#surname_client_hidden').val(inputData)
+        })
+    });
+
     //flask wont submit disabled fields
     $('form').submit(function () {
         $('#lesson_length').prop('disabled', false);
