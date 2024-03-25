@@ -39,7 +39,7 @@ $(document).ready(function () {
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
-                var keyOrder = ["Termín", "Čas začátku", "Jméno", "Příjmení", "Stav", "Typ hodiny", "Zbývající kapacita"]
+                var keyOrder = ["Termín", "Čas začátku", "Stav", "Typ hodiny", "Zbývající kapacita"]
 
                 $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));

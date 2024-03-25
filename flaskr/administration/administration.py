@@ -16,7 +16,9 @@ def reservations_overview():
 @administration_bp.route('/admin-page', methods=["GET", "POST"])
 @login_required
 def admin_page():
-    return render_template("blog/admin/admin_page.html")
+    counts = get_reservation_counts()
+    dates, reservation_counts = prepare_data_for_graph(counts)
+    return render_template("blog/admin/admin_page.html", dates=dates, reservation_counts=reservation_counts, active_page="admin_page")
 
 @administration_bp.route('/instructors-admin', methods=["POST", "GET"])
 @login_required

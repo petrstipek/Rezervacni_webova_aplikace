@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from flask_login import login_required
 from flaskr.api.services.administration_services import *
 from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
@@ -94,6 +94,7 @@ def get_reservations():
         return jsonify(data)
     
 @administration_api.route("/lessons")
+@login_required
 def get_lessons():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
@@ -106,3 +107,9 @@ def get_lessons():
         'pages': (total + per_page - 1) // per_page,
         'current_page': page
     })
+
+@administration_api.route("/school/information")
+@login_required
+def school_information():
+    information = get_school_information()
+    return

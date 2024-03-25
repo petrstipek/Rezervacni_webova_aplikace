@@ -13,43 +13,46 @@
     <form method="post" action="{{ url_for('administration.instructors_admin') }}">
         {{ form.hidden_tag() }}
         <div class="instructors-admin-grid">
+            <!-- First Row -->
             <div class="horizontal-fields-container-admin-instructors">
                 <div class="containers-instructors">
                     <label for="name">{{ form.name.label }}</label>
-                    {{ form.name }}
+                    {{ form.name(id="name") }}
                 </div>
                 <div class="containers-instructors">
                     <label for="surname">{{ form.surname.label }}</label>
-                    {{ form.surname }}
+                    {{ form.surname(id="surname") }}
                 </div>
                 <div class="containers-instructors">
                     <label for="tel_number">{{ form.tel_number.label }}</label>
-                    {{ form.tel_number }}
+                    {{ form.tel_number(id="tel_number") }}
                 </div>
                 <div class="containers-instructors">
                     <label for="email">{{ form.email.label }}</label>
-                    {{ form.email }}
+                    {{ form.email(id="email") }}
                 </div>
             </div>
+            <!-- Second Row -->
             <div class="horizontal-fields-container-admin-instructors">
                 <div class="containers-instructors">
                     <label for="date_birth">{{ form.date_birth.label }}</label>
-                    {{ form.date_birth }}
+                    {{ form.date_birth(id="date_birth") }}
                 </div>
                 <div class="containers-instructors">
                     <label for="date_started">{{ form.date_started.label }}</label>
-                    {{ form.date_started }}
+                    {{ form.date_started(id="date_started") }}
                 </div>
                 <div class="containers-instructors">
                     <label for="experience">{{ form.experience.label }}</label>
-                    {{ form.experience }}
+                    {{ form.experience(id="experience") }}
                 </div>
-                <div class="containers-instructors">
-                    <label class="invisible-label" aria-hidden="true">schovane pole</label> 
-                    <button class="btn btn-warning" type="submit">Vložit instruktora</button>
+                <div class="containers-instructors submit-container">
+                    <button class="btn btn-warning submit-button" type="submit">Vložit instruktora</button>
                 </div>
             </div>
         </div>
+        
+        
     </form>
     </div>
 </section>

@@ -13,7 +13,19 @@
 
 .navbar-custom {
     margin-bottom: 0 !important;
-    background-color: white !important;
+    background-color: #e0f3ff !important;
+}
+
+.header-admin-section {
+    background-color: #e0f3ff !important;
+}
+
+.footer-admin-section {
+    background-color: #e0f3ff !important;
+}
+
+.my-4 {
+    margin-top: 0px !important;
 }
 
 .horizontal-fields-container-admin-reservations {
@@ -297,7 +309,6 @@ select {
     flex-basis: calc(25% - 20px);
     display: flex;
     flex-direction: column;
-    align-items: start;
 }
 
 .containers-reservations label {

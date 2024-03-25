@@ -11,5 +11,11 @@
         <a>Vítejte na hlavní stránce administrace rezervačního systémů lyžařské školy!</a>
     </div>
 </section>
+<canvas id="reservationChart" width="400" height="200"></canvas>
+
+
+
+<script src="{{ url_for('static', filename='js/admin_dashboard_page.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 {% endblock %}

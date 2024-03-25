@@ -1,6 +1,7 @@
 from flaskr.extensions import database
 from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba, Zak, Instruktor
 from sqlalchemy.orm import aliased
+from datetime import datetime
 
 
 def get_reservation_payment_status(reservation_id):
@@ -85,7 +86,11 @@ def get_reservation_details(reservation_id):
             'doba_vyuky': reservation_query.doba_vyuky,
             'platba': reservation_query.platba,
             'jmeno_klienta': reservation_query.klient.osoba.jmeno,
-            'prijmeni_klienta': reservation_query.klient.osoba.prijmeni
+            'prijmeni_klienta': reservation_query.klient.osoba.prijmeni,
+            'email_klienta': reservation_query.klient.osoba.email,
+            'tel_cislo_klienta': reservation_query.klient.osoba.tel_cislo,
+            'poznamka': reservation_query.poznamka,
+            'pocet_zaku': reservation_query.pocet_zaku
         }
 
     instructor_query = database.session.query(Instruktor).outerjoin(Osoba, Instruktor.ID_osoba==Osoba.ID_osoba).outerjoin(MaVyuku, Instruktor.ID_osoba==MaVyuku.ID_osoba).filter(MaVyuku.ID_rezervace==reservation_id).first()
@@ -104,5 +109,14 @@ def get_reservation_details(reservation_id):
         'Instructor': instructor_detail,
         'Zak': zak_list
     }
-
     return combined_details
+
+
+def get_school_information():
+    today = datetime.today().date()
+    reservation_count = database.session.query(Rezervace).filter(Rezervace.termin==today).count()
+    print(reservation_count)
+
+    available_times_count = database.session.query(DostupneHodiny).filter(DostupneHodiny.obsazenost=="volno").count()
+    print(available_times_count)
+

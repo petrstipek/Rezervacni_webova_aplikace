@@ -3,6 +3,8 @@ from flaskr.models import Instruktor, Osoba, MaVypsane, DostupneHodiny, Rezervac
 from datetime import datetime
 from sqlalchemy.orm import joinedload
 from sqlalchemy import and_
+from datetime import datetime, timedelta
+from sqlalchemy import func
 
 
 def instructor_exists(email):
@@ -106,3 +108,24 @@ def add_group_lesson(db, date_str, time_start, instructor_ids, lesson_type, capa
 def get_reservations():
     query_result = database.session.query(Rezervace).join(Klient, Rezervace.ID_osoba == Klient.ID_osoba).all()
     return [dict(row) for row in query_result]
+
+def get_reservation_counts():
+    end_date = datetime.today().date()
+    start_date = end_date - timedelta(days=6)
+    
+    counts = (database.session.query(func.date(Rezervace.termin), func.count(Rezervace.ID_rezervace))
+            .filter(Rezervace.termin >= start_date)
+            .filter(Rezervace.termin <= end_date)
+            .group_by(func.date(Rezervace.termin))
+            .order_by(func.date(Rezervace.termin))
+            .all())
+    
+    return counts
+
+from datetime import datetime
+
+def prepare_data_for_graph(counts):
+    dates = [datetime.strptime(result[0], "%Y-%m-%d").strftime("%Y-%m-%d") if isinstance(result[0], str) else result[0].strftime("%Y-%m-%d") for result in counts]
+    reservation_counts = [result[1] for result in counts]
+
+    return dates, reservation_counts

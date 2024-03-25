@@ -33,19 +33,19 @@
                     {{ form.reservation_id(id="reservation_id") }}
                 </div>
                 <div class="containers-reservations">
-                    <label for="surname">{{ form.surname.label }}</label>
+                    <label for="reservation_name">{{ form.surname.label }}</label>
                     {{ form.surname(id="reservation_name") }}
                 </div>
                 <div class="containers-reservations">
-                    <label for="email">{{ form.email.label }}</label>
+                    <label for="reservation_email">{{ form.email.label }}</label>
                     {{ form.email(id="reservation_email") }}
                 </div>
                 <div class="containers-reservations">
-                    <label for="tel_number">{{ form.tel_number.label }}</label>
+                    <label for="reservation_tel_number">{{ form.tel_number.label }}</label>
                     {{ form.tel_number(id="reservation_tel_number") }}
                 </div>
                 <button class="btn btn-warning btn-send-reservation submit-button" type="submit">Vyhledat rezervaci</button>
-            </div>
+            </div>         
         </form>
         <div id="reservationDetails" class="table-specific-reservations"></div>
         <div id="paginationControlsFirstTable" class="pagination-controls"></div>
