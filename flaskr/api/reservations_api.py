@@ -1,7 +1,4 @@
-from flask import Blueprint, jsonify, flash, request, redirect, url_for, json
-from flaskr.db import get_db
-from urllib.parse import urlparse
-import sqlite3
+from flask import Blueprint, jsonify, request
 from flaskr.api.services.reservations_services import *
 from flaskr.api.administration_api import administration_api
 

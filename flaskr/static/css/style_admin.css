@@ -74,7 +74,6 @@ select {
 
 .reservation-table th,
 .reservation-table td {
-    border: 1px solid #000;
     padding: 8px;
 }
 

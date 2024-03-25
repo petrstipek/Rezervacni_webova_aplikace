@@ -38,9 +38,6 @@ class Osoba(Base):
     def is_anonymous(self):
         return False
 
-    def get_id(self):
-        return str(self.ID_osoba)
-    
     def get_role(self):
         if self.spravce_skoly:
             return 'admin'

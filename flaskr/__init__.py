@@ -15,6 +15,8 @@ from flaskr.extensions import recaptcha_private, recaptcha_public
 from flaskr.api.administration_api import administration_api
 from flaskr.users.users import users_bp
 from flaskr.instructors.instructors import instructors_bp
+from flaskr.api.users_api import users_api_bp
+from flaskr.api.instructors_api import instructors_api_bp
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -50,6 +52,8 @@ def create_app(test_config=None):
 
     app.register_blueprint(instructors_bp, url_prefix="/instructor")
     app.register_blueprint(users_bp, url_prefix="/users")
+    app.register_blueprint(users_api_bp, url_prefix="/users-api")
+    app.register_blueprint(instructors_api_bp, url_prefix="/instructors-api")
 
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587

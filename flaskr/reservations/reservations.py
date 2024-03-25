@@ -5,6 +5,7 @@ from flaskr.api.services.instructor_services import get_all_instructors
 from flaskr.extensions import recaptcha_private
 import requests
 from flaskr.extensions import verify_url
+from flask_login import current_user
 
 reservations_bp = Blueprint('reservations', __name__, template_folder='templates')
 
@@ -54,5 +55,4 @@ def main_page():
             flash("Prosím, opravte následující chyby: " + ", ".join(error_messages), category="danger")
             print("Form errors:", form.errors)
             
-
     return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form)

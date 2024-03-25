@@ -30,23 +30,28 @@
                                     <a href="{{ url_for('administration.admin_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'admin_page' else '' }}">Hlavní stránka</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('administration.reservations_overview') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservations_overview' else '' }}">Přehled rezervací</a>
+                                    <a href="{{ url_for('administration.reservations_overview') }}" class="nav-link px-2 me-2{{ 'active' if active_page == 'reservations_overview' else '' }}">Přehled rezervací</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('administration.reservations_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'reservations_admin' else '' }}">Vyhledání rezervace</a>
+                                    <a href="{{ url_for('administration.reservations_admin') }}" class="nav-link px-2 me-2{{ 'active' if active_page == 'reservations_admin' else '' }}">Vyhledání rezervace</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('administration.lessons_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'lessons_admin' else '' }}">Dostupné hodiny</a>
+                                    <a href="{{ url_for('administration.lessons_admin') }}" class="nav-link px-2 me-2{{ 'active' if active_page == 'lessons_admin' else '' }}">Dostupné hodiny</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('administration.instructors_admin') }}" class="nav-link px-2 {{ 'active' if active_page == 'instructors_admin' else '' }}">Instruktoři</a>
+                                    <a href="{{ url_for('administration.instructors_admin') }}" class="nav-link px-2 me-2{{ 'active' if active_page == 'instructors_admin' else '' }}">Instruktoři</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
+                                    <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
                                 </li>
                             </ul>
-                            <div class="d-none d-lg-block">
-                                <a href="{{ url_for('auth.logout') }}" class="btn btn-warning button-right-margin btn-select-reservation" role="button">Odhlášení</a>
+                            <div class="d-flex align-items-center">
+                                {% if current_user.is_authenticated %}
+                                    <span class="navbar-text mr-3 me-3">Uživatel: {{ current_user.jmeno }}</span>
+                                    <a href="{{ url_for('auth.logout') }}" class="btn btn-warning btn-select-reservation me-2">Odhlásit se</a>
+                                {% else %}
+                                    <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-select-reservation me-2">Přihlásit se</a>
+                                {% endif %}
                             </div>
                         </div>
                     </nav>
