@@ -116,12 +116,11 @@
 .reservation-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 0px;
     font-size: 0.9em;
     min-width: 400px;
     border-radius: 10px 10px 10px 10px;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .reservation-table th,
@@ -166,7 +165,6 @@
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 300px;
 
 }
 

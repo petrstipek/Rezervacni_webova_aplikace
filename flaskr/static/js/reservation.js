@@ -15,33 +15,46 @@ $(document).ready(function () {
         }
     });
 
-    $('#name').on('input', function () {
-        var isValidName = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
-        if (isValidName) {
-            $(this).css('border', '2px solid green');
-            $('#name_error').css('visibility', 'hidden');
-            setTimeout(() => {
-                $(this).animate({ borderColor: '#cccccc' }, 'slow');
-            }, 2000);
-        } else {
-            $(this).css('border', '2px solid red');
-            $('#name_error').css('visibility', 'visible').text('name error');
-        }
-    });
+    function validateNameFields(fieldSelector) {
+        $(fieldSelector).on('input', function () {
+            var isValidName = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
+            if (isValidName) {
+                $(this).css('border', '2px solid green');
+                $('#name_error').css('visibility', 'hidden');
+                setTimeout(() => {
+                    $(this).animate({ borderColor: '#cccccc' }, 'slow');
+                }, 2000);
+            }
+            else {
+                $(this).css('border', '2px solid red');
+                $('#name_error').css('visibility', 'visible').text('name error');
+            }
+        })
+    }
 
-    $('#surname').on('input', function () {
-        var isValidSurname = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
-        if (isValidSurname) {
-            $(this).css('border', '2px solid green');
-            $('#surname_error').css('visibility', 'hidden');
-            setTimeout(() => {
-                $(this).animate({ borderColor: '#cccccc' }, 'slow');
-            }, 2000);
-        } else {
-            $(this).css('border', '2px solid red');
-            $('#surname_error').css('visibility', 'visible').text('surname error');
-        }
-    });
+    validateNameFields("#name");
+    validateNameFields("#name2");
+    validateNameFields("#name3");
+
+    function validateSurnameFields(fieldSelector) {
+        $(fieldSelector).on('input', function () {
+            var isValidSurname = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
+            if (isValidSurname) {
+                $(this).css('border', '2px solid green');
+                $('#surname_error').css('visibility', 'hidden');
+                setTimeout(() => {
+                    $(this).animate({ borderColor: '#cccccc' }, 'slow');
+                }, 2000);
+            } else {
+                $(this).css('border', '2px solid red');
+                $('#surname_error').css('visibility', 'visible').text('surname error');
+            }
+        });
+    }
+
+    validateSurnameFields("#surname");
+    validateSurnameFields("#surname2");
+    validateSurnameFields("#surname3");
 
     $('#email').on('input', function () {
         var isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($(this).val());
@@ -57,18 +70,24 @@ $(document).ready(function () {
         }
     });
 
-    $('#age_client_main').on('input', function () {
-        if ($(this).val().trim() !== '') {
-            $(this).css('border', '2px solid green');
-            $('#age_error').css('visibility', 'hidden');
-            setTimeout(() => {
-                $(this).css('border-color', '#cccccc');
-            }, 2000);
-        } else {
-            $(this).css('border', '2px solid red');
-            $('#age_error').css('visibility', 'visible').text('age error');
-        }
-    });
+    function validateAgeFields(fieldSelector) {
+        $(fieldSelector).on('input', function () {
+            if ($(this).val().trim() !== '') {
+                $(this).css('border', '2px solid green');
+                $('#age_error').css('visibility', 'hidden');
+                setTimeout(() => {
+                    $(this).css('border-color', '#cccccc');
+                }, 2000);
+            } else {
+                $(this).css('border', '2px solid red');
+                $('#age_error').css('visibility', 'visible').text('age error');
+            }
+        });
+    }
+
+    validateAgeFields("#age_client_main");
+    validateAgeFields("#age2");
+    validateAgeFields("#age3");
 
     function fetchAvailableTimes() {
         var instructorId = $('#lesson_instructor').val();
@@ -131,17 +150,17 @@ $(document).ready(function () {
 
     $('#student_client_checkbox').change(function () {
         if (this.checked) {
-            $('#client_student_details_section').show();
+            $('#client_student_details_section').slideDown();
         } else {
-            $('#client_student_details_section').hide();
+            $('#client_student_details_section').slideUp();
         }
     }).change();
 
     $('#more_students_checkbox').change(function () {
         if (this.checked) {
-            $('#student_details_section').show();
+            $('#student_details_section').slideDown();
         } else {
-            $('#student_details_section').hide();
+            $('#student_details_section').slideUp();
         }
     });
 
@@ -276,6 +295,11 @@ $(document).ready(function () {
     $('#surname').keypress(restrictInputToText);
     $('#reservation_tel_number').keypress(restrictInputToNumbers);
 
+    $('#name2').keypress(restrictInputToText);
+    $('#surname2').keypress(restrictInputToText);
+    $('#name3').keypress(restrictInputToText);
+    $('#surname4').keypress(restrictInputToText);
+
     function restrictInputToText(event) {
         var regex = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]*$/;
         var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
@@ -295,12 +319,24 @@ $(document).ready(function () {
     }
 
     var isFormValid = false;
+    var student_client = $("#student_client_checkbox").prop('checked');
+    console.log(student_client)
 
     $('.btn-send-reservation').click(function (event) {
         event.preventDefault();
+        var student_client = $("#student_client_checkbox").prop("checked");
+        var more_students = $("#more_students_checkbox").prop("checked");
 
+        if (!student_client && !more_students) {
+            var fields = ['#name', '#surname', '#email', '#reservation_tel_number'];
+        }
+        if (student_client) {
+            var fields = ['#name', '#surname', '#email', '#reservation_tel_number', '#age_client_main'];
+        }
+        if (more_students) {
+            var fields = ['#name', '#surname', '#email', '#reservation_tel_number', '#name2', '#name3', '#surname2', '#surname3', '#age2', '#age3'];
+        }
         isFormValid = true;
-        var fields = ['#name', '#surname', '#email', '#reservation_tel_number, #age_client_main'];
 
         fields.forEach(function (selector) {
             var input = $(selector);
@@ -313,7 +349,11 @@ $(document).ready(function () {
         });
 
         if (!isFormValid) {
-            alert("Prosím, vyplňte všechna povinná pole.");
+            if (!student_client && !more_students) {
+                alert("Prosím, zvolte žáky lekce a doplňte příslušná pole!")
+            } else {
+                alert("Prosím, vyplňte všechna povinná pole!");
+            }
         }
     });
 

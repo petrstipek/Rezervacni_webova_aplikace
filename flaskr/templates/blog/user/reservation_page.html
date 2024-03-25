@@ -134,15 +134,15 @@
                 <div class="horizontal-fields-container-info">
                     <div class="field-container-pi">
                         <label for="name">{{ form.name_client1.label }}</label>
-                        {{ form.name_client1 }}
+                        {{ form.name_client1(id="name2") }}
                     </div>
                     <div class="field-container-pi">
                         <label for="surname">{{ form.surname_client1.label }}</label>
-                        {{ form.surname_client1 }}
+                        {{ form.surname_client1(id="surname2") }}
                     </div>
                     <div class="field-container-pi">
                         {{ form.age_client1.label }}
-                        {{ form.age_client1(class_="age-field") }}
+                        {{ form.age_client1(class_="age-field", id="age2") }}
                         {% for error in form.age_client1.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}
@@ -158,15 +158,15 @@
                 <div class="horizontal-fields-container-info">
                     <div class="field-container-pi">
                         <label for="name">{{ form.name_client2.label }}</label>
-                        {{ form.name_client2 }}
+                        {{ form.name_client2(id="name3") }}
                     </div>
                     <div class="field-container-pi">
                         <label for="surname">{{ form.surname_client2.label }}</label>
-                        {{ form.surname_client2 }}
+                        {{ form.surname_client2(id="surname3") }}
                     </div>
                     <div class="field-container-pi">
                         {{ form.age_client2.label }}
-                        {{ form.age_client2(class_="age-field") }}
+                        {{ form.age_client2(class_="age-field", id="age3") }}
                         {% for error in form.age_client2.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}

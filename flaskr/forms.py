@@ -42,7 +42,7 @@ class PersonalInformationForm(FlaskForm):
     lesson_instructor_choices = SelectField("Instruktor", choices = [])
     language_selection = SelectField("Jazyk", choices=[("czech", "čeština"), ("deutsch", "deutsch"), ("english", "english")])
 
-    note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu"})
+    note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu."}, validators=[Optional(), Length(min=0, max=300)])
 
     date = HiddenField("date", validators=[DataRequired()])
     time_reservation = HiddenField("time", validators=[DataRequired()])
