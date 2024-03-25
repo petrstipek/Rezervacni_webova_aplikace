@@ -40,6 +40,17 @@ class Osoba(Base):
 
     def get_id(self):
         return str(self.ID_osoba)
+    
+    def get_role(self):
+        if self.spravce_skoly:
+            return 'admin'
+        elif self.instruktor:
+            return 'instructor'
+        elif self.klient:
+            return 'client'
+        else:
+            return 'unknown'
+
 
 class SpravceSkoly(Base):
     __tablename__ = 'spravce_skoly'

@@ -5,16 +5,19 @@ from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInfo
 from flaskr.administration.services import *
 from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
+from flaskr.auth.login_decorators import admin_required
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
 @administration_bp.route('/reservations-overview')
 @login_required
+@admin_required
 def reservations_overview():
     return render_template('/blog/admin/reservation_overview.html', active_page="reservations_overview")
 
 @administration_bp.route('/admin-page', methods=["GET", "POST"])
 @login_required
+@admin_required
 def admin_page():
     counts = get_reservation_counts()
     dates, reservation_counts = prepare_data_for_graph(counts)
@@ -22,6 +25,7 @@ def admin_page():
 
 @administration_bp.route('/instructors-admin', methods=["POST", "GET"])
 @login_required
+@admin_required
 def instructors_admin():
     form = InstructorInsertForm()
 
@@ -47,6 +51,7 @@ def instructors_admin():
 
 @administration_bp.route('/lessons-admin', methods=["POST", "GET"])
 @login_required
+@admin_required
 def lessons_admin():
     form = LessonInsertForm()
     db = get_db()
@@ -89,6 +94,7 @@ def lessons_admin():
 
 @administration_bp.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 @login_required
+@admin_required
 def reservations_admin():
     form = ReservationInformationAdmin()
     return render_template("blog/admin/reservations_admin.html", form=form, active_page="reservations_admin")

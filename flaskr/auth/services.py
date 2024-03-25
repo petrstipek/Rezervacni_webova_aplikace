@@ -24,8 +24,8 @@ def authenticate_user(username, password):
     if user and check_password(user.heslo, password):
         user = database.session.query(Osoba).filter(Osoba.prihl_jmeno == username).first()
         login_user(user, remember=request.form.get('remember'))
-        return True
-    return False
+        return user
+    return None
 
 def get_user_by_id(user_id):
     return database.session.query(Osoba).filter_by(ID_osoba=user_id).first()
