@@ -17,7 +17,7 @@ $(document).ready(function () {
 
     function validateNameFields(fieldSelector) {
         $(fieldSelector).on('input', function () {
-            var isValidName = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
+            var isValidName = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s'.-]+$/.test($(this).val());
             if (isValidName) {
                 $(this).css('border', '2px solid green');
                 $('#name_error').css('visibility', 'hidden');
@@ -38,7 +38,7 @@ $(document).ready(function () {
 
     function validateSurnameFields(fieldSelector) {
         $(fieldSelector).on('input', function () {
-            var isValidSurname = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]+$/.test($(this).val());
+            var isValidSurname = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s'.-]+$/.test($(this).val());
             if (isValidSurname) {
                 $(this).css('border', '2px solid green');
                 $('#surname_error').css('visibility', 'hidden');
