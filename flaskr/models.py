@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Date, Time, ForeignKey, UniqueConstraint
+from sqlalchemy import create_engine, Column, Integer, String, Date, Time, ForeignKey, UniqueConstraint, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from flask_login import UserMixin
@@ -24,7 +24,10 @@ class Osoba(Base):
     email = Column(String(30), nullable=False)
     tel_cislo = Column(String(15), nullable=False)
     prihl_jmeno = Column(String(20))
-    heslo = Column(String(20))
+    heslo = Column(String(60))
+
+    password_change_attempts = Column(Integer, default=0, nullable=False)
+    last_password_change_attempt = Column(DateTime)
 
     def get_id(self):
         return str(self.ID_osoba)
