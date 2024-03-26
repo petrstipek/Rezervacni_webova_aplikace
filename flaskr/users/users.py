@@ -11,7 +11,7 @@ users_bp = Blueprint('users', __name__, template_folder='templates')
 @login_required
 @client_required
 def users_reservations():
-    return render_template("/blog/user/user_page.html")
+    return render_template("/blog/user/user_page.html", active_page="users_reservations")
 
 @users_bp.route('/profile', methods=["GET", "POST"])
 @login_required
