@@ -50,6 +50,9 @@
                                         <li class="nav-item">
                                             <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
                                         </li>
+                                        <li class="nat-item">
+                                            <a href="{{ url_for('users.users_profile') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'users_profile' else '' }}">Profil</a>
+                                        </li>
                                     {% elif current_user.get_role() == "client" %}
                                         <li class="nav-item">
                                             <a href="{{ url_for('reservations.main_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a>
@@ -63,9 +66,25 @@
                                         <li class="nav-item">
                                             <a href="{{ url_for('information.instructors_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a>
                                         </li>
-                                    <li class="nat-item">
-                                        <a href="{{ url_for('users.users_profile') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'users_profile' else '' }}">Profil</a>
-                                    </li>
+                                        <li class="nat-item">
+                                            <a href="{{ url_for('users.users_profile') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'users_profile' else '' }}">Profil</a>
+                                        </li>
+                                    {% elif current_user.get_role() == "instructor" %}
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('reservations.main_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.school_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'school' else '' }}">Škola</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.instructors_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a>
+                                        </li>
+                                        <li class="nat-item">
+                                            <a href="{{ url_for('users.users_profile') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'users_profile' else '' }}">Profil</a>
+                                        </li>
                                     {% endif %}
                                 {% else %}
                                     <li class="nav-item">
