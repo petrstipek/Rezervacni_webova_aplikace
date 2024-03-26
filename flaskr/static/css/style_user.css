@@ -183,8 +183,9 @@ hr {
 }
 
 .nav-link.active {
-    background-color: #007bff;
-    color: white !important;
+    background-color: #ffe3ac;
+    color: black !important;
+    border-radius: 8px;
 }
 
 .navbar-custom {

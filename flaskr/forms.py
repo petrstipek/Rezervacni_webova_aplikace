@@ -120,3 +120,15 @@ class PasswordRenewalForm(FlaskForm):
 class PasswordResetForm(FlaskForm):
     new_password = PasswordField(label="Heslo:", validators=[DataRequired()])
     submit = SubmitField(label="Změnit heslo")
+
+class PersonalInformationFormUser(FlaskForm):
+    name = StringField(label="Jméno klienta", validators=[Length(min=2, max=30), Optional()])
+    surname = StringField(label="Příjmení klienta", validators=[Length(min=2, max=30), Optional()])
+    old_password = PasswordField(label="Aktuální heslo:", validators=[Optional()])
+    new_password = PasswordField(label="Nové heslo:", validators=[Optional()])
+    tel_number = StringField('Telefonní číslo', validators=[
+        Optional(),
+        Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    ], render_kw={"type": "tel"})
+    email =  StringField('Email', validators=[Optional(), Email()], render_kw={"type": "email"})
+    submit = SubmitField(label="Registrovat se")
