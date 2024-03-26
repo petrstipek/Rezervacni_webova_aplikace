@@ -101,3 +101,14 @@ class ReservationInformationAdmin(FlaskForm):
     email =  StringField('Email', validators=[Optional(), Email()], render_kw={"type": "email"})
     reservation_id = StringField(label="ID rezervace", validators=[Optional()])
     submit = SubmitField(label="Najít rezervaci")
+
+class RegistrationForm(FlaskForm):
+    name = StringField(label="Jméno klienta", validators=[Length(min=2, max=30), DataRequired()])
+    surname = StringField(label="Příjmení klienta", validators=[Length(min=2, max=30), DataRequired()])
+    password = PasswordField(label="Heslo:", validators=[DataRequired()])
+    tel_number = StringField('Telefonní číslo', validators=[
+        DataRequired(),
+        Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    ], render_kw={"type": "tel"})
+    email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
+    submit = SubmitField(label="Registrovat se")

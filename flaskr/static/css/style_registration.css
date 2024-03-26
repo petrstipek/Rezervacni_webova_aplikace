@@ -1,0 +1,52 @@
+.form-signin .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.form-signin .form-col {
+    flex: 1;
+    min-width: 160px;
+    padding-right: 15px;
+}
+
+.form-signin .form-control {
+    width: 100%;
+}
+
+@media (max-width: 576px) {
+    .form-signin .form-col {
+        flex-basis: 100%;
+        max-width: 100%;
+        padding-right: 0;
+    }
+}
+
+.form-signin .form-btn {
+    display: flex;
+    justify-content: center;
+    padding-right: 15px;
+}
+
+@media (max-width: 576px) {
+    .form-signin .form-btn {
+        padding-right: 0;
+    }
+}
+
+.form-control {
+    width: 100%;
+    min-width: 300px;
+}
+
+.form-col {
+    flex: 1;
+    min-width: 300px;
+    padding-right: 15px;
+}
+
+.form-container,
+.form-signin {
+    max-width: 800px;
+    margin: auto;
+}

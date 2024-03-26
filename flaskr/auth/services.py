@@ -1,6 +1,6 @@
 import os
 import hashlib
-from flaskr.models import Osoba
+from flaskr.models import Osoba, Klient
 from flaskr.extensions import database
 from flask_login import login_user
 from flask import request
@@ -34,3 +34,29 @@ def create_user_object(user_result):
     if user_result:
         return Osoba(user_result.ID_osoba, user_result.prijmeni)
     return None
+
+def register_new_user(form):
+    existing_user = database.session.query(Osoba).filter(Osoba.email == form.email.data).first()
+
+    if existing_user:
+        existing_user.jmeno = form.name.data
+        existing_user.prijmeni = form.surname.data
+        existing_user.tel_cislo = form.tel_number.data
+        existing_user.prihl_jmeno = form.email.data
+        existing_user.heslo = hash_password(form.password.data)
+        user = existing_user
+    else:
+        new_osoba = Osoba(jmeno=form.name.data, prijmeni=form.surname.data, tel_cislo=form.tel_number.data, email=form.email.data, prihl_jmeno=form.email.data, heslo=hash_password(form.password.data))
+        database.session.add(new_osoba)
+        database.session.flush()
+
+        new_client = Klient(ID_osoba=new_osoba.ID_osoba)
+        database.session.add(new_client)
+        user = new_osoba
+
+    try:
+        database.session.commit()
+        return user
+    except Exception as e:
+        database.session.rollback()
+        return False
