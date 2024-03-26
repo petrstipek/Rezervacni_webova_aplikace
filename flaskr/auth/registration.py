@@ -6,7 +6,6 @@ registration_bp = Blueprint('registration', __name__, template_folder='templates
 
 @registration_bp.route("/", methods=["GET", "POST"])
 def registration_user():
-    print("ksem tady")
     form = RegistrationForm()
     if form.validate_on_submit():
         user_registered = register_new_user(form)

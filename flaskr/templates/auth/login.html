@@ -24,6 +24,7 @@
                 {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}
                 <div class="mt-3">
                     <p>Nemáte účet? <a href="{{ url_for('registration.registration_user') }}">Zaregistrujte se</a></p>
+                    <p>Zapomněli jste heslo? <a href="{{ url_for('auth.renew_password') }}">Obnovte si heslo</a></p>
                 </div>
             </form>
         </div>

@@ -23,6 +23,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
+        SECURITY_PASSWORD_SALT = 'dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
     bootstrap = Bootstrap5(app)

@@ -1,7 +1,6 @@
 import random, string
 from flask_mail import Message
 from flaskr.extensions import mail
-from flaskr.db import get_db
 from datetime import datetime, timedelta
 from flaskr.models import Rezervace, Osoba, Klient, Instruktor, DostupneHodiny, MaVypsane, MaVyuku, Prirazeno, Zak
 from flaskr.extensions import database

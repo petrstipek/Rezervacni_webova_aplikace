@@ -60,3 +60,23 @@ def register_new_user(form):
     except Exception as e:
         database.session.rollback()
         return False
+
+def check_email(email):
+    existing_user = database.session.query(Osoba).filter(Osoba.email==email).first()
+    if existing_user:
+        return existing_user
+    else:
+        return False
+    
+def change_password(email, password):
+    existing_user = database.session.query(Osoba).filter(Osoba.email==email).first()
+    if existing_user:
+        existing_user.heslo = hash_password(password)
+    else:
+        return False
+    try:
+        database.session.commit()
+        return True
+    except Exception as e:
+        database.session.rollback()
+        return False

@@ -112,3 +112,11 @@ class RegistrationForm(FlaskForm):
     ], render_kw={"type": "tel"})
     email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
     submit = SubmitField(label="Registrovat se")
+
+class PasswordRenewalForm(FlaskForm):
+    email =  StringField('Email', validators=[Optional(), Email()], render_kw={"type": "email"})
+    submit = SubmitField(label="Změnit heslo")
+
+class PasswordResetForm(FlaskForm):
+    new_password = PasswordField(label="Heslo:", validators=[DataRequired()])
+    submit = SubmitField(label="Změnit heslo")
