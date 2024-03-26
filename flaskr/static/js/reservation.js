@@ -285,16 +285,20 @@ $(document).ready(function () {
         });
     });
 
-    $(document).ready(function () {
-        $('#name').on('input', function () {
-            var inputData = $(this).val();
-            $('#name_client_hidden').val(inputData);
-        });
-        $('#surname').on('input', function () {
-            var inputData = $(this).val();
-            $('#surname_client_hidden').val(inputData)
-        })
+    function copyAndValidate(sourceSelector, targetSelector) {
+        var value = $(sourceSelector).val();
+        $(targetSelector).val(value);
+    }
+
+    $('#name').on('input', function () {
+        copyAndValidate('#name', '#name_client_hidden');
     });
+    $('#surname').on('input', function () {
+        copyAndValidate('#surname', '#surname_client_hidden');
+    });
+
+    copyAndValidate('#name', '#name_client_hidden',);
+    copyAndValidate('#surname', '#surname_client_hidden');
 
     //flask wont submit disabled fields
     $('form').submit(function () {

@@ -17,6 +17,12 @@ def reservation_check():
 @reservations_bp.route("/", methods=["GET", "POST"])
 def main_page():
     form = PersonalInformationForm()
+    if current_user.is_authenticated:
+        form.name.data = current_user.jmeno
+        form.surname.data = current_user.prijmeni
+        form.email.data = current_user.email
+        form.tel_number.data = current_user.tel_cislo
+
     #opravit vůči 0?
     available_instructors = get_all_instructors()
     available_instructors = handle_all_instructors(available_instructors)
@@ -55,4 +61,4 @@ def main_page():
             flash("Prosím, opravte následující chyby: " + ", ".join(error_messages), category="danger")
             print("Form errors:", form.errors)
             
-    return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form)
+    return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form, is_logged_in=current_user.is_authenticated)
