@@ -99,6 +99,7 @@ $(document).ready(function () {
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);
+                    console.log(data)
                     selectedDate = $('#datepicker').val();
                     $("input[name='date']").val(selectedDate);
                 },

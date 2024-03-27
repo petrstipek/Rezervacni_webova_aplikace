@@ -1,13 +1,47 @@
-from flask import Blueprint, render_template, redirect, flash, url_for, jsonify
+from flask import Blueprint, render_template, redirect, flash, url_for, jsonify, request
 from flask_login import login_required
 from flaskr.db import get_db
-from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin
+from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation
 from flaskr.administration.services import *
 from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
 from flaskr.auth.login_decorators import admin_required
+from flaskr.api.services.administration_services import get_reservation_details
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
+
+@administration_bp.route('/reservation-change')
+@login_required
+@admin_required
+def reservation_change():
+    form = ChangeReservation()
+    reservation_id = request.args.get('reservation_id')
+    reservation_details = get_reservation_details(reservation_id)
+
+    if reservation_details:
+        form.reservation_date.data = datetime.strptime(reservation_details['termin_rezervace'], '%Y-%m-%d').date()
+        form.reservation_time.data = datetime.strptime(reservation_details['cas_zacatku'], '%H:%M').time()
+
+        form.name.data = reservation_details.get('jmeno_klienta', '')
+        form.surname.data = reservation_details.get('prijmeni_klienta', '')
+        form.email.data = reservation_details.get('email_klienta', '')
+        form.tel_number.data = reservation_details.get('tel_cislo_klienta', '')
+        form.age_client.data = reservation_details['Zak'][0].get('vek_zak', '')
+        form.experience_client.data = reservation_details['Zak'][0].get('zkusenost_zak', '')
+
+        if reservation_details['Zak'] and len(reservation_details['Zak']) > 1:
+            form.name_client1.data = reservation_details['Zak'][1].get('jmeno_zak', '')
+            form.surname_client1.data = reservation_details['Zak'][1].get('prijmeni_zak', '')
+            form.age_client1.data = reservation_details['Zak'][1].get('vek_zak', '')
+            form.experience_client1.data = reservation_details['Zak'][1].get('zkusenost_zak', '')
+
+        if len(reservation_details['Zak']) >= 2:
+            form.name_client2.data = reservation_details['Zak'][2].get('jmeno_zak', '')
+            form.surname_client2.data = reservation_details['Zak'][2].get('prijmeni_zak', '')
+            form.age_client2.data = reservation_details['Zak'][2].get('vek_zak', '')
+            form.experience_client2.data = reservation_details['Zak'][2].get('zkusenost_zak', '')
+    
+    return render_template('/blog/admin/reservation_change.html', form=form, reservation_id=reservation_id)
 
 @administration_bp.route('/reservations-overview')
 @login_required

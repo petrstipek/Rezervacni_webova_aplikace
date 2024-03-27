@@ -247,3 +247,25 @@
     cursor: pointer;
     background-color: #f1f1f1;
 }
+
+.action-buttons-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.action-buttons-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+    padding: 15px;
+}
+
+.action-buttons-table td {
+    text-align: center;
+    padding: 10px;
+}
+
+.action-buttons-table .btn {
+    width: 100%;
+    box-sizing: border-box;
+}

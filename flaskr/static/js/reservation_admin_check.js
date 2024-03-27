@@ -286,6 +286,9 @@ $(document).ready(function () {
         const formattedDate = `${year}-${month}-${day}`;
         return formattedDate
     }
+    $(document).on('change', '#newDate', function () {
+        fetchAvailableTimes();
+    });
 
     $(document).on('click', '.detailReservation', function () {
         var baseUrl = "/administration-api/reservation/detail";
@@ -316,13 +319,21 @@ $(document).ready(function () {
 
                 detailsHtml += '<hr>';
 
-                var deleteButton = $(`<button class="deleteReservation" data-id="${reservationId}">Storno</button>`);
-                var paymentButton = $(`<button class="markAsPaid" data-id="${reservationId}">Označit zaplaceno</button>`);
+                var deleteButton = $('<button class="btn btn-warning deleteReservation" data-id="' + reservationId + '">Storno</button>');
+                var paymentButton = $('<button class="btn btn-warning markAsPaid" data-id="' + reservationId + '">Označit zaplaceno</button>');
+                var changeButton = $('<button class="btn btn-primary changeReservation" data-id="' + reservationId + '">Změnit rezervaci</button>');
 
                 detailsHtml += '<table class="action-buttons-table">';
-                detailsHtml += '<tr><th>Zaplatit</th><th>Odstranit</th></tr>';
-                detailsHtml += '<tr><td>' + paymentButton.prop('outerHTML') + '</td><td>' + deleteButton.prop('outerHTML') + '</td></tr>';
+                detailsHtml += '<thead>';
+                detailsHtml += '<tr><th>Zaplatit</th><th>Storno</th><th>Změnit</th></tr>';
+                detailsHtml += '</thead>';
+                detailsHtml += '<tbody>';
+                detailsHtml += '<tr><td>' + paymentButton.prop('outerHTML') + '</td>';
+                detailsHtml += '<td>' + deleteButton.prop('outerHTML') + '</td>';
+                detailsHtml += '<td>' + changeButton.prop('outerHTML') + '</td></tr>';
+                detailsHtml += '</tbody>';
                 detailsHtml += '</table>';
+
 
                 $('#modalBody').html(detailsHtml);
 
@@ -331,11 +342,42 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
 
-                $('#modalInfo').text('Error - fetchinch reservations!');
+                $('#modalInfo').text('Error - fetching reservations!');
                 $('#detailModal').css('display', 'block');
             }
         });
     });
+
+    function updateAvailableTimes(data) {
+        selectedDate = $('#newDate').val();
+        var timesForDate = data[selectedDate];
+        if (!timesForDate) {
+            $('#newTime').html('<option value="">Žádné dostupné časy</option>');
+            return;
+        }
+
+        var timeOptions = '<option value="">Vyberte čas</option>';
+        $.each(timesForDate, function (index, timeInfo) {
+            var time = timeInfo[0];
+            var capacity = timeInfo[1];
+            timeOptions += `<option value="${time}">${time} (Kapacita: ${capacity})</option>`;
+        });
+        $('#newTime').html(timeOptions);
+    }
+
+    function fetchAvailableTimes() {
+        const instructorId = 0
+        $.ajax({
+            url: '/reservations-api/lessons/' + instructorId + '/available-times',
+            type: 'GET',
+            success: function (data) {
+                updateAvailableTimes(data)
+            },
+            error: function (error) {
+                console.error('Error fetching available times:', error);
+            }
+        });
+    }
 
     $(document).on('click', '.close', function () {
         $('#detailModal').css('display', 'none');
@@ -345,7 +387,7 @@ $(document).ready(function () {
     $(window).click(function (event) {
         if ($(event.target).hasClass('modal')) {
             $('.modal').css('display', 'none');
-            ('body').removeClass('body-no-scroll');
+            //('body').removeClass('body-no-scroll');
         }
     });
 
@@ -353,4 +395,11 @@ $(document).ready(function () {
     const formattedDate = todayDate()
     $('#reservationDate').val(formattedDate);
     fetchReservationsAll(currentPageFirstTable, formattedDate);
+
+    $(document).on('click', '.changeReservation', function () {
+        var reservationId = $(this).data('id');  // Retrieve the reservation ID
+        var targetUrl = changeReservationUrl + '?reservation_id=' + reservationId;  // Append as query parameter
+        window.location.href = targetUrl;  // Redirect the user
+    });
+
 });

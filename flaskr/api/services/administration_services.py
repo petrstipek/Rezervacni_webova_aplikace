@@ -102,7 +102,7 @@ def get_reservation_details(reservation_id):
         }
 
     zaks = database.session.query(Zak).filter(Zak.ID_rezervace == reservation_id).all()
-    zak_list = [{'ID_zak': zak.ID_zak, 'jmeno_zak': zak.jmeno} for zak in zaks]
+    zak_list = [{'ID_zak': zak.ID_zak, 'jmeno_zak': zak.jmeno, 'prijmeni_zak': zak.prijmeni, 'vek_zak': zak.vek, 'zkusenost_zak': zak.zkusenost} for zak in zaks]
 
     combined_details = {
         **reservation_detail, 

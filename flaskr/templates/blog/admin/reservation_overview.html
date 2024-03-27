@@ -16,9 +16,6 @@
             <p>Some details here...</p>
         </div>
         <hr>
-        <h3>Úprava rezervace</h3>
-        nějaká uprava
-        pole pro cas a termin
     </div>
 </div>
 <section class="section-grey">
@@ -46,5 +43,8 @@
 </section>
 
 <script src="{{ url_for('static', filename='js/reservation_admin_check.js') }}"></script>
+<script type="text/javascript">
+    var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
+</script>
 
 {% endblock %}
