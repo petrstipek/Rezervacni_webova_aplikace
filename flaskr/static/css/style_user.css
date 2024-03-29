@@ -424,7 +424,8 @@ hr {
     width: 100%;
     box-sizing: border-box;
     text-align: center;
-    margin: 10px;
+    margin-bottom: 8px;
+    margin-top: 8px;
 }
 
 .ui-datepicker-unselectable.ui-state-disabled .ui-state-default {

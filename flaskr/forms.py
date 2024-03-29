@@ -169,19 +169,21 @@ class ChangeReservation(FlaskForm):
 
     lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
-    lesson_instructor_choices = SelectField("Instruktor", choices = [])
+    lesson_instructor_choices = SelectField("Instruktor", choices = [], validators=[Optional()])
     language_selection = SelectField("Jazyk", choices=[("czech", "čeština"), ("deutsch", "deutsch"), ("english", "english")])
 
     note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu."}, validators=[Optional(), Length(min=0, max=300)])
 
-    date = HiddenField("date", validators=[DataRequired()])
-    time_reservation = HiddenField("time", validators=[DataRequired()])
+    date = HiddenField("date", validators=[Optional()])
+    time_reservation = HiddenField("time", validators=[Optional()])
 
     lesson_length_hidden = HiddenField()
     lesson_instructor_choices_hidden = HiddenField()
 
 
-    reservation_date = DateField('Datum rezervace', format='%Y-%m-%d', validators=[DataRequired()])
-    reservation_time = TimeField("Čas rezervace", validators=[DataRequired()])
+    reservation_date = DateField('Datum rezervace', format='%Y-%m-%d', validators=[Optional()])
+    reservation_time = TimeField("Čas rezervace", validators=[Optional()])
+
+    reservation_id = HiddenField()
 
     submit = SubmitField('Odeslat rezervaci')

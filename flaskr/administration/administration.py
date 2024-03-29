@@ -6,11 +6,12 @@ from flaskr.administration.services import *
 from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
 from flaskr.auth.login_decorators import admin_required
-from flaskr.api.services.administration_services import get_reservation_details
+from flaskr.administration.services import get_reservation_details
+from flaskr.administration.services import process_reservation_change
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
-@administration_bp.route('/reservation-change')
+@administration_bp.route('/reservation-change', methods=["GET", "POST"])
 @login_required
 @admin_required
 def reservation_change():
@@ -18,10 +19,20 @@ def reservation_change():
     reservation_id = request.args.get('reservation_id')
     reservation_details = get_reservation_details(reservation_id)
 
-    if reservation_details:
-        form.reservation_date.data = datetime.strptime(reservation_details['termin_rezervace'], '%Y-%m-%d').date()
-        form.reservation_time.data = datetime.strptime(reservation_details['cas_zacatku'], '%H:%M').time()
+    if form.validate_on_submit():
+        print(reservation_id)
+        update_success, update_message = process_reservation_change(form, reservation_id)
+        if update_success:
+            flash(update_message, category="success")
+            return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
+        else:
+            flash(update_message, category="danger")
+            return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
+    else:
+        print("formerrors",form.errors)
+        
 
+    if request.method == "GET" and reservation_details:
         form.name.data = reservation_details.get('jmeno_klienta', '')
         form.surname.data = reservation_details.get('prijmeni_klienta', '')
         form.email.data = reservation_details.get('email_klienta', '')
