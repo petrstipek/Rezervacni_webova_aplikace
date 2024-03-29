@@ -174,15 +174,11 @@ class ChangeReservation(FlaskForm):
 
     note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu."}, validators=[Optional(), Length(min=0, max=300)])
 
-    date = HiddenField("date", validators=[Optional()])
-    time_reservation = HiddenField("time", validators=[Optional()])
-
     lesson_length_hidden = HiddenField()
     lesson_instructor_choices_hidden = HiddenField()
 
-
-    reservation_date = DateField('Datum rezervace', format='%Y-%m-%d', validators=[Optional()])
-    reservation_time = TimeField("Čas rezervace", validators=[Optional()])
+    date = DateField('Datum rezervace', format='%Y-%m-%d', validators=[Optional()])
+    time_reservation = SelectField("Čas rezervace", choices = [], validators=[Optional()])
 
     reservation_id = HiddenField()
 

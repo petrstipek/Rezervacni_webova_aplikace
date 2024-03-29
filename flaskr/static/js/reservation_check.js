@@ -23,14 +23,7 @@ $(document).ready(function () {
                     tbody.append(row);
                 });
 
-                var deleteRow = $('<tr></tr>');
-                var deleteCell = $('<td></td>').attr('colspan', '2');
-                var deleteButton = $('<button>Storno rezervace</button>')
-                    .addClass('deleteReservationButton')
-                    .data('reservationId', reservation['ID_rezervace']);
-                deleteCell.append(deleteButton);
-                deleteRow.append(deleteCell);
-                tbody.append(deleteRow);
+
 
                 table.append(tbody);
                 $('#reservationDetails').append(table);

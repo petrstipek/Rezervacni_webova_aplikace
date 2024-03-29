@@ -5,7 +5,8 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import and_
 from datetime import datetime, timedelta
 from sqlalchemy import func
-
+from flaskr.reservations.services import process_reservation
+from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \
@@ -131,11 +132,10 @@ def prepare_data_for_graph(counts):
     return dates, reservation_counts
 
 def process_reservation_change(form, reservation_id):
-    print("jsem tady",reservation_id)
     query_result = database.session.query(Rezervace).filter(Rezervace.ID_rezervace == reservation_id).first()
 
     student_array = [form.name.data, form.name_client1.data, form.name_client2.data]
-    filtered_array = [student for student in student_array if student is not None]
+    filtered_array = [student for student in student_array if student != ""]
     length = len(filtered_array)
 
     client = database.session.query(Osoba).filter(Osoba.ID_osoba == query_result.ID_osoba).first()
@@ -153,13 +153,37 @@ def process_reservation_change(form, reservation_id):
         }
         students_info.append(student_dict)
 
-    print("students_info", students_info)
-
     if not query_result:
         return False, "Rezervace nebyla nalezena, opakujte akci!"
     zkus = True
-    #if query_result.cas_zacatku == form.reservation_time.data and query_result.termin == form.reservation_date.data and query_result.pocet_zaku == length:
-    if zkus:   
+
+    time_str = form.time_reservation.data
+    datetime_obj = datetime.strptime(time_str, "%H:%M")
+    formatted_time = datetime_obj.time()
+
+
+    print("try printout")
+    print("-----------------")
+    print("querry_resutls")
+    print(query_result.cas_zacatku)
+    print(query_result.termin)
+    print(query_result.pocet_zaku)
+    print("form")
+    print(formatted_time)
+    print(form.date.data)
+    print(length)
+    print("-----------------")
+    print(query_result.cas_zacatku == formatted_time)
+    print(query_result.termin == form.date.data)
+    print(query_result.pocet_zaku == length)
+    print("-----------------")
+    print(type(formatted_time))
+    print(type(query_result.cas_zacatku))
+
+    print("count", length)
+    print(query_result.pocet_zaku,"pocet_zaku")
+
+    if query_result.cas_zacatku == formatted_time and query_result.termin == form.date.data and query_result.pocet_zaku == length:
         form_students = [
             {"name" : form.name.data , "surname" : form.surname.data, "age": form.age_client.data, "experience": form.experience_client.data},
             {"name" : form.name_client1.data, "surname" : form.surname_client1.data, "age": form.age_client1.data, "experience": form.experience_client1.data},
@@ -197,15 +221,57 @@ def process_reservation_change(form, reservation_id):
                 if form_student["experience"] != student.zkusenost and form_student["experience"] != "":
                     student.zkusenost = form_student["experience"]
                     updated = True
+    else:
+        print("jo dosel jsem sem")
+        old_reservation_code = query_result.rezervacni_kod
+        old_reservation_student_count = query_result.pocet_zaku
+        delete_reservation_by_reservation_id(reservation_id)
+        form.date.data = form.date.data.strftime('%Y-%m-%d')
+        #message, message_type = process_reservation(form)
+
+        result = process_reservation(form)
+
+        if len(result) == 3:
+            message, message_type, reservation_code = result
+            print(len(result), "len result")
+            print(result, "result")
+        elif len(result) == 2:
+            message, message_type = result
+
+        print(message)
+        if message_type == "success":
+            print(result)
         
+            print(message, message_type)
+            print("old reservation_code", query_result.rezervacni_kod)
+            print("new_reservation_code", reservation_code)    
+        
+            reservation = database.session.query(Rezervace).filter(Rezervace.rezervacni_kod == reservation_code).first()
+
+            reservation.rezervacni_kod = old_reservation_code
+            database.session.commit()
+
+            if reservation.pocet_zaku > old_reservation_student_count and reservation.platba == "nezaplaceno":
+                coun_student_difference = reservation.pocet_zaku - old_reservation_student_count
+                return True, "Rezervace byla úspěšně aktualizována. Proběhla změna počtu žáků a rezervace byla zaplacena. Počet žáků navýšen o: " + coun_student_difference, reservation.ID_rezervace
+
+            if reservation.pocet_zaku < old_reservation_student_count and reservation.platba == "zaplaceno":
+                coun_student_difference = old_reservation_student_count - reservation.pocet_zaku
+                return True, "Rezervace byla úspěšně aktualizována. Proběhla změna počtu žáků a rezervace byla zaplacena. Počet žáků snížen o: " + coun_student_difference, reservation.ID_rezervace
+
+            print(reservation.ID_rezervace, "reservation_id")
+            return True, "Rezervace byla úspěšně aktualizována.", reservation.ID_rezervace
+        else:
+            return False, "Nepodařilo se aktualizovat rezervaci."
 
     if updated:
+        reservation_id = query_result.ID_rezervace
         try:
             database.session.commit()
-            return True, "Rezervace byla úspěšně aktualizována."
+            return True, "Rezervace byla úspěšně aktualizována.", reservation_id
         except Exception as e:
             database.session.rollback()
-            return False, "Nepodařilo se aktualizovat rezervaci."
+            return False, "Nepodařilo se aktualizovat rezervaci.", reservation_id
 
     return True, "Nebyly provedeny žádné změny."
 
@@ -217,7 +283,7 @@ def get_reservation_details(reservation_id):
     reservation_query = database.session.query(Rezervace).outerjoin(Osoba, Rezervace.ID_osoba==Osoba.ID_osoba).filter(Rezervace.ID_rezervace==reservation_id).first()
     if reservation_query:
         reservation_detail = {
-            'ID_rezervace': reservation_query.rezervacni_kod,
+            'rez_kod': reservation_query.rezervacni_kod,
             'termin_rezervace': reservation_query.termin.isoformat() if reservation_query.termin else '',
             'cas_zacatku': reservation_query.cas_zacatku.strftime('%H:%M') if reservation_query.cas_zacatku else '',
             'doba_vyuky': reservation_query.doba_vyuky,
@@ -246,3 +312,7 @@ def get_reservation_details(reservation_id):
         'Zak': zak_list
     }
     return combined_details
+
+def get_available_lessons(date):
+    query_result = database.session.query(DostupneHodiny).filter(DostupneHodiny.datum == date, DostupneHodiny.obsazenost=="volno").all()
+    return query_result

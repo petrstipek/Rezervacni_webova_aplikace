@@ -1,7 +1,3 @@
-.form-section {
-    margin-bottom: 30px;
-}
-
 .form-section h2 {
     margin-bottom: 20px;
 }
@@ -46,7 +42,6 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     max-width: 800px;
-    margin: auto;
 }
 
 h1,
@@ -55,15 +50,11 @@ h3 {
     color: #333;
 }
 
-.form-section {
-    margin-bottom: 40px;
-}
-
 .form-section h2 {
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
-    color: #007bff;
+    color: black;
 }
 
 .form-group {
@@ -98,22 +89,6 @@ h3 {
     box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
 }
 
-button,
-input[type="submit"] {
-    background-color: #007bff;
-    border-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover,
-input[type="submit"]:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
-}
-
 .mt-3 {
     margin-top: 1rem;
     margin-bottom: 10px;
@@ -125,13 +100,47 @@ input[type="submit"]:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     max-width: 1000px;
-    margin: auto;
-    margin-bottom: 20px;
+}
+
+button,
+input[type="submit"] {
+    margin-top: 10px;
+    padding: 15px 30px !important;
+    font-size: 20px !important;
+    border-radius: 10px !important;
+    background-color: #FBC639;
+}
+
+.form-control {
+    text-align: left;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.right-section {
+    flex: 20%;
+}
+
+.left-section {
+    flex: 55%;
 }
 
 @media (max-width: 1200px) {
-    .container-reservation {
-        max-width: 90%;
-        padding: 20px;
+    .flex-container {
+        flex-direction: column;
+    }
+
+    .left-section,
+    .right-section {
+        width: 100%;
+    }
+
+
+    .right-section {
+        order: -1;
     }
 }

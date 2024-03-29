@@ -40,7 +40,15 @@ def main_page():
             return render_template("blog/user/reservation_page.html", form=form, active_page="reservation_page")
         
         if form.validate_on_submit():
-            message, message_type = process_reservation(form)
+            #message, message_type = process_reservation(form)
+
+            result = process_reservation(form)
+
+            if len(result) == 3:
+                message, message_type, reservation_code = result
+            elif len(result) == 2:
+                message, message_type = result
+
             flash(message, category=message_type)
             return redirect(url_for('reservations.main_page'))
         else:

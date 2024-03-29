@@ -44,8 +44,6 @@ def get_or_create_klient(name, surname, email, phone):
     return klient_id
 
 def process_reservation(form):
-    #db = get_db()
-
     name, surname, email, phone, experience, age, lesson_type, reservation_note, lesson_length, instructor_selected, language_selection, time_plus_one, student_client, more_students, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields, date, time = handle_form(form)
     if date == None or time == None:
         return False, "Je potřeba vyplnit čas a datum lekce!", "danger"
@@ -53,8 +51,6 @@ def process_reservation(form):
     client_id = get_or_create_klient(name, surname, email, phone)
     student_count = handle_number_student(student_client, more_students, client_name_fields)
     identifier = generate_unique_reservation_identifier()
-
-    #cursor = db.execute('INSERT INTO rezervace (ID_osoba, typ_rezervace, termin, cas_zacatku, doba_vyuky, jazyk, pocet_zaku, platba, rezervacni_kod, poznamka) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (client_id, lesson_type, date, time , lesson_length, language_selection, student_count, "nezaplaceno", identifier, reservation_note))
     
     termin_date = datetime.strptime(date, '%Y-%m-%d').date()
     cas_zacatku_time = datetime.strptime(time, '%H:%M').time() 
@@ -70,7 +66,7 @@ def process_reservation(form):
         platba='nezaplaceno',
         rezervacni_kod=identifier,
         poznamka=reservation_note 
-)
+    )
 
     database.session.add(new_reservation)
     database.session.flush()
@@ -78,8 +74,6 @@ def process_reservation(form):
     reservation_id = new_reservation.ID_rezervace
 
     insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields)
-    
-    #database.session.commit()
 
     if lesson_type == "individual":
         result, message, message_type = individual_reservation(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one)
@@ -90,6 +84,8 @@ def process_reservation(form):
     if result:
         send_email('Rezervace lyžařské hodiny', 'jl6701543@gmail.com', 'felixgrent@gmail.com', 'text body emailu', "Vaše rezervace má ID: "  + identifier)
         database.session.commit()
+        reservation_identifier = new_reservation.rezervacni_kod
+        return message, message_type, reservation_identifier
     
     return message, message_type
 

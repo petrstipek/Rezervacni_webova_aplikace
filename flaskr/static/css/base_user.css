@@ -5,7 +5,6 @@
 
 .footer-section {
     margin-bottom: 0px !important;
-    margin-top: 0px !important;
     background-color: #e0f3ff;
 
 }
@@ -19,8 +18,4 @@ body {
     min-height: 100vh !important;
     display: flex !important;
     flex-direction: column !important;
-}
-
-.footer-section {
-    margin-top: auto !important;
 }

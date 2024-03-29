@@ -3,11 +3,13 @@ from flask_login import login_required
 from flaskr.db import get_db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation
 from flaskr.administration.services import *
+from flaskr.reservations.services import handle_all_instructors
 from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
 from flaskr.auth.login_decorators import admin_required
 from flaskr.administration.services import get_reservation_details
-from flaskr.administration.services import process_reservation_change
+from flaskr.administration.services import process_reservation_change, get_available_lessons
+
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
@@ -16,21 +18,47 @@ administration_bp = Blueprint('administration', __name__, template_folder='templ
 @admin_required
 def reservation_change():
     form = ChangeReservation()
-    reservation_id = request.args.get('reservation_id')
+    
+    reservation_id = request.args.get('reservation_id', '') or request.form.get('reservation_id', '')
+    form.reservation_id.data = reservation_id
+    
     reservation_details = get_reservation_details(reservation_id)
+    available_instructors = get_all_instructors()
+    available_instructors = handle_all_instructors(available_instructors)
+    form.lesson_instructor_choices.choices = available_instructors
+
+    time_reservation = reservation_details.get('cas_zacatku', '')
+    print(time_reservation)
+    form.time_reservation.choices = [(time_reservation, time_reservation)]
+    print(form.time_reservation.choices)
+
+    if request.method == "POST":
+        available_lessons = get_available_lessons(form.date.data)
+        form.time_reservation.choices = [(lesson.cas_zacatku.strftime('%H:%M'), lesson.cas_zacatku.strftime('%H:%M')) for lesson in available_lessons]
 
     if form.validate_on_submit():
-        print(reservation_id)
-        update_success, update_message = process_reservation_change(form, reservation_id)
+        result = process_reservation_change(form, reservation_id)
+
+        if len(result) == 3:
+            update_success, update_message, reservation_id = result
+        elif len(result) == 2:
+            update_success, update_message = result
+
         if update_success:
             flash(update_message, category="success")
             return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
         else:
             flash(update_message, category="danger")
-            return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
+            #return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
+            return
     else:
-        print("formerrors",form.errors)
-        
+        print(form.errors)
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"{error}", category="danger")
+
+    print("reservation_details", reservation_details)
+    print(reservation_details["Zak"])
 
     if request.method == "GET" and reservation_details:
         form.name.data = reservation_details.get('jmeno_klienta', '')
@@ -40,19 +68,25 @@ def reservation_change():
         form.age_client.data = reservation_details['Zak'][0].get('vek_zak', '')
         form.experience_client.data = reservation_details['Zak'][0].get('zkusenost_zak', '')
 
-        if reservation_details['Zak'] and len(reservation_details['Zak']) > 1:
+        date_str = reservation_details.get('termin_rezervace', '')
+        form.date.data = datetime.strptime(date_str, '%Y-%m-%d').date()
+
+        time_reservation = reservation_details.get('cas_zacatku', '')
+        form.time_reservation.choices = [(time_reservation, time_reservation)]
+
+        if reservation_details['Zak'] and len(reservation_details['Zak']) >= 1:
             form.name_client1.data = reservation_details['Zak'][1].get('jmeno_zak', '')
             form.surname_client1.data = reservation_details['Zak'][1].get('prijmeni_zak', '')
             form.age_client1.data = reservation_details['Zak'][1].get('vek_zak', '')
             form.experience_client1.data = reservation_details['Zak'][1].get('zkusenost_zak', '')
 
-        if len(reservation_details['Zak']) >= 2:
+        if len(reservation_details['Zak']) > 2:
             form.name_client2.data = reservation_details['Zak'][2].get('jmeno_zak', '')
             form.surname_client2.data = reservation_details['Zak'][2].get('prijmeni_zak', '')
             form.age_client2.data = reservation_details['Zak'][2].get('vek_zak', '')
             form.experience_client2.data = reservation_details['Zak'][2].get('zkusenost_zak', '')
     
-    return render_template('/blog/admin/reservation_change.html', form=form, reservation_id=reservation_id)
+    return render_template('/blog/admin/reservation_change.html', form=form, reservation_code=reservation_details.get("rez_kod"), reservation_date=reservation_details.get("termin_rezervace"), reservation_time=reservation_details.get("cas_zacatku"), reservation_payment=reservation_details.get("platba"), student_count=reservation_details.get("pocet_zaku"), reservation_duration=reservation_details.get("doba_vyuky"), active_page="reservation_change")
 
 @administration_bp.route('/reservations-overview')
 @login_required
