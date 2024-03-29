@@ -380,4 +380,26 @@ $(document).ready(function () {
             console.log('Chyba validace!');
         }
     };
+
+    function adjustColumnHeights() {
+        var leftColumnHeight = $('.left-column').outerHeight();
+        $('.right-column').css('min-height', leftColumnHeight);
+    }
+
+    $("#datepicker").datepicker({
+        onSelect: function (dateText, inst) {
+            adjustColumnHeights();
+        },
+        onChangeMonthYear: function (year, month, inst) {
+            adjustColumnHeights();
+        }
+    });
+
+    $(document).on('click', '.ui-datepicker-next, .ui-datepicker-prev', function () {
+        adjustColumnHeights();
+    });
+
+    adjustColumnHeights();
+
+
 });

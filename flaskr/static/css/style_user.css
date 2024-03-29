@@ -518,7 +518,6 @@ hr {
 }
 
 .times-container {
-    max-height: 334px;
     overflow-y: scroll;
 }
 
