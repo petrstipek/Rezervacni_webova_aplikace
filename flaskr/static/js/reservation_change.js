@@ -123,11 +123,11 @@ $(document).ready(function () {
         var lessonType = $('#lesson_type').val();
         var selectedDate = $('#datepicker').val();
 
-        var url = lessonType === 'individual' ? `/reservations-api/lessons/${0}/available-times` : '/reservations-api/lessons/available-times';
+        var url = lessonType === 'individual' ? `/reservations-api/lessons/${instructorId}/available-times` : '/reservations-api/lessons/available-times';
 
         if (selectedDate) {
             $.ajax({
-                url: '/reservations-api/lessons/' + 0 + '/available-times',
+                url: "/reservations-api/lessons/0/available-times",
                 data: { date: selectedDate },
                 type: 'GET',
                 success: function (data) {
@@ -144,22 +144,13 @@ $(document).ready(function () {
         var $timeSelect = $('#reservation_time');
         var selectedDate = $('#datepicker').val();
 
-        var selectedValue = $timeSelect.val();
-        var selectedText = $timeSelect.find("option:selected").text();
-
-        var wasSelectedValueAdded = false;
-
         $timeSelect.empty();
 
         if (data[selectedDate]) {
             data[selectedDate].forEach(function (timeSlot) {
-                var isSelected = timeSlot[0] === selectedValue;
-                wasSelectedValueAdded = wasSelectedValueAdded || isSelected;
-
                 $timeSelect.append($('<option>', {
                     value: timeSlot[0],
-                    text: timeSlot[0],
-                    selected: isSelected
+                    text: timeSlot[0]
                 }));
             });
         } else {
@@ -168,15 +159,14 @@ $(document).ready(function () {
                 text: 'No available times'
             }));
         }
-
-        if (!wasSelectedValueAdded && selectedValue) {
-            $timeSelect.prepend($('<option>', {
-                value: selectedValue,
-                text: selectedText || selectedValue,
-                selected: true
-            }));
-        }
     }
+
+    $('#reservation-change-form').submit(function () {
+        var $timeSelect = $('#reservation_time');
+        if (!$timeSelect.val()) {
+            $timeSelect.val($('#initialTime').val());
+        }
+    });
 
     function checkboxes() {
         if ($('#age_client1').val() === '' && $('#age_client2').val() === '') {

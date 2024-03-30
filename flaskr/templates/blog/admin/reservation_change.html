@@ -139,6 +139,7 @@
                     <h2>Upravit rezervaci</h2>
                     {{ form.note(class="form-control") }}
                 </div>
+                <input type="hidden" id="initialTime" name="initialTime" value="INITIAL_TIME_HERE">
                 {{ form.reservation_id(value=reservation_id) }}
                 {{ form.submit(class="btn btn-warning btn-lg") }}
             </form>
