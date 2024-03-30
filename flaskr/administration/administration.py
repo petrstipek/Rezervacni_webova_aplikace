@@ -29,15 +29,11 @@ def reservation_change():
     form.lesson_instructor_choices.choices = available_instructors
 
     time_reservation = reservation_details.get('cas_zacatku', '')
-    print(time_reservation)
     form.time_reservation.choices = [(time_reservation, time_reservation)]
-    print(form.time_reservation.choices)
 
     if request.method == "POST":
         available_lessons = get_available_lessons(form.date.data)
-        print(available_lessons)
         form.time_reservation.choices = [(lesson.cas_zacatku.strftime('%H:%M'), lesson.cas_zacatku.strftime('%H:%M')) for lesson in available_lessons]
-        print("reservation_choices",form.time_reservation.choices)
 
     if form.validate_on_submit():
         result = process_reservation_change(form, reservation_id)
@@ -55,7 +51,7 @@ def reservation_change():
             #return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
             return
     else:
-        print(form.errors)
+        print("form errors: ", form.errors)
         for field, errors in form.errors.items():
             for error in errors:
                 flash(f"{error}", category="danger")
@@ -116,16 +112,17 @@ def instructors_admin():
         experience = form.experience.data
         date_birth = form.date_birth.data
         date_started = form.date_started.data
+        password = form.password.data
+
 
         if instructor_exists(email):
-            flash("instructor already exists", category="danger")
+            flash("Instruktor již je veden v databázi!", category="danger")
         else:
-            add_instructor(name, surname, email, tel_number, experience, date_birth, date_started)
+            add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password)
             redirect(url_for("administration.instructors_admin"))
-            flash("instructor added", category="success")
+            flash("Instruktor byl úspěšně přidán, můžete vkládat dosutpné hodiny.", category="success")
 
     instructors_dict = get_all_instructors()
-
     return render_template("blog/admin/instructors_admin.html", form=form, instructors_dict=instructors_dict, active_page="instructors_admin")
 
 @administration_bp.route('/lessons-admin', methods=["POST", "GET"])
@@ -165,8 +162,6 @@ def lessons_admin():
             return redirect(url_for("administration.lessons_admin", show_modal='true', lesson_id=lesson_id))
     
         if form_lesson_change.instructor.data:
-            print("instructor - data", form_lesson_change.instructor.data)
-
             state, message = lesson_instructor_change(lesson_id, form_lesson_change.instructor.data)
             if state:
                 flash(message, category="success")

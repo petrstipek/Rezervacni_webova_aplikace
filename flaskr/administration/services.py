@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import func
 from flaskr.reservations.services import process_reservation
 from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
+from flaskr.auth.services import hash_password
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \
@@ -16,8 +17,8 @@ def instructor_exists(email):
                 .first()
     return query_result is not None
 
-def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started):
-    new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number,)
+def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password):
+    new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number,heslo=hash_password(password), prihl_jmeno=email)
 
     database.session.add(new_osoba)
     database.session.flush()
@@ -198,12 +199,10 @@ def process_reservation_change(form, reservation_id):
                     student.zkusenost = form_student["experience"]
                     updated = True
     else:
-        print("jo dosel jsem sem")
         old_reservation_code = query_result.rezervacni_kod
         old_reservation_student_count = query_result.pocet_zaku
         delete_reservation_by_reservation_id(reservation_id)
         form.date.data = form.date.data.strftime('%Y-%m-%d')
-        #message, message_type = process_reservation(form)
 
         result = process_reservation(form)
 
