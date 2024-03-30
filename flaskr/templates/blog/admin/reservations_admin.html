@@ -52,5 +52,8 @@
     </div>
 </section>
 <script src="{{ url_for('static', filename='js/reservation_admin_check.js') }}"></script>
+<script type="text/javascript">
+    var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
+</script>
 
 {% endblock %}
