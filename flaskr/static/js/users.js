@@ -143,11 +143,17 @@ $(document).ready(function () {
 
                 detailsHtml += '<hr>';
 
-                var deleteButton = $(`<button class="deleteReservation" data-id="${reservationId}">Storno</button>`);
+                var deleteButton = $('<button class="btn btn-warning deleteReservation" data-id="' + reservationId + '">Storno</button>');
+                var changeButton = $('<button class="btn btn-primary changeReservation" data-id="' + reservationId + '">Změnit rezervaci</button>');
 
                 detailsHtml += '<table class="action-buttons-table">';
-                detailsHtml += '<tr><th>Storno rezervace</th></tr>';
-                detailsHtml += '<tr><td>' + deleteButton.prop('outerHTML') + '</td></tr>';
+                detailsHtml += '<thead>';
+                detailsHtml += '<tr><th>Storno</th><th>Změnit rezervaci</th></tr>';
+                detailsHtml += '</thead>';
+                detailsHtml += '<tbody>';
+                detailsHtml += '<td>' + deleteButton.prop('outerHTML') + '</td>';
+                detailsHtml += '<td>' + changeButton.prop('outerHTML') + '</td></tr>';
+                detailsHtml += '</tbody>';
                 detailsHtml += '</table>';
 
                 $('#modalBody').html(detailsHtml);
@@ -166,6 +172,12 @@ $(document).ready(function () {
     $(document).on('click', '.close', function () {
         $('#detailModal').css('display', 'none');
         $('body').removeClass('body-no-scroll');
+    });
+
+    $(document).on('click', '.changeReservation', function () {
+        var reservationId = $(this).data('id');
+        var targetUrl = changeReservationUrl + '?reservation_id=' + reservationId;
+        window.location.href = targetUrl;
     });
 
     $(window).click(function (event) {

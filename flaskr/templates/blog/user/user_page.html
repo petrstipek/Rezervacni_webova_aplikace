@@ -20,15 +20,11 @@
         <div id="modalBody">
             <p>Some details here...</p>
         </div>
-        <hr>
-        <h3>Úprava rezervace</h3>
-        nějaká uprava
-        pole pro cas a termin
     </div>
 </div>
 <section class="section-grey">
     <div class="global-margin reservations-section-all">
-        <h2>Přehled Vašich rezervací rezervací</h2>
+        <h2>Přehled Vašich rezervací</h2>
         <div class="lessons-admin-grid">
             <div class="horizontal-fields-container-admin-lessons">
                 <div class="containers-lessons">
@@ -50,4 +46,7 @@
     </div>
 </section>
     <script src="{{ url_for('static', filename='js/users.js') }}"></script>
+    <script type="text/javascript">
+        var changeReservationUrl = "{{ url_for('users.reservation_change') }}";
+    </script>
 {% endblock %}

@@ -391,15 +391,14 @@ $(document).ready(function () {
         }
     });
 
-
     const formattedDate = todayDate()
     $('#reservationDate').val(formattedDate);
     fetchReservationsAll(currentPageFirstTable, formattedDate);
 
     $(document).on('click', '.changeReservation', function () {
-        var reservationId = $(this).data('id');  // Retrieve the reservation ID
-        var targetUrl = changeReservationUrl + '?reservation_id=' + reservationId;  // Append as query parameter
-        window.location.href = targetUrl;  // Redirect the user
+        var reservationId = $(this).data('id');
+        var targetUrl = changeReservationUrl + '?reservation_id=' + reservationId;
+        window.location.href = targetUrl;
     });
 
 });

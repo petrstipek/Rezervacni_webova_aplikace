@@ -6,7 +6,7 @@ from flaskr.administration.services import *
 from flaskr.reservations.services import handle_all_instructors
 from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
-from flaskr.auth.login_decorators import admin_required
+from flaskr.auth.login_decorators import admin_required, client_required
 from flaskr.administration.services import get_reservation_details
 from flaskr.administration.services import process_reservation_change, get_available_lessons
 
@@ -34,7 +34,9 @@ def reservation_change():
 
     if request.method == "POST":
         available_lessons = get_available_lessons(form.date.data)
+        print(available_lessons)
         form.time_reservation.choices = [(lesson.cas_zacatku.strftime('%H:%M'), lesson.cas_zacatku.strftime('%H:%M')) for lesson in available_lessons]
+        print("reservation_choices",form.time_reservation.choices)
 
     if form.validate_on_submit():
         result = process_reservation_change(form, reservation_id)
@@ -57,9 +59,6 @@ def reservation_change():
             for error in errors:
                 flash(f"{error}", category="danger")
 
-    print("reservation_details", reservation_details)
-    print(reservation_details["Zak"])
-
     if request.method == "GET" and reservation_details:
         form.name.data = reservation_details.get('jmeno_klienta', '')
         form.surname.data = reservation_details.get('prijmeni_klienta', '')
@@ -74,7 +73,7 @@ def reservation_change():
         time_reservation = reservation_details.get('cas_zacatku', '')
         form.time_reservation.choices = [(time_reservation, time_reservation)]
 
-        if reservation_details['Zak'] and len(reservation_details['Zak']) >= 1:
+        if reservation_details['Zak'] and len(reservation_details['Zak']) > 1:
             form.name_client1.data = reservation_details['Zak'][1].get('jmeno_zak', '')
             form.surname_client1.data = reservation_details['Zak'][1].get('prijmeni_zak', '')
             form.age_client1.data = reservation_details['Zak'][1].get('vek_zak', '')

@@ -182,9 +182,6 @@ $(document).ready(function () {
         if ($('#age_client1').val() === '' && $('#age_client2').val() === '') {
             $('#more_students').prop('checked', false);
         }
-        else {
-            $('#more_students').prop('checked', true);
-        }
 
         if ($('#age_client').val() !== '') {
             $('#student_client').prop('checked', true);

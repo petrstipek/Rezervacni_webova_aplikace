@@ -161,28 +161,6 @@ def process_reservation_change(form, reservation_id):
     datetime_obj = datetime.strptime(time_str, "%H:%M")
     formatted_time = datetime_obj.time()
 
-
-    print("try printout")
-    print("-----------------")
-    print("querry_resutls")
-    print(query_result.cas_zacatku)
-    print(query_result.termin)
-    print(query_result.pocet_zaku)
-    print("form")
-    print(formatted_time)
-    print(form.date.data)
-    print(length)
-    print("-----------------")
-    print(query_result.cas_zacatku == formatted_time)
-    print(query_result.termin == form.date.data)
-    print(query_result.pocet_zaku == length)
-    print("-----------------")
-    print(type(formatted_time))
-    print(type(query_result.cas_zacatku))
-
-    print("count", length)
-    print(query_result.pocet_zaku,"pocet_zaku")
-
     if query_result.cas_zacatku == formatted_time and query_result.termin == form.date.data and query_result.pocet_zaku == length:
         form_students = [
             {"name" : form.name.data , "surname" : form.surname.data, "age": form.age_client.data, "experience": form.experience_client.data},
