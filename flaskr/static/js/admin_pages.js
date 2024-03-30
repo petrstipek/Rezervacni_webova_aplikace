@@ -155,45 +155,8 @@ $(document).ready(function () {
     }
 
     $(document).on('click', '.detailLesson', function () {
-        var baseUrl = "/administration-api/lesson-detail";
-        var lesson_id = $(this).data('id');
-        $.ajax({
-            url: baseUrl,
-            type: 'GET',
-            data: {
-                lesson_id: lesson_id
-            },
-            success: function (response) {
-                console.log("Response:", response);
-
-                var detailsHtml = `<table class="reservation-details-table">
-                    <tr><th>ID hodiny</th><td>${response.ID_hodiny}</td></tr>
-                    <tr><th>Datum</th><td>${response.datum}</td></tr>
-                    <tr><th>Čas začátku</th><td>${response.cas_zacatku}</td></tr>
-                    <tr><th>Stav</th><td>${response.stav}</td></tr>
-                    <tr><th>Typ hodiny</th><td>${response.typ_hodiny}</td></tr>
-                    <tr><th>Obsazenost</th><td>${response.obsazenost}</td></tr>
-                    <tr><th>Kapacita</th><td>${response.kapacita}</td></tr>
-                </table>`;
-
-                $('#modalBody').html(detailsHtml);
-                $('#detailModal').css('display', 'block');
-                $('body').addClass('body-no-scroll');
-
-                $('input[name="lesson_id"]').val(response.ID_hodiny);
-
-                if (response.typ_hodiny === 'ind') {
-                    $('#kapacitaField').prop('disabled', true);
-                } else {
-                    $('#instructor').prop('disabled', true);
-                    $('#kapacitaField').prop('disabled', false);
-                }
-            },
-            error: function (xhr, status, error) {
-                $('#modalInfo').text('Error - fetching lesson details!');
-                $('#detailModal').css('display', 'block');
-            }
-        });
+        var lessonId = $(this).data('id');
+        loadAndShowLessonDetails(lessonId);
     });
 
     toggleFields();
@@ -201,3 +164,41 @@ $(document).ready(function () {
 
     fetchLessons(currentPage);
 });
+
+function loadAndShowLessonDetails(lessonId) {
+    var baseUrl = "/administration-api/lesson-detail";
+    $.ajax({
+        url: baseUrl,
+        type: 'GET',
+        data: { lesson_id: lessonId },
+        success: function (response) {
+            console.log("Response:", response);
+
+            var detailsHtml = `<table class="reservation-details-table">
+                <tr><th>ID hodiny</th><td>${response.ID_hodiny}</td></tr>
+                <tr><th>Datum</th><td>${response.datum}</td></tr>
+                <tr><th>Čas začátku</th><td>${response.cas_zacatku}</td></tr>
+                <tr><th>Stav</th><td>${response.stav}</td></tr>
+                <tr><th>Typ hodiny</th><td>${response.typ_hodiny}</td></tr>
+                <tr><th>Obsazenost</th><td>${response.obsazenost}</td></tr>
+                <tr><th>Kapacita</th><td>${response.kapacita}</td></tr>
+            </table>`;
+
+            $('#modalBody').html(detailsHtml);
+            $('#detailModal').css('display', 'block');
+            $('body').addClass('body-no-scroll');
+
+            $('input[name="lesson_id"]').val(response.ID_hodiny);
+            if (response.typ_hodiny === 'ind') {
+                $('#kapacitaField').prop('disabled', true);
+            } else {
+                $('#instructor').prop('disabled', true);
+                $('#kapacitaField').prop('disabled', false);
+            }
+        },
+        error: function (xhr, status, error) {
+            $('#modalInfo').text('Error - fetching lesson details!');
+            $('#detailModal').css('display', 'block');
+        }
+    });
+}

@@ -146,6 +146,8 @@ def lessons_admin():
     form_type = request.form.get('form_type')
 
     if form_type == 'lesson_change' and form_lesson_change.validate_on_submit():
+        show_modal = request.args.get('show_modal', 'false') == 'true'
+        lesson_id = request.args.get('lesson_id', None)
         lesson_id = form_lesson_change.lesson_id.data
         lesson_detail = get_lesson_detail(lesson_id)
 
@@ -155,7 +157,8 @@ def lessons_admin():
                 flash(message, category="success")
             else:
                 flash(message, category="danger")
-            return redirect(url_for("administration.lessons_admin"))
+            return redirect(url_for("administration.lessons_admin", show_modal='true', lesson_id=lesson_id))
+
         if lesson_detail.kapacita == form_lesson_change.capacity.data:
             flash("Nebyly provedeny žádné změny, zadali jste stejnou kapacitu!", category="warning")
         

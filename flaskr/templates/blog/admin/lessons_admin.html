@@ -118,4 +118,13 @@
 </section>
 
 <script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>
+{% if request.args.get('show_modal') == 'true' and request.args.get('lesson_id') %}
+<script>
+    $(document).ready(function() {
+        var lessonId = "{{ request.args.get('lesson_id') }}";
+        console.log("jo tohle proběhne", lessonId)
+        loadAndShowLessonDetails(lessonId);
+    });
+</script>
+{% endif %}
 {% endblock %}
