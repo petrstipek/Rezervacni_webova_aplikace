@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify, request, render_template
 from flask_login import login_required
 from flaskr.api.services.administration_services import *
 from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
-from flaskr.api.services.lessons_services import get_paginated_lessons
+from flaskr.api.services.lessons_services import get_paginated_lessons, get_lesson_details
+from flaskr.auth.login_decorators import admin_required
 
 administration_api = Blueprint('administration-api', __name__, template_folder='templates')
 
@@ -19,6 +20,7 @@ def detail():
 #nove-funguje
 @administration_api.route('/reservation/payment', methods=["POST"])
 @login_required
+@admin_required
 def reservation_payment_status():
     try:
         reservation_id = request.args.get('reservation_id')
@@ -113,3 +115,10 @@ def get_lessons():
 def school_information():
     information = get_school_information()
     return
+
+@administration_api.route("/lesson-detail")
+@admin_required
+def get_leeson_detail():
+    lesson_id = request.args.get('lesson_id')
+    lesson_details = get_lesson_details(lesson_id)
+    return jsonify(lesson_details)

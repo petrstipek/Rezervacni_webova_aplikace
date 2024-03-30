@@ -65,3 +65,7 @@
     background-color: #e0a800;
     color: white;
 }
+
+.page-title {
+    text-align: left !important;
+}

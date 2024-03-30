@@ -39,3 +39,25 @@ def get_paginated_lessons(page, per_page, selected_date=None):
         results_list.append(lesson_dict)
 
     return results_list, total
+
+def get_lesson_detail(lesson_id):
+    query_result = database.session.query(DostupneHodiny).filter(DostupneHodiny.ID_hodiny==lesson_id).first()
+    return query_result
+
+def get_lesson_details(lesson_id):
+    query_result = database.session.query(DostupneHodiny).filter(DostupneHodiny.ID_hodiny == lesson_id).first()
+
+    if query_result:
+        cas_zacatku_str = query_result.cas_zacatku.strftime('%H:%M') if query_result.cas_zacatku else None
+
+        return {
+            "ID_hodiny": query_result.ID_hodiny,
+            "datum": query_result.datum.strftime('%Y-%m-%d') if query_result.datum else None,
+            "cas_zacatku": cas_zacatku_str,
+            "stav": query_result.stav,
+            "typ_hodiny": query_result.typ_hodiny,
+            "obsazenost": query_result.obsazenost,
+            "kapacita": query_result.kapacita
+        }
+    else:
+        return None

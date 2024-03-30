@@ -294,3 +294,16 @@ def get_reservation_details(reservation_id):
 def get_available_lessons(date):
     query_result = database.session.query(DostupneHodiny).filter(DostupneHodiny.datum == date, DostupneHodiny.obsazenost=="volno").all()
     return query_result
+
+def lesson_capacity_change(lesson_id, capacity):
+    lesson = database.session.query(DostupneHodiny).filter(DostupneHodiny.ID_hodiny == lesson_id).first()
+
+    if lesson:
+        if lesson.obsazenost > capacity:
+            return False, "Kapacita nemůže být menší než počet obsazených míst."
+        else:
+            lesson.kapacita = capacity
+            database.session.commit()
+            return True, "Kapacita byla úspěšně změněna."
+        
+    return False, "Hodina nebyla nalezena."

@@ -1,14 +1,15 @@
 from flask import Blueprint, render_template, redirect, flash, url_for, jsonify, request
 from flask_login import login_required
 from flaskr.db import get_db
-from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation
+from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation, LessonChangeForm
 from flaskr.administration.services import *
 from flaskr.reservations.services import handle_all_instructors
 from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
 from flaskr.auth.login_decorators import admin_required, client_required
 from flaskr.administration.services import get_reservation_details
-from flaskr.administration.services import process_reservation_change, get_available_lessons
+from flaskr.administration.services import process_reservation_change, get_available_lessons, lesson_capacity_change
+from flaskr.api.services.lessons_services import get_lesson_detail
 
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
@@ -131,6 +132,7 @@ def instructors_admin():
 @login_required
 @admin_required
 def lessons_admin():
+    form_lesson_change = LessonChangeForm()
     form = LessonInsertForm()
     db = get_db()
 
@@ -139,8 +141,29 @@ def lessons_admin():
     form.lesson_instructor_choices2.choices = available_instructors
     form.lesson_instructor_choices3.choices = available_instructors
     form.lesson_instructor_choices4.choices = available_instructors
+    form_lesson_change.instructor.choices = available_instructors
 
-    if form.validate_on_submit():
+    form_type = request.form.get('form_type')
+
+    if form_type == 'lesson_change' and form_lesson_change.validate_on_submit():
+        lesson_id = form_lesson_change.lesson_id.data
+        lesson_detail = get_lesson_detail(lesson_id)
+
+        if lesson_detail.kapacita != form_lesson_change.capacity.data:
+            state, message = lesson_capacity_change(lesson_id, form_lesson_change.capacity.data)
+            if state:
+                flash(message, category="success")
+            else:
+                flash(message, category="danger")
+            return redirect(url_for("administration.lessons_admin"))
+        if lesson_detail.kapacita == form_lesson_change.capacity.data:
+            flash("Nebyly provedeny žádné změny, zadali jste stejnou kapacitu!", category="warning")
+        
+        return redirect(url_for("administration.lessons_admin"))
+    else:
+        print("form errors: ", form_lesson_change.errors)
+
+    if form_type == 'lesson_insert' and form.validate_on_submit():
         date = form.date.data
         time_start = form.time_start.data
         lesson_type = form.lesson_type.data
@@ -148,7 +171,7 @@ def lessons_admin():
         instructor_id = form.lesson_instructor_choices.data
 
         if lesson_type == "group":
-            instructor_ids = [form.lesson_instructor_choices.data, form.lesson_instructor_choices2.data, form.lesson_instructor_choices3.data, form.lesson_instructor_choices4.data]
+            instructor_ids = [form.lesson_instructor_choices.data, form.lesson_instructor_choices2.data, form.lesson_instructor_choices3.data, form.lesson_instructor_choices4.data,]
             instructor_ids = [id for id in instructor_ids if id != "0"]
 
             if len(instructor_ids) != len(set(instructor_ids)):
@@ -167,8 +190,10 @@ def lessons_admin():
             flash(message, category="success")
         else:
             flash(message, category="danger")
+    else:
+        print("form errors: ", form.errors)
 
-    return render_template("blog/admin/lessons_admin.html", form=form, active_page="lessons_admin")
+    return render_template("blog/admin/lessons_admin.html", form=form, active_page="lessons_admin", form_lesson_change=form_lesson_change)
 
 @administration_bp.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 @login_required

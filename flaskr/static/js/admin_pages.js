@@ -4,6 +4,10 @@ $(document).ready(function () {
     var totalPages = 0;
     var selectedDate = null;
 
+    $(".close").click(function () {
+        $("#detailModal").hide();
+    });
+
     $(document).on('change', '#lessonDate', function () {
         console.log("button clicked")
         selectedDate = $('#lessonDate').val();
@@ -47,6 +51,7 @@ $(document).ready(function () {
 
                 headerRow.append($('<th></th>').text('Instruktor'));
                 headerRow.append($('<th></th>').text('Odstranění výuky'));
+                headerRow.append($('<th></th>').text('Detail hodiny'));
 
                 thead.append(headerRow);
                 console.log(response.lessons)
@@ -65,6 +70,8 @@ $(document).ready(function () {
                     row.append($('<td></td>').text(instructorFullName));
 
                     row.append($(`<td><button class="deleteReservation" onclick="deleteLesson(${lesson.ID_hodiny})">Odstranění hodiny</button></td>`));
+                    row.append($(`<td><button id="detailLesson" class="detailLesson btn btn-primary" data-id="${lesson.ID_hodiny}">Detail hodiny</button></td>`));
+
                     tbody.append(row);
                 });
 
@@ -146,6 +153,48 @@ $(document).ready(function () {
             $('#div_lesson_capacity select, #div_additional_instructors select').prop('disabled', false);
         }
     }
+
+    $(document).on('click', '.detailLesson', function () {
+        var baseUrl = "/administration-api/lesson-detail";
+        var lesson_id = $(this).data('id');
+        $.ajax({
+            url: baseUrl,
+            type: 'GET',
+            data: {
+                lesson_id: lesson_id
+            },
+            success: function (response) {
+                console.log("Response:", response);
+
+                var detailsHtml = `<table class="reservation-details-table">
+                    <tr><th>ID hodiny</th><td>${response.ID_hodiny}</td></tr>
+                    <tr><th>Datum</th><td>${response.datum}</td></tr>
+                    <tr><th>Čas začátku</th><td>${response.cas_zacatku}</td></tr>
+                    <tr><th>Stav</th><td>${response.stav}</td></tr>
+                    <tr><th>Typ hodiny</th><td>${response.typ_hodiny}</td></tr>
+                    <tr><th>Obsazenost</th><td>${response.obsazenost}</td></tr>
+                    <tr><th>Kapacita</th><td>${response.kapacita}</td></tr>
+                </table>`;
+
+                $('#modalBody').html(detailsHtml);
+                $('#detailModal').css('display', 'block');
+                $('body').addClass('body-no-scroll');
+
+                $('input[name="lesson_id"]').val(response.ID_hodiny);
+
+                if (response.typ_hodiny === 'ind') {
+                    $('#kapacitaField').prop('disabled', true);
+                } else {
+                    $('#instructor').prop('disabled', true);
+                    $('#kapacitaField').prop('disabled', false);
+                }
+            },
+            error: function (xhr, status, error) {
+                $('#modalInfo').text('Error - fetching lesson details!');
+                $('#detailModal').css('display', 'block');
+            }
+        });
+    });
 
     toggleFields();
     $('#lesson_type').change(toggleFields);
