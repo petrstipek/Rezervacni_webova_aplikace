@@ -188,5 +188,5 @@ class LessonChangeForm(FlaskForm):
     capacity = IntegerField('Kapacita', validators=[Optional(), NumberRange(min=0, max=20)])
     instructor = SelectField("Instruktor", choices = [], validators=[Optional()])
     lesson_id = HiddenField()
-    
-    submit = SubmitField(label="Změnit kapacitu")
+
+    submit = SubmitField(label="Změnit hodinu")

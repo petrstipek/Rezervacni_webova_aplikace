@@ -8,7 +8,7 @@ from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
 from flaskr.auth.login_decorators import admin_required, client_required
 from flaskr.administration.services import get_reservation_details
-from flaskr.administration.services import process_reservation_change, get_available_lessons, lesson_capacity_change
+from flaskr.administration.services import process_reservation_change, get_available_lessons, lesson_capacity_change, lesson_instructor_change
 from flaskr.api.services.lessons_services import get_lesson_detail
 
 
@@ -134,7 +134,6 @@ def instructors_admin():
 def lessons_admin():
     form_lesson_change = LessonChangeForm()
     form = LessonInsertForm()
-    db = get_db()
 
     available_instructors = get_available_instructors()
     form.lesson_instructor_choices.choices = available_instructors
@@ -146,23 +145,35 @@ def lessons_admin():
     form_type = request.form.get('form_type')
 
     if form_type == 'lesson_change' and form_lesson_change.validate_on_submit():
-        show_modal = request.args.get('show_modal', 'false') == 'true'
-        lesson_id = request.args.get('lesson_id', None)
         lesson_id = form_lesson_change.lesson_id.data
         lesson_detail = get_lesson_detail(lesson_id)
 
-        if lesson_detail.kapacita != form_lesson_change.capacity.data:
-            state, message = lesson_capacity_change(lesson_id, form_lesson_change.capacity.data)
+        if form_lesson_change.capacity.data and form_lesson_change.capacity.data != 0 and lesson_detail.typ_hodiny == "group":
+            if lesson_detail.kapacita != form_lesson_change.capacity.data:
+                state, message = lesson_capacity_change(lesson_id, form_lesson_change.capacity.data)
+                if state:
+                    flash(message, category="success")
+                else:
+                    flash(message, category="danger")
+                return redirect(url_for("administration.lessons_admin", show_modal='true', lesson_id=lesson_id))
+
+            if lesson_detail.kapacita == form_lesson_change.capacity.data:
+                flash("Nebyly provedeny žádné změny, zadali jste stejnou kapacitu!", category="warning")
+                return redirect(url_for("administration.lessons_admin", show_modal='true', lesson_id=lesson_id))
+        elif lesson_detail.typ_hodiny == "group":
+            flash("Zadejte prosím validní kapacitu! Rozpětí 1-20.", category="warning")
+            return redirect(url_for("administration.lessons_admin", show_modal='true', lesson_id=lesson_id))
+    
+        if form_lesson_change.instructor.data:
+            print("instructor - data", form_lesson_change.instructor.data)
+
+            state, message = lesson_instructor_change(lesson_id, form_lesson_change.instructor.data)
             if state:
                 flash(message, category="success")
             else:
                 flash(message, category="danger")
-            return redirect(url_for("administration.lessons_admin", show_modal='true', lesson_id=lesson_id))
-
-        if lesson_detail.kapacita == form_lesson_change.capacity.data:
-            flash("Nebyly provedeny žádné změny, zadali jste stejnou kapacitu!", category="warning")
         
-        return redirect(url_for("administration.lessons_admin"))
+        return redirect(url_for("administration.lessons_admin", show_modal='true', lesson_id=lesson_id))
     else:
         print("form errors: ", form_lesson_change.errors)
 
@@ -178,16 +189,16 @@ def lessons_admin():
             instructor_ids = [id for id in instructor_ids if id != "0"]
 
             if len(instructor_ids) != len(set(instructor_ids)):
-                flash("One instructor selected multiple times in the form", category="danger")
+                flash("Stejný instruktor je vybrán více krát!", category="danger")
                 return redirect(url_for("administration.lessons_admin"))
 
         date_str = date.strftime("%Y-%m-%d")
         time_obj = datetime.strptime(time_start, '%H:%M').time()
 
         if lesson_type == "ind":
-            success, message = add_individual_lesson(db, date, time_obj, instructor_id, lesson_type, capacity)
+            success, message = add_individual_lesson(date, time_obj, instructor_id, lesson_type, capacity)
         elif lesson_type == "group":
-            success, message = add_group_lesson(db, date, time_obj, instructor_ids, lesson_type, capacity)
+            success, message = add_group_lesson(date, time_obj, instructor_ids, lesson_type, capacity)
 
         if success:
             flash(message, category="success")
@@ -196,7 +207,7 @@ def lessons_admin():
     else:
         print("form errors: ", form.errors)
 
-    return render_template("blog/admin/lessons_admin.html", form=form, active_page="lessons_admin", form_lesson_change=form_lesson_change)
+    return render_template("blog/admin/lessons_admin.html", show_modal="false", form=form, active_page="lessons_admin", form_lesson_change=form_lesson_change)
 
 @administration_bp.route('/reservations-admin', methods=["GET", "POST", "DELETE"])
 @login_required

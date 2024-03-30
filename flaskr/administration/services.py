@@ -1,5 +1,5 @@
 from flaskr.extensions import database
-from flaskr.models import Instruktor, Osoba, MaVypsane, DostupneHodiny, Rezervace, Klient, Zak, MaVyuku
+from flaskr.models import Instruktor, Osoba, MaVypsane, DostupneHodiny, Rezervace, Klient, Zak, MaVyuku, Prirazeno
 from datetime import datetime
 from sqlalchemy.orm import joinedload
 from sqlalchemy import and_
@@ -36,7 +36,7 @@ def get_available_instructors():
         available_instructors.append((row.ID_osoba ,row.jmeno + " " + row.prijmeni))
     return available_instructors
 
-def add_individual_lesson(db, date_str, time_start, instructor_id, lesson_type, capacity):
+def add_individual_lesson(date_str, time_start, instructor_id, lesson_type, capacity):
 
     query_result = database.session.query(DostupneHodiny)\
     .join(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny, isouter=True)\
@@ -48,7 +48,7 @@ def add_individual_lesson(db, date_str, time_start, instructor_id, lesson_type, 
     .first()
 
     if query_result:
-        return False, "Lesson already exists for these parameters"
+        return False, "Hodina s těmito parametry již existuje!"
     
     new_lesson = DostupneHodiny(
         datum=date_str,
@@ -68,7 +68,7 @@ def add_individual_lesson(db, date_str, time_start, instructor_id, lesson_type, 
     database.session.add(new_ma_vypsane)
     database.session.commit()
     
-    return True, "Lesson added successfully"
+    return True, "Hodina úspěšně přidána!"
 
 def add_group_lesson(db, date_str, time_start, instructor_ids, lesson_type, capacity):
     for instructor_id in instructor_ids:
@@ -180,9 +180,7 @@ def process_reservation_change(form, reservation_id):
         if form.surname.data != client.prijmeni and form.surname.data != "":
             client.prijmeni = form.surname.data
             updated = True
-        print("updated before students loop", updated)
-        print("form_students", form_students)
-        print("students_info", students_info)
+
         for form_student, student_info in zip(form_students, students_info):
             student = database.session.query(Zak).filter(Zak.ID_zak == student_info["id_student"]).first()
             if student:
@@ -307,3 +305,59 @@ def lesson_capacity_change(lesson_id, capacity):
             return True, "Kapacita byla úspěšně změněna."
         
     return False, "Hodina nebyla nalezena."
+
+def lesson_instructor_change(lesson_id, instructor_id):
+
+    lesson = database.session.query(DostupneHodiny).filter(DostupneHodiny.ID_hodiny == lesson_id).first()
+
+    if lesson:
+        query_lesson = database.session.query(DostupneHodiny)\
+        .join(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny, isouter=True)\
+        .filter(and_(
+            DostupneHodiny.datum == lesson.datum, 
+            DostupneHodiny.cas_zacatku == lesson.cas_zacatku,
+            MaVypsane.ID_osoba == instructor_id
+        ))\
+        .first()
+
+        if query_lesson:
+            if query_lesson.stav == "obsazeno":
+                print(" jo je obsazeno")
+                status, message =  False, "Zvolený instruktor má již obsazenou hodinu s těmito parametry! Nelze proto obsadit."
+            else:
+                #hodina existuje, ale není obsazena, můžeme tak přepsat hodinu
+                if lesson.stav == "obsazeno":
+                    reservation = database.session.query(Prirazeno).filter(Prirazeno.ID_hodiny == lesson.ID_hodiny).first()
+                    ma_vyuku_object = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace == reservation.ID_rezervace).first()
+                    ma_vypsane_object = database.session.query(MaVypsane).filter(MaVypsane.ID_hodiny == lesson.ID_hodiny).first()
+
+                    ma_vyuku_object.ID_osoba = instructor_id
+                    ma_vypsane_object.ID_osoba = instructor_id
+
+                if lesson.stav == "volno":
+                    ma_vypsane_object = database.session.query(MaVypsane).filter(MaVypsane.ID_hodiny == lesson.ID_hodiny).first()
+                    ma_vypsane_object.ID_osoba = instructor_id
+
+                ma_vypsane_object = database.session.query(MaVypsane).filter(MaVypsane.ID_hodiny == query_lesson.ID_hodiny).first()
+                database.session.delete(query_lesson)
+                database.session.delete(ma_vypsane_object)
+                #asi jeste odstraneni zaznamu z MaVypsane
+                status, message = True, "Instruktor byl úspěšně změněn."
+        else:
+            #hodine neexistuje, můžeme vytvořit novou hodinu
+            if lesson.stav == "obsazeno":
+                reservation = database.session.query(Prirazeno).filter(Prirazeno.ID_hodiny == lesson.ID_hodiny).first()
+                ma_vyuku_object = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace == reservation.ID_rezervace).first()
+                ma_vypsane_object = database.session.query(MaVypsane).filter(MaVypsane.ID_hodiny == lesson.ID_hodiny).first()
+
+                ma_vyuku_object.ID_osoba = instructor_id
+                ma_vypsane_object.ID_osoba = instructor_id
+
+            if lesson.stav == "volno":
+                ma_vypsane_object = database.session.query(MaVypsane).filter(MaVypsane.ID_hodiny == lesson.ID_hodiny).first()
+                ma_vypsane_object.ID_osoba = instructor_id
+            
+            status, message = True, "Instruktor byl úspěšně změněn."
+
+    database.session.commit()
+    return status, message

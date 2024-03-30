@@ -189,6 +189,7 @@ function loadAndShowLessonDetails(lessonId) {
             $('body').addClass('body-no-scroll');
 
             $('input[name="lesson_id"]').val(response.ID_hodiny);
+
             if (response.typ_hodiny === 'ind') {
                 $('#kapacitaField').prop('disabled', true);
             } else {
