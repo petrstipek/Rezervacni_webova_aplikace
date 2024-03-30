@@ -1,5 +1,6 @@
 from flaskr.extensions import database
 from flaskr.models import Osoba, Instruktor, MaVyuku
+from email.utils import parsedate_to_datetime
 
 def instructor_has_lessons(instructor_id):
     query_result = database.session.query(MaVyuku).filter_by(ID_osoba=instructor_id)
@@ -13,6 +14,23 @@ def delete_instructor_by_id(instructor_id):
         database.session.rollback()
         return False, e
     return True
+
+def get_all_paginated_instructors(page, per_page=10):
+    query_result = database.session.query(Instruktor).paginate(page=page, per_page=per_page, error_out=False)
+
+    instructors_list = []
+    for instruktor in query_result:
+        instruktor_dict = {
+            'ID_osoba': instruktor.ID_osoba,
+            'jmeno': instruktor.osoba.jmeno if instruktor.osoba else None,
+            'prijmeni': instruktor.osoba.prijmeni if instruktor.osoba else None,
+            "seniorita": instruktor.seniorita,
+            "tel_cislo": instruktor.osoba.tel_cislo,
+            "email": instruktor.osoba.email
+        }
+        instructors_list.append(instruktor_dict)
+    print("pagination", instructors_list)
+    return instructors_list
 
 def get_all_instructors():
     query_result = database.session.query(Instruktor).all()
@@ -93,3 +111,23 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         "total_pages": (total_items + per_page - 1) // per_page,
         "current_page": page
     }, None
+
+def get_instructor_details(instructor_id):
+    instructor = database.session.query(Osoba).join(Instruktor, Instruktor.ID_osoba == Osoba.ID_osoba).filter(Instruktor.ID_osoba == instructor_id).first()
+    birth_date_str = instructor.instruktor.datum_narozeni.strftime('%Y-%m-%d') if instructor.instruktor.datum_narozeni else None
+    start_work_str = instructor.instruktor.datum_nastupu.strftime('%Y-%m-%d') if instructor.instruktor.datum_nastupu else None
+    instructor_dict = {
+        'ID_osoba': instructor.ID_osoba,
+        'jmeno': instructor.jmeno,
+        'prijmeni': instructor.prijmeni,
+        'seniorita': instructor.instruktor.seniorita,
+        'tel_cislo': instructor.tel_cislo,
+        'email': instructor.email,
+        'birth_date': birth_date_str,
+        'start_work': start_work_str,
+        # Include other fields as necessary
+    }
+    return instructor_dict
+
+def instructors_count():
+    return database.session.query(Instruktor).count()

@@ -4,7 +4,7 @@ from flaskr.db import get_db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation, LessonChangeForm
 from flaskr.administration.services import *
 from flaskr.reservations.services import handle_all_instructors
-from flaskr.api.services.instructor_services import get_all_instructors
+from flaskr.api.services.instructor_services import get_all_instructors, get_all_paginated_instructors, instructors_count
 from datetime import datetime
 from flaskr.auth.login_decorators import admin_required, client_required
 from flaskr.administration.services import get_reservation_details
@@ -104,6 +104,13 @@ def admin_page():
 @login_required
 @admin_required
 def instructors_admin():
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+
+    total_instructors_count = instructors_count()
+    instructors_paginated = get_all_paginated_instructors(page, per_page)
+    total_pages = (total_instructors_count + per_page - 1) // per_page
+    
     form = InstructorInsertForm()
 
     if form.validate_on_submit():
@@ -116,16 +123,29 @@ def instructors_admin():
         date_started = form.date_started.data
         password = form.password.data
 
+        changes = False
+        instructor = change_instructor_check(email)
+        if instructor:
+            state, message =  update_instructor(instructor.ID_osoba, form)      
+            if state:
+                flash(message, category="success")
+                changes = True
+            else:
+                flash(message, category="danger")
+                changes = True
 
-        if instructor_exists(email):
-            flash("Instruktor již je veden v databázi!", category="danger")
-        else:
+        if instructor_exists(email) and changes == False:
+            flash("Instruktor již je veden v databázi!, V případě změn byla provedena aktualizace.", category="warning")
+        elif changes == False:
             add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password)
             redirect(url_for("administration.instructors_admin"))
-            flash("Instruktor byl úspěšně přidán, můžete vkládat dosutpné hodiny.", category="success")
+            flash("Instruktor byl úspěšně přidán, můžete vkládat dostupné hodiny.", category="success")
+    else:
+        print("form errors: ", form.errors)
 
     instructors_dict = get_all_instructors()
-    return render_template("blog/admin/instructors_admin.html", form=form, instructors_dict=instructors_dict, active_page="instructors_admin")
+    instructors = [{'full_name': f"{instructor['jmeno']} {instructor['prijmeni']}", 'ID_osoba': instructor['ID_osoba']} for instructor in instructors_dict]
+    return render_template("blog/admin/instructors.html", form=form, instructors=instructors, active_page="instructors_admin")
 
 @administration_bp.route('/lessons-admin', methods=["POST", "GET"])
 @login_required

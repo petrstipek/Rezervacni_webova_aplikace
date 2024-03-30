@@ -89,8 +89,8 @@ class InstructorInsertForm(FlaskForm):
     experience = SelectField('Zkušenosti', choices=[('junior', 'Junior'), ('senior', 'Senior')], validators=[Optional()])
     date_birth = DateField('Datum narození', validators=[DataRequired()], format='%Y-%m-%d')
     date_started = DateField('Datum nástupu', validators=[DataRequired()], format='%Y-%m-%d')
-    password = PasswordField(label="Heslo:", validators=[DataRequired()])
-    submit = SubmitField(label="Vložit instruktora")
+    password = PasswordField(label="Heslo:", validators=[Optional()])
+    submit = SubmitField(label="Uložit instruktora")
 
 class ReservationInformationAdmin(FlaskForm):
     name = StringField(label="Jméno klienta", validators=[Length(min=2, max=30), Optional()])

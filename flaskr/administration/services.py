@@ -360,3 +360,25 @@ def lesson_instructor_change(lesson_id, instructor_id):
 
     database.session.commit()
     return status, message
+
+def change_instructor_check(email):
+    instructor = database.session.query(Osoba).join(Instruktor, Instruktor.ID_osoba == Osoba.ID_osoba).filter(Osoba.email == email).first()
+    return instructor
+
+def update_instructor(instructor_id, form):
+    fields_to_check = ['name', 'surname', 'email', 'tel_number']
+
+    for field_name in fields_to_check:
+        field_data = getattr(form, field_name).data
+        if not field_data:
+            return False, f"Pole '{field_name}' bylo ponecháno prázdné!"
+        
+    instructor = database.session.query(Osoba).join(Instruktor, Instruktor.ID_osoba == Osoba.ID_osoba).filter(Osoba.ID_osoba==instructor_id).first()
+    if instructor:
+        instructor.jmeno = form.name.data
+        instructor.prijmeni = form.surname.data
+        instructor.email = form.email.data
+        instructor.tel_cislo = form.tel_number.data
+        instructor.heslo = hash_password(form.password.data)
+        database.session.commit()
+        return True, "Instruktor byl úspěšně aktualizován."

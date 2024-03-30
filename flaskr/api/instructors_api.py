@@ -72,3 +72,10 @@ def get_reservations():
         return jsonify(response), status_code
     else:
         return jsonify(data)
+    
+@instructors_api_bp.route("/details")
+@login_required
+def get_isntructor_details():
+    instructor_id = request.args.get('instructor_id')
+    instructor = get_instructor_details(instructor_id)
+    return jsonify(instructor)
