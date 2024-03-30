@@ -105,7 +105,7 @@ def admin_page():
 @admin_required
 def instructors_admin():
     page = request.args.get('page', 1, type=int)
-    per_page = 10
+    per_page = 3
 
     total_instructors_count = instructors_count()
     instructors_paginated = get_all_paginated_instructors(page, per_page)
@@ -145,7 +145,7 @@ def instructors_admin():
 
     instructors_dict = get_all_instructors()
     instructors = [{'full_name': f"{instructor['jmeno']} {instructor['prijmeni']}", 'ID_osoba': instructor['ID_osoba']} for instructor in instructors_dict]
-    return render_template("blog/admin/instructors.html", form=form, instructors=instructors, active_page="instructors_admin")
+    return render_template("blog/admin/instructors.html", form=form, active_page="instructors_admin")
 
 @administration_bp.route('/lessons-admin', methods=["POST", "GET"])
 @login_required

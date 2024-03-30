@@ -1,21 +1,21 @@
 from flaskr.extensions import database
 from flaskr.models import Osoba, Instruktor, MaVyuku
-from email.utils import parsedate_to_datetime
 
 def instructor_has_lessons(instructor_id):
-    query_result = database.session.query(MaVyuku).filter_by(ID_osoba=instructor_id)
+    query_result = database.session.query(MaVyuku).filter_by(ID_osoba=instructor_id).first()
     return query_result is not None
 
 def delete_instructor_by_id(instructor_id):
     try:
         database.session.query(Instruktor).filter_by(ID_osoba=instructor_id).delete()
+        database.session.query(Osoba).filter_by(ID_osoba=instructor_id).delete()
         database.session.commit()
     except Exception as e:
         database.session.rollback()
         return False, e
     return True
 
-def get_all_paginated_instructors(page, per_page=10):
+def get_all_paginated_instructors(page, per_page):
     query_result = database.session.query(Instruktor).paginate(page=page, per_page=per_page, error_out=False)
 
     instructors_list = []
@@ -84,7 +84,7 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         base_query = base_query.filter(Rezervace.termin == selected_date)
 
     
-    base_query = base_query.filter(MaVyuku.ID_osoba == current_user.get_id())  # Adjust the 'ID_instruktora' field name as necessary
+    base_query = base_query.filter(MaVyuku.ID_osoba == current_user.get_id())
     print(base_query)
     
 
@@ -125,7 +125,6 @@ def get_instructor_details(instructor_id):
         'email': instructor.email,
         'birth_date': birth_date_str,
         'start_work': start_work_str,
-        # Include other fields as necessary
     }
     return instructor_dict
 

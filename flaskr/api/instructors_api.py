@@ -23,19 +23,18 @@ def delete_instructor_admin(instructor_id):
 
 
 #nove
-@administration_api.route("/instructors/<int:instructor_id>", methods=["DELETE"])
+@instructors_api_bp.route("/instructors", methods=["DELETE"])
 @login_required
-def delete_instructor_admin(instructor_id):
+def delete_instructor_admin():
+    instructor_id = request.args.get('instructor_id')
     if instructor_has_lessons(instructor_id):
-        flash("Instruktor má hodiny s aktivní rezervací!", category="danger")
+        # Instead of flash, return a JSON response
+        return jsonify({"error": "Instruktor má hodiny s aktivní rezervací!"}), 400
     else:
         if delete_instructor_by_id(instructor_id):
-            flash("Instruktor úspěšně odstraněn z databáze!", category="success")
+            return jsonify({"success": "Instruktor úspěšně odstraněn z databáze!"})
         else:
-            flash(f"Error: {delete_instructor_by_id(instructor_id)}", category="danger")
-            pass
-    
-    return redirect(url_for("administration.instructors_admin"))
+            return jsonify({"error": "An error occurred during deletion"}), 500
 
 @instructors_api_bp.route('/reservations', methods=['GET'])
 @login_required
@@ -79,3 +78,26 @@ def get_isntructor_details():
     instructor_id = request.args.get('instructor_id')
     instructor = get_instructor_details(instructor_id)
     return jsonify(instructor)
+
+@instructors_api_bp.route("/instructors-list")
+@login_required
+def get_paginated_instructors():
+    page = request.args.get('page', 1, type=int)
+    per_page = 5
+
+    total_instructors_count = instructors_count()
+    instructors = get_all_paginated_instructors(page, per_page)
+    total_pages = (total_instructors_count + per_page - 1) // per_page
+
+    return jsonify({
+        'instructors': instructors,
+        'total_pages': total_pages,
+        'current_page': page
+    })
+
+@instructors_api_bp.route("/instructors-detail", methods=["DELETE"])
+@login_required
+def delete_instructor():
+    instructor_id = request.args.get('instructor_id')
+    print(instructor_id)
+    return "ahoj"

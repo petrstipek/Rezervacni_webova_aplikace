@@ -1,7 +1,37 @@
-$(document).ready(function () {
+function fetchInstructors(page) {
+    $.ajax({
+        url: '/instructors-api/instructors-list?page=' + page,
+        type: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            var instructors = response.instructors;
+            var total_pages = response.total_pages;
+            var current_page = response.current_page;
 
-    $('.button-instructor-action').click(function () {
+            $('table tbody').empty();
+            $('.pagination').empty();
+
+            $.each(instructors, function (index, instructor) {
+                $('table tbody').append('<tr><td>' + instructor.jmeno + " " + instructor.prijmeni + '</td><td><button class="btn btn-info btn-sm button-instructor-action" data-instructor-id="' + instructor.ID_osoba + '">Zobrazit</button></td><td><button class="btn btn-danger button-instructor-delete " data-instructor-id="' + instructor.ID_osoba + '">Odstranit</button></td></tr>');
+            });
+
+            for (var i = 1; i <= total_pages; i++) {
+                $('.pagination').append('<li class="page-item ' + (i === current_page ? 'active' : '') + '"><a class="page-link" href="javascript:fetchInstructors(' + i + ')">' + i + '</a></li>');
+            }
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+$(document).ready(function () {
+    fetchInstructors(1);
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    $('table').on('click', '.button-instructor-action', function () {
         var instructorId = $(this).data('instructor-id');
+        console.log("instruktor_id", instructorId)
 
         $.ajax({
             url: '/instructors-api/details',
@@ -22,6 +52,33 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching instructor details:', error);
+            }
+        });
+    });
+
+    $('table').on('click', '.button-instructor-delete', function () {
+        var instructorId = $(this).data('instructor-id');
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+        $.ajax({
+            url: '/instructors-api/instructors?instructor_id=' + instructorId,
+            type: 'DELETE',
+            dataType: 'json',
+            headers: {
+                "X-CSRFToken": csrfToken
+            },
+            success: function (response) {
+                if (response.success) {
+                    var messageHtml = '<div class="alert alert-success">' + response.success + '</div>';
+                    $('#flash-messages').html(messageHtml);
+                    setTimeout(function () { $('#flash-messages .alert').fadeOut(); }, 5000);
+                }
+                fetchInstructors(1);
+            },
+            error: function (xhr, status, error) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "An unknown error occurred.";
+                $('#flash-messages').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+                setTimeout(function () { $('#flash-messages .alert').fadeOut(); }, 5000);
             }
         });
     });

@@ -159,3 +159,57 @@ select {
 .table td {
     vertical-align: middle;
 }
+
+.container-instructors {
+    height: 480px;
+    margin-left: 10px;
+}
+
+.pagination-container {
+    margin-top: auto;
+}
+
+.container-reservation {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive {
+    overflow-y: auto;
+    flex: 1;
+}
+
+@media screen and (max-width: 1790px) {
+    .container-instructors {
+        height: 570px;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .container-instructors {
+        height: 500px;
+        margin-left: 10px;
+    }
+
+    .global-margin {
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .global-margin {
+        margin-left: 60px;
+        margin-right: 60px;
+    }
+}
+
+
+.table .button-instructor-delete {
+    width: 100%;
+    padding: 3px 8px !important;
+    font-size: 16px !important;
+    box-sizing: border-box;
+    margin: 2px 0;
+}

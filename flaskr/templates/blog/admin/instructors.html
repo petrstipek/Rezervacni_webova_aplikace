@@ -4,10 +4,12 @@
     <title> Změna rezervace </title>
     <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style_admin_instructors.css') }}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 {% endblock %}
 
 {% block body %}
 <div class="global-margin">
+    <div id="flash-messages"></div>
     <div class="flex-container">
         <div class="form-section left-section">
             <form method="post" action="{{ url_for('administration.instructors_admin') }}">
@@ -66,13 +68,14 @@
             </form>
         </div>
         <div class="form-section right-section">
-            <div class="container-reservation mt-3">
+            <div class="container-reservation container-instructors mt-3">
                 <h2>Základní přehled instruktorů</h2>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>Jméno a příjmení</th>
                             <th>Akce</th>
+                            <th>Odstranění</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,6 +87,12 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <div class="pagination-container">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
