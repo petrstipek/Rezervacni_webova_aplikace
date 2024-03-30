@@ -32,9 +32,11 @@ def reservation_change():
     form.time_reservation.choices = [(time_reservation, time_reservation)]
 
     if request.method == "POST":
-        available_lessons = get_available_lessons(form.date.data)
-        form.time_reservation.choices = [(lesson.cas_zacatku.strftime('%H:%M'), lesson.cas_zacatku.strftime('%H:%M')) for lesson in available_lessons]
-
+        date_str = form.date.data.strftime('%Y-%m-%d')
+        available_lessons = get_available_lessons(date_str)
+        choices = [(lesson.cas_zacatku.strftime('%H:%M'), lesson.cas_zacatku.strftime('%H:%M')) for lesson in available_lessons]
+        choices.append((time_reservation, time_reservation))
+        form.time_reservation.choices = choices
     if form.validate_on_submit():
         result = process_reservation_change(form, reservation_id)
 

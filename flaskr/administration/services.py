@@ -289,7 +289,7 @@ def get_reservation_details(reservation_id):
     return combined_details
 
 def get_available_lessons(date):
-    query_result = database.session.query(DostupneHodiny).filter(DostupneHodiny.datum == date, DostupneHodiny.obsazenost=="volno").all()
+    query_result = database.session.query(DostupneHodiny).filter(DostupneHodiny.datum == date, DostupneHodiny.stav=="volno").all()
     return query_result
 
 def lesson_capacity_change(lesson_id, capacity):
