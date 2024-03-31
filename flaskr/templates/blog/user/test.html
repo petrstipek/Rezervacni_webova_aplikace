@@ -1,47 +1,147 @@
-{% extends "base_user.html" %}
+{% extends "base_admin.html" %}
 
 {% block head %}
-    <title> Změna rezervace </title>
-    <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style_user_reservation_check.css') }}" rel="stylesheet">
-    
+    <title> Dostupné hodiny - admin </title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/pop-up.css') }}" rel="stylesheet">
 
 {% endblock %}
 
 {% block body %}
-<div class="global-margin">
-    <div id="flash-messages"></div>
-    <div class="flex-container">
-        <div class="form-section left-section">
-            <div class="container-reservation container-user-check mt-3">
-                <h2>Vyhledat rezervaci</h2>
-                <div id="reservationDetails" class="reservation-details col-md-8"></div>
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form method="post" action="{{ url_for('administration.lessons_admin') }}">
+            <input type="hidden" name="form_type" value="lesson_change">
+            {{ form.hidden_tag() }}
+            <h3>Detaily hodiny</h3>
+            <div id="modalBody">
+                <p>Some details here...</p>
             </div>
-        </div>
-        <div class="form-section right-section">
-            <div class="container-reservation container-reservations-search mt-3">
-                <h2>Vyhledávací parametry</h2>
-                <form id="reservationForm" method="post">
-                    {{ form.hidden_tag() }}
-                    <div class="form-section">
-                        <div class="form-group">
-                            <label for="reservation_id">{{ form.reservation_id.label(class="form-label") }}</label>
-                            {{ form.reservation_id(id="reservation_id", class="form-control") }}
-                            <button class="btn btn-warning" type="submit">Zkontrolovat rezervaci</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+            <hr>
+            <h3>Dostupné změny hodiny</h3>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Kapacita</th>
+                        <th>Instruktor</th>
+                        <th>Akce</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ form_lesson_change.capacity(id="kapacitaField", class_="full-width") }}
+                        </td>
+                        <td>
+                            {{ form_lesson_change.instructor(id="instructor", class_="instructor-field full-width") }}
+                        </td>
+                        <td>
+                            {{ form_lesson_change.lesson_id }}
+                            {{ form_lesson_change.submit(class_="submit-button") }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
     </div>
 </div>
-<script src="{{ url_for('static', filename='js/reservation_change.js') }}"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript">
-    var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
-</script>
-<script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
+<section class="section-blue">
+    <div class="global-margin">
+        <form method="post" action="{{ url_for('administration.lessons_admin') }}">
+            <input type="hidden" name="form_type" value="lesson_insert">
+            {{ form.hidden_tag() }}
+            <h2>Vytvoření nové dostupné hodiny</h2>
+            <div class="lessons-admin-grid">
+                <div class="horizontal-fields-container-admin-lessons">
+                    <div class="containers-lessons">
+                        <label for="date">{{ form.date.label }}</label>
+                        {{ form.date }}
+                    </div>
+                    <div class="containers-lessons">
+                        <label for="time_start">{{ form.time_start.label }}</label>
+                        {{ form.time_start }}
+                        {% if form.time_start.errors %}
+                        <div class="errors">{{ form.time_start.errors[0] }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="containers-lessons">
+                        <label for="lesson_type">{{ form.lesson_type.label }}</label>
+                        {{ form.lesson_type(id="lesson_type") }}
+                    </div>
+                    <div class="containers-lessons">
+                        <label for="lesson_instructor_choices">{{ form.lesson_instructor_choices.label }}</label>
+                        {{ form.lesson_instructor_choices }}
+                    </div> 
+                </div>
+                <div class="horizontal-fields-container-admin-lessons additional-parametrs">
+                    <div id="div_lesson_capacity" class="capacity-lessons">
+                        <div class="containers-lessons">
+                            <label for="capacity">{{ form.capacity.label }}</label>
+                            {{ form.capacity }}
+                        </div>
+                    </div>
+                    <div id="div_additional_instructors">
+                        <div class="horizontal-fields-container-admin-lessons">
+                            <div class="containers-lessons">
+                                <label for="lesson_instructor_choices2">{{ form.lesson_instructor_choices2.label }}</label>
+                                {{ form.lesson_instructor_choices2 }}
+                            </div>
+                            <div class="containers-lessons">
+                                <label for="lesson_instructor_choices3">{{ form.lesson_instructor_choices3.label }}</label>
+                                {{ form.lesson_instructor_choices3 }}
+                            </div>
+                            <div class="containers-lessons">
+                                <label for="lesson_instructor_choices4">{{ form.lesson_instructor_choices4.label }}</label>
+                                {{ form.lesson_instructor_choices4 }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="containers-lessons">
+                        <label class="invisible-label" aria-hidden="true">schovane pole</label> 
+                        <button class="btn btn-warning" type="submit">Vložit hodinu</button>
+                    </div>
+                </div> 
+            </div>          
+            </form>
+    </div>
+</section>
 
+<section class="section-grey">
+    <div class="global-margin lessons-admin-section">
+        <h2>Přehled vypsaných hodin</h2>
+        <div class="lessons-admin-grid">
+            <div class="horizontal-fields-container-admin-lessons">
+                <div class="containers-lessons">
+                    <input type="date" id="lessonDate" name="lessonDate">
+                </div>
+                <div class="containers-lessons">
+                    <input class="btn btn-warning" type="button" id="allLessons" name="allLessons" value="Zobrazit všechny hodiny">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="lessonDate" name="lessonDate">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="lessonDate" name="lessonDate">
+                </div>
+            </div>
+        </div>
+        <div id="lessonsAll" class="table-all-lessons"></div>
+        <div id="paginationControls" class="pagination-controls"></div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>
+{% if request.args.get('show_modal') == 'true' and request.args.get('lesson_id') %}
+<script>
+    $(document).ready(function() {
+        var lessonId = "{{ request.args.get('lesson_id') }}";
+        loadAndShowLessonDetails(lessonId);
+
+        var newUrl = window.location.href.split('?')[0];
+        window.history.replaceState({}, document.title, newUrl);
+    });
+</script>
+{% endif %}
 {% endblock %}

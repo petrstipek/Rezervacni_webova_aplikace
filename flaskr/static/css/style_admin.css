@@ -58,7 +58,6 @@ select {
     border-radius: 8px;
     border: 1px solid #ccc;
     padding: 4px;
-    width: 100%;
     box-sizing: border-box;
     text-align: center;
     margin: 10px
@@ -180,7 +179,6 @@ select {
     border-radius: 8px;
     border: 1px solid #ccc;
     padding: 4px;
-    width: 100%;
     box-sizing: border-box;
     text-align: center;
     margin: 10px
@@ -343,7 +341,6 @@ select {
 
 .containers-lessons input,
 .containers-lessons select {
-    width: 100%;
     box-sizing: border-box;
     height: 38px;
     border-radius: 8px;

@@ -1,0 +1,7 @@
+.right-section {
+    flex: 60% !important;
+}
+
+.left-section {
+    flex: 55% !important;
+}
