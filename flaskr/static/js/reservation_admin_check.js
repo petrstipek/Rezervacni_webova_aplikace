@@ -99,10 +99,9 @@ $(document).ready(function () {
         queryParams.push(`page=${page}`);
         queryParams.push(`per_page=${perPageFirstTable}`);
         if (date) {
-            queryParams.push(`selected_date=${date}`)
+            queryParams.push(`selected_date=${date}`);
         }
         var url = baseUrl + "?" + queryParams.join("&");
-        var baseUrl = "/administration-api/reservations/";
 
         $.ajax({
             url: url,
@@ -114,11 +113,12 @@ $(document).ready(function () {
                     $('#reservationDetailsAll').text('No reservations found.');
                     return;
                 }
+
                 var table = $('<table></table>').addClass('reservation-table');
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
-                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "stav platby"]
+                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "stav platby"];
 
                 $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));
@@ -129,8 +129,8 @@ $(document).ready(function () {
 
                 $.each(response.reservations, function (index, reservation) {
                     var row = $('<tr></tr>');
-                    $.each(keyOrder, function (index, key) {
-                        var value = reservation[key];
+                    $.each(keyOrder, function (i, key) {
+                        var value = reservation[key] || '';
                         if (key === 'termín rezervace') {
                             value = formatDate(value);
                         }
@@ -140,17 +140,21 @@ $(document).ready(function () {
                     var instructorFullName = reservation['jméno instruktora'] + ' ' + reservation['příjmení instruktora'];
                     row.append($('<td></td>').text(instructorFullName));
 
-                    var detailbutton = $(`<button class="detailReservation btn btn-primary" id="reservationDetail" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
-
+                    var detailbutton = $(`<button class="detailReservation btn btn-primary" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
                     row.append($('<td></td>').append(detailbutton));
+
                     tbody.append(row);
                 });
+
+                var rowsToAdd = perPageFirstTable - response.reservations.length;
+                for (var i = 0; i < rowsToAdd; i++) {
+                    tbody.append('<tr><td colspan="' + (keyOrder.length + 2) + '">&nbsp;</td></tr>');
+                }
 
                 table.append(thead).append(tbody);
                 $('#reservationDetailsAll').append(table);
 
                 totalPagesSecondTable = response.total_pages;
-
                 updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable);
             },
             error: function (xhr, status, error) {
@@ -159,6 +163,7 @@ $(document).ready(function () {
             }
         });
     }
+
 
     function updatePaginationControlsFirstTable(totalPagesFirstTable, currentPageFirstTable) {
         $('#paginationControlsFirstTable').empty();
