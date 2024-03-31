@@ -66,3 +66,22 @@ input[type="submit"] {
     max-width: none !important;
     max-height: 1200px !important;
 }
+
+.container-reservation-show {
+    min-height: -webkit-fill-available !important;
+}
+
+.reservation-table td {
+    height: 63px;
+}
+
+@media (max-width: 1500px) {
+    .reservation-table td {
+        height: 40px;
+    }
+
+    .global-margin {
+        margin-right: 90px;
+        margin-left: 90px;
+    }
+}

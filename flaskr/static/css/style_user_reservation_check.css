@@ -54,7 +54,7 @@
 }
 
 .reservation-table tr:last-child td {
-    text-align: center;
+    text-align: left;
     padding: 10px;
 }
 
@@ -232,4 +232,84 @@ body {
 
 .container-reservation {
     flex-grow: 1;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+    align-self: flex-start;
+    max-width: -webkit-fill-available;
+}
+
+@media (max-width: 1200px) {
+
+    .flex-container {
+        flex-direction: column;
+    }
+}
+
+.btn-small {
+    padding: 6px 12px !important;
+    border-radius: 5px !important;
+    font-size: 16px !important;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.reservation-table td {
+    width: 400px;
+    max-width: 4000px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+    .reservation-table td {
+        width: auto;
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+    }
+
+    .reservation-table th {
+        max-width: 20px;
+    }
+}
+
+@media (max-width: 390px) {
+    .global-margin {
+        padding: 10px;
+    }
+
+    .reservation-table {
+
+        min-width: 0;
+    }
+
+    .reservation-table th,
+    .reservation-table td {
+        padding: 5px;
+    }
+}
+
+@media (max-width: 390px) {
+
+    .reservation-table th,
+    .reservation-table td {
+        font-size: 12px;
+        max-width: 30px;
+    }
+}
+
+p {
+    text-align: left;
+    margin-top: 20px
 }

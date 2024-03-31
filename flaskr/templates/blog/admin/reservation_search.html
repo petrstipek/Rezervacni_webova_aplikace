@@ -24,9 +24,38 @@
     <div id="flash-messages"></div>
     <div class="flex-container">
         <div class="form-section left-section">
-            <div class="container-reservation mt-3">
+            <div class="container-reservation container-reservation-show mt-3">
                 <h2>Nalezené rezervace</h2>
-                <div id="reservationDetails" class="table-specific-reservations"></div>
+                <div id="reservationDetails" class="table-specific-reservations">
+                    <table class="reservation-table">
+                        <thead>
+                            <tr>
+                                <th>Jméno klienta</th>
+                                <th>Příjmení klienta</th>
+                                <th>Termín rezervace</th>
+                                <th>Čas začátku</th>
+                                <th>Doba výuky</th>
+                                <th>Stav platby</th>
+                                <th>Instruktor</th>
+                                <th>Detail rezervace</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
                 <div id="paginationControlsFirstTable" class="pagination-controls"></div>
             </div>
         </div>
@@ -51,6 +80,8 @@
                         <div class="form-group">
                             <label for="reservation_tel_number">{{ form.tel_number.label(class="form-label") }}</label>
                             {{ form.tel_number(id="reservation_tel_number", class="form-control") }}
+                        </div>
+                        <div class="form-group center-section">
                             <button class="btn btn-warning" type="submit">Vyhledat rezervaci</button>
                         </div>
                     </div>

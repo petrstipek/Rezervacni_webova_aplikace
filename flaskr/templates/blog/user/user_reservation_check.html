@@ -1,38 +1,73 @@
 {% extends "base_user.html" %}
 
 {% block head %}
-    <title> Změna rezervace </title>
-    <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style_user_reservation_check.css') }}" rel="stylesheet">
+<title> Změna rezervace </title>
+<link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_user_reservation_check.css') }}" rel="stylesheet">
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+
     
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-
 {% endblock %}
 
 {% block body %}
-<div class="global-margin">
-    <div id="flash-messages"></div>
-    <div class="flex-container">
-        <div class="form-section left-section">
-            <div class="container-reservation container-user-check mt-3">
-                <h2>Vyhledat rezervaci</h2>
-                <div id="reservationDetails" class="reservation-details col-md-8"></div>
-            </div>
-        </div>
-        <div class="form-section right-section">
-            <div class="container-reservation container-reservations-search mt-3">
-                <h2>Vyhledávací parametry</h2>
-                <form id="reservationForm" method="post">
-                    {{ form.hidden_tag() }}
-                    <div class="form-section">
-                        <div class="form-group">
-                            <label for="reservation_id">{{ form.reservation_id.label(class="form-label") }}</label>
-                            {{ form.reservation_id(id="reservation_id", class="form-control") }}
-                            <button class="btn btn-warning" type="submit">Zkontrolovat rezervaci</button>
-                        </div>
+<div class="color-background">
+    <div class="global-margin">
+        <div id="flash-messages"></div>
+        <div class="flex-container">
+            <div class="form-section left-section">
+                <div class="container-reservation container-user-check mt-3">
+                    <h2>Rezervace</h2>
+                    <div id="reservationDetails" class="reservation-details col-md-8"></div>
+                    <div id="reservationDetails">
+                        <table class="reservation-table">
+                            <tbody>
+                                <tr>
+                                    <th>Termín</th>
+                                    <td id="cell-termin"></td>
+                                </tr>
+                                <tr>
+                                    <th>Čas začátku</th>
+                                    <td id="cell-cas-zacatku"></td>
+                                </tr>
+                                <tr>
+                                    <th>Počet žáků</th>
+                                    <td id="cell-pocet-zaku"></td>
+                                </tr>
+                                <tr>
+                                    <th>Doba výuky</th>
+                                    <td id="cell-doba-vyuky"></td>
+                                </tr>
+                                <tr>
+                                    <th>Stav platby</th>
+                                    <td id="cell-stav-platby"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </form>
+                    <p> Tato stránka slouží pouze pro získání základních informací o rezervaci.</p>
+                    <p>V případě zájmu o více informací se můžete registrovat a zobrazit si rezervace.</p>
+                </div>
+            </div>
+            <div class="form-section right-section">
+                <div class="container-reservation container-reservations-search mt-3">
+                    <h2>Vyhledávací parametry</h2>
+                    <form id="reservationForm" method="post">
+                        {{ form.hidden_tag() }}
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label for="reservation_id">{{ form.reservation_id.label(class="form-label") }}</label>
+                                {{ form.reservation_id(id="reservation_id", class="form-control") }}
+                                <button class="btn btn-warning btn-small" type="submit">Zkontrolovat rezervaci</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -43,5 +78,4 @@
     var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
 </script>
 <script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
-
 {% endblock %}

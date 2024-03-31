@@ -44,6 +44,9 @@ header {
 .global-margin {
     margin-left: 190px;
     margin-right: 190px;
+    display: flex;
+    flex-direction: row;
+    flex: 1 !important;
 }
 
 .containers-reservations {
@@ -258,10 +261,6 @@ select {
 .markAsPaid {
     background-color: #4CAF50;
     color: white;
-}
-
-.table-specific-reservations {
-    height: 250px;
 }
 
 @media screen and (max-width: 600px) {
