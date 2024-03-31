@@ -12,7 +12,7 @@ reservations_bp = Blueprint('reservations', __name__, template_folder='templates
 @reservations_bp.route('/reservation-check')
 def reservation_check():
     form = ReservationInformationForm()
-    return render_template("blog/user/reservation_check.html", form=form)
+    return render_template("blog/user/user_reservation_check.html", form=form)
 
 @reservations_bp.route("/", methods=["GET", "POST"])
 def main_page():

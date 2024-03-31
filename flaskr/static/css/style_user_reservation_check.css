@@ -189,3 +189,54 @@
         width: 90%;
     }
 }
+
+body {
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.global-margin {
+    flex: 1;
+}
+
+.container-user-check {
+    min-height: max-content !important;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.flex-container {
+    flex: 1;
+    /* Grow to fill available space */
+    display: flex;
+    /* Assuming you want its children to use Flexbox layout */
+    flex-direction: row;
+    /* Adjust if your layout is different */
+}
+
+.form-section.left-section {
+    flex-grow: 1;
+    /* Grow to take available space, if flex-direction of parent is row */
+    display: flex;
+    flex-direction: column;
+    /* If you want its children to stack vertically */
+}
+
+.container-reservation {
+    flex-grow: 1;
+    /* Grow to take available vertical space */
+    /* Ensure there's no max-height limiting its growth unless intended */
+}

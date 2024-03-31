@@ -1,0 +1,47 @@
+{% extends "base_user.html" %}
+
+{% block head %}
+    <title> Změna rezervace </title>
+    <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_user_reservation_check.css') }}" rel="stylesheet">
+    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
+{% endblock %}
+
+{% block body %}
+<div class="global-margin">
+    <div id="flash-messages"></div>
+    <div class="flex-container">
+        <div class="form-section left-section">
+            <div class="container-reservation container-user-check mt-3">
+                <h2>Vyhledat rezervaci</h2>
+                <div id="reservationDetails" class="reservation-details col-md-8"></div>
+            </div>
+        </div>
+        <div class="form-section right-section">
+            <div class="container-reservation container-reservations-search mt-3">
+                <h2>Vyhledávací parametry</h2>
+                <form id="reservationForm" method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label for="reservation_id">{{ form.reservation_id.label(class="form-label") }}</label>
+                            {{ form.reservation_id(id="reservation_id", class="form-control") }}
+                            <button class="btn btn-warning" type="submit">Zkontrolovat rezervaci</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/reservation_change.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript">
+    var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
+</script>
+<script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
+
+{% endblock %}
