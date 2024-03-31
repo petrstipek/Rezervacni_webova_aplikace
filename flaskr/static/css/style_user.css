@@ -5,8 +5,9 @@ header {
 }
 
 .global-margin {
-    margin-left: 190px;
-    margin-right: 190px;
+    margin-left: 230px;
+    margin-right: 230px;
+    flex: 1;
 }
 
 section {

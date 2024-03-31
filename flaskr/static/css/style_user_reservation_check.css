@@ -220,23 +220,16 @@ body {
 
 .flex-container {
     flex: 1;
-    /* Grow to fill available space */
     display: flex;
-    /* Assuming you want its children to use Flexbox layout */
     flex-direction: row;
-    /* Adjust if your layout is different */
 }
 
 .form-section.left-section {
     flex-grow: 1;
-    /* Grow to take available space, if flex-direction of parent is row */
     display: flex;
     flex-direction: column;
-    /* If you want its children to stack vertically */
 }
 
 .container-reservation {
     flex-grow: 1;
-    /* Grow to take available vertical space */
-    /* Ensure there's no max-height limiting its growth unless intended */
 }
