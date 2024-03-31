@@ -7,6 +7,7 @@ from flaskr.extensions import database
 from sqlalchemy.orm.exc import NoResultFound 
 from sqlalchemy import and_
 from sqlalchemy.exc import SQLAlchemyError
+from flaskr.auth.services import register_new_user
 
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=[recipients])
@@ -368,3 +369,15 @@ def handle_all_instructors(available_instructors):
     for row in available_instructors:
         return_instructors.append((row["ID_osoba"], row["jmeno"]))
     return return_instructors
+
+def process_submit_registration(form):
+    client_result = database.session.query(Osoba).filter_by(email=form.email.data).first()
+    if client_result:
+        status, message = True, "Uživatel s tímto emailem již existuje! Pokud jste zapomněli heslo, můžete si ho změnit."
+        return status, message
+    result = register_new_user(form)
+    if result:
+        status, message = True, "Registrace proběhla úspěšně! Nyní se můžete přihlásit. Rezervaci najdete ve svém účtu."
+    else:
+        status, message = False, "Registrace se nezdařila!"
+    return status, message

@@ -9,6 +9,7 @@ class PersonalInformationForm(FlaskForm):
 
     name = StringField(label="Jméno", validators=[Length(min=2, max=20), DataRequired(),name_validator])
     surname = StringField(label="Příjmení", validators=[Length(min=2, max=30), DataRequired(),name_validator])
+    password = PasswordField(label="Heslo:", validators=[Optional()])
     
     tel_number = StringField('Telefonní číslo', validators=[
         DataRequired(),
@@ -20,6 +21,9 @@ class PersonalInformationForm(FlaskForm):
     
     student_client = BooleanField('Žák stejný jako klient', validators=[])
     more_students = BooleanField("Objednat více žáků", validators=[])
+
+    submit_with_register = BooleanField("Pokračovat s registrací.", validators=[Optional()])
+    submit_without_register = BooleanField("Pokračovat bez registrace.", validators=[Optional()])
 
     name_client1 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
     name_client2 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])

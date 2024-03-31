@@ -30,17 +30,28 @@ def main_page():
 
     if request.method == "POST":
         secret_response = request.form["g-recaptcha-response"]
+        print("Secret response:", secret_response)
         if secret_response:
             verify_response = requests.post(url= verify_url, data={'secret': recaptcha_private, 'response': secret_response}).json()
             if not verify_response.get("success"):
+                print("chbye v captacha")
                 flash("Chyba ve validaci Captcha. Opakujte prosím odeslání!", category="danger")
                 return render_template("blog/user/reservation_page.html", form=form, active_page="reservation_page")
         else:
             flash("Captcha chyba. Opakujte odeslání!", category="danger")
+            print("chyba v captacha")
             return render_template("blog/user/reservation_page.html", form=form, active_page="reservation_page")
         
         if form.validate_on_submit():
             #message, message_type = process_reservation(form)
+            print("jo jsem tady v submit")
+            register_without = form.submit_without_register.data
+            register_with = form.submit_with_register.data
+            print("Register without:", register_without)
+            print("Register with:", register_with)
+
+            if register_with:
+                status_reg, message_reg = process_submit_registration(form)
 
             result = process_reservation(form)
 
@@ -48,10 +59,22 @@ def main_page():
                 message, message_type, reservation_code = result
             elif len(result) == 2:
                 message, message_type = result
+            
+            if register_with and message and status_reg:
+                flash("Rezervace proběhla úspěšně! " + message_reg, category="success")
+                return redirect(url_for('reservations.main_page'))
+            if register_with and message and not status_reg:
+                flash("Rezervace proběhla úspěšně, ale registrace selhala. Zkuste to znovu.", category="warning")
+                return redirect(url_for('reservations.main_page'))
+            if register_without and message:
+                flash(message, category=message_type)
+                return redirect(url_for('reservations.main_page'))
+
 
             flash(message, category=message_type)
             return redirect(url_for('reservations.main_page'))
         else:
+            print(form.errors, "Form errors")
             custom_messages = {
             'name': 'Doplňtě Vaše jméno.',
             'surname': 'Doplňte Vaše příjmení.',
