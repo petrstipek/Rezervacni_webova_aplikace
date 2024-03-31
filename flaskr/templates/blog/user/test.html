@@ -1,50 +1,58 @@
-{% extends "base_admin.html" %}
+{% extends "base_user.html" %}
 
 {% block head %}
-    <title> Rezervace - vyhledání </title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/reservation_overview.css') }}" rel="stylesheet">
+    <title>Upravit profil uživatele</title>
+    <link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_registration.css') }}" rel="stylesheet">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 {% endblock %}
 
 {% block body %}
-<div id="detailModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Detaily rezervace</h3>
-        <div id="modalBody">
-            <p>Some details here...</p>
+{{ form.hidden_tag() }}
+<body class="text-center">
+    <div class="body-login">
+        <div class="form-container">
+            <form method="POST" class="form-signin">
+                {{ form.hidden_tag() }}
+                <h2 class="h2-headers">Upravit profil</h2>
+                <div class="form-row">
+                    <div class="form-col">
+                        {{ form.name.label(class="login-label") }}
+                        {{ form.name(id="name", class="form-control login-fields", placeholder="Jméno") }}
+                    </div>
+                    <div class="form-col">
+                        {{ form.surname.label(class="login-label") }}
+                        {{ form.surname(id="surname", class="form-control login-fields", placeholder="Příjmení") }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        {{ form.email.label(class="login-label") }}
+                        {{ form.email(id="email", class="form-control login-fields", placeholder="Email") }}
+                    </div>
+                    <div class="form-col">
+                        {{ form.tel_number.label(class="login-label") }}
+                        {{ form.tel_number(id="tel_number", class="form-control login-fields", placeholder="Telefonní číslo") }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        {{ form.old_password.label(class="login-label") }}
+                        {{ form.old_password(id="old_password", class="form-control login-fields", placeholder="Staré heslo") }}
+                    </div>
+                    <div class="form-col">
+                        {{ form.new_password.label(class="login-label") }}
+                        {{ form.new_password(id="new_password", class="form-control login-fields", placeholder="Nové heslo") }}
+                    </div>
+                </div>
+                <br>
+                <div class="form-row form-btn">
+                    {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation", value="Uložit změny") }}
+                </div>
+            </form>
         </div>
-        <hr>
-    </div>
-</div>
-<section class="section-grey">
-    <div class="global-margin reservations-section-all">
-        <h2>Přehled všech rezervací remake</h2>
-        <div class="lessons-admin-grid">
-            <div class="horizontal-fields-container-admin-lessons">
-                <div class="containers-lessons">
-                    <input type="date" id="reservationDate" name="reservationDate">
-                </div>
-                <div class="containers-lessons">
-                    <input class="btn btn-warning" type="button" id="allReservations" name="allReservations" value="Zobrazit všechny rezervace">
-                </div>
-                <div class="containers-lessons" style="visibility: hidden;">
-                    <input type="date" id="reservationDate" name="reservationDate">
-                </div>
-                <div class="containers-lessons" style="visibility: hidden;">
-                    <input type="date" id="reservationDate" name="reservationDate">
-                </div>
-            </div>
-        </div>
-        <div id="reservationDetailsAll" class="table-all-reservations"></div>
-        <div id="paginationControlsSecondTable" class="pagination-controls"></div>
-    </div>
-</section>
-
-<script src="{{ url_for('static', filename='js/reservation_admin_check.js') }}"></script>
-<script type="text/javascript">
-    var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
-</script>
-
+    </div>  
+    <script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
+</body>
 {% endblock %}

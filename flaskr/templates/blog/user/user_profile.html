@@ -1,21 +1,23 @@
 {% extends "base_user.html" %}
 
 {% block head %}
-    <title>Upravit profil uživatele</title>
-    <link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style_registration.css') }}" rel="stylesheet">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<title>Upravit profil uživatele</title>
+<link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_registration.css') }}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    
 {% endblock %}
 
 {% block body %}
-{{ form.hidden_tag() }}
-<body class="text-center">
-    <div class="body-login">
-        <div class="form-container">
-            <form method="POST" class="form-signin">
-                {{ form.hidden_tag() }}
-                <h2 class="h2-headers">Upravit profil</h2>
+<div class="color-background">
+    <div class="global-margin">
+        <div class="body-login">
+            <div class="form-container">
+                <form method="POST" class="form-signin">
+                    {{ form.hidden_tag() }}
+                    <h2 class="h2-headers">Upravit profil</h2>
                 <div class="form-row">
                     <div class="form-col">
                         {{ form.name.label(class="login-label") }}
@@ -46,13 +48,13 @@
                         {{ form.new_password(id="new_password", class="form-control login-fields", placeholder="Nové heslo") }}
                     </div>
                 </div>
-                <br>
                 <div class="form-row form-btn">
                     {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation", value="Uložit změny") }}
                 </div>
-            </form>
-        </div>
-    </div>  
-    <script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
-</body>
+                </form>
+            </div>
+        </div>  
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
 {% endblock %}
