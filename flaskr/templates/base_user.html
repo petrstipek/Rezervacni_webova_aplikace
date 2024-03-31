@@ -21,8 +21,8 @@
                 <header class="navbar-custom d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom header-no-margin global-margin">
                     <div class="col-md-4 mb-2 mb-md-0 page-title">
                         <a href="/" class="d-inline-flex align-items-center link-body-emphasis text-decoration-none">
-                            <img src="{{ url_for('static', filename='images/logo-bublava.png') }}" alt="Logo" style="height: 50px; margin-right: 10px;">
-                            <h1 style="margin-bottom: 0; font-size: 1.5rem;">Ski škola Bublava</h1>
+                            <img src="{{ url_for('static', filename='images/logo-bublava.png') }}" alt="Logo" style="height: 70px; margin-right: 10px;">
+                            <h1 style="margin-bottom: 0; font-size: 1.85rem;">Ski škola Bublava</h1>
                         </a>
                     </div>
 
@@ -97,13 +97,13 @@
                                         <a href="{{ url_for('reservations.main_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ url_for('information.school_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'school' else '' }}">Škola</a>
-                                    </li>
-                                    <li class="nav-item">
                                         <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="{{ url_for('information.instructors_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('information.school_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'school' else '' }}">O nás</a>
                                     </li>
                                 {% endif %}
                             </ul>
@@ -142,8 +142,8 @@
                 <div class="container">
                     <footer class="py-3 my-4">
                         <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Ski Bublava</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Kontakty</a></li>
+                            <li class="nav-item"><a href="http://www.bublava.cz/cs" class="nav-link px-2 text-muted">Ski Bublava</a></li>
+                            <li class="nav-item"><a href="{{ url_for('information.contacts_page') }}" class="nav-link px-2 text-muted">Kontakty</a></li>
                             <li class="nav-item"><a href="{{ url_for('registration.registration_user') }}" class="nav-link px-2 text-muted">Registrace</a></li>
                         </ul>
                         <p class="text-center text-muted">&copy; Lyžařská škola Bublava</p>

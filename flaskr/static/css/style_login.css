@@ -9,10 +9,6 @@
 }
 
 .body-login {
-    min-height: 750px;
-}
-
-.body-login {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,6 +27,8 @@
 .form-signin {
     display: flex;
     flex-direction: column;
+    padding-left: 80px;
+    padding-right: 80px;
 }
 
 .h2-headers {
@@ -103,4 +101,29 @@ a i {
 
 .mt-3 {
     text-align: center;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.global-margin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+
+}
+
+@media screen and (max-width: 900px) {
+    .form-signin {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .form-container {
+        padding: 10px;
+    }
 }
