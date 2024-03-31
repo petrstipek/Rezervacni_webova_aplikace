@@ -115,6 +115,12 @@
 }
 
 .pagination-controls {
-    margin-top: 150px !important;
+    margin-top: 15px !important;
     margin-bottom: 15px;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }

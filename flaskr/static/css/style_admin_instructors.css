@@ -127,14 +127,12 @@ select {
 }
 
 .btn-warning {
-    background-color: #f0ad4e;
-    border-color: #f0ad4e;
-    color: white;
+    border-color: #FBC639;
 }
 
 .btn-warning:hover {
-    background-color: #ec971f;
-    border-color: #d58512;
+    background-color: #FBC639;
+    border-color: #FBC639;
 }
 
 @media (max-width: 768px) {
@@ -215,4 +213,10 @@ select {
 
 .left-section {
     flex: 53% !important;
+}
+
+.page-link {
+    background-color: #FBC639 !important;
+    border-color: #FBC639 !important;
+    color: black !important;
 }

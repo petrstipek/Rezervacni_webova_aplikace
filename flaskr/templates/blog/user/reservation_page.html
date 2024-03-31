@@ -26,7 +26,7 @@
 <form id="reservation-form" method="post" action="{{ url_for('reservations.main_page') }}">
     {{ form.hidden_tag() }}
     <section class="section-blue" id="date_picker">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Výběr termínu rezervace</h2>
             <div class="grid-container">
                 <div class="horizontal-fields-group">
@@ -65,11 +65,11 @@
                 </div>
             </div>
         </div>
-        <hr class="global-margin">
+        <hr class="global-margin display-form">
     </section>
 
     <section class="section-grey" id="contact_information">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Kontaktní informace</h2>
             <div class="horizontal-fields-container-info">
                 <div class="field-container-pi">
@@ -91,11 +91,11 @@
                 </div>
             </div>
         </div>
-        <hr class="global-margin">
+        <hr class="global-margin display-form">
     </section>
     
     <section class="section-blue" id="students">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Žáci lekce</h2>
             <div class="form-block">
                 <div class="checkbox-container">
@@ -179,11 +179,11 @@
                 </div>
             </div> 
         </div>
-        <hr class="global-margin"> 
+        <hr class="global-margin display-form"> 
     </section>
 
     <section class="section-grey last-section" id="reservation_send">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Odeslání rezervace</h2>
             <div class="form-grid">
                 {{ form.note(class="notes-field") }}
@@ -205,6 +205,4 @@
         document.getElementById("reservation-form").submit();
     }
 </script>
-
-
 {% endblock %}
