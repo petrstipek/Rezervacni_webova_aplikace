@@ -231,5 +231,5 @@ def lessons_admin():
 @admin_required
 def reservations_admin():
     form = ReservationInformationAdmin()
-    return render_template("blog/admin/reservations_admin.html", form=form, active_page="reservations_admin")
+    return render_template("blog/admin/reservation_search.html", form=form, active_page="reservations_admin")
     
