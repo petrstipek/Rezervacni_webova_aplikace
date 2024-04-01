@@ -157,3 +157,7 @@ input[type="submit"] {
     justify-content: center;
     align-items: center;
 }
+
+.container-small-overview {
+    margin-left: 10px;
+}

@@ -93,3 +93,4 @@ def main_page():
             print("Form errors:", form.errors)
             
     return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form, is_logged_in=current_user.is_authenticated)
+

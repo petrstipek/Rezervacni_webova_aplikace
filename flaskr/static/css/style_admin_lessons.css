@@ -5,3 +5,9 @@
 .left-section {
     flex: 55% !important;
 }
+
+@media (max-width: 1500px) {
+    .flex-lessons {
+        flex-direction: column;
+    }
+}
