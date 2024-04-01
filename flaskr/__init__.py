@@ -32,7 +32,7 @@ def create_app(test_config=None):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'database.sqlite')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://felixgrent:fekxot-zixhe7-Zabqez@rds-mysql-skiressys.c9sa6ogi4a00.eu-north-1.rds.amazonaws.com/rds-mysql-skiressys'
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://felixgrent:password@rds-mysql-skiressys.c9sa6ogi4a00.eu-north-1.rds.amazonaws.com/rds-mysql-skiressys'
     
     database.init_app(app)
 
