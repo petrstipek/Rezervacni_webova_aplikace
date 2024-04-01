@@ -20,7 +20,6 @@
 
 {% block body %}
 <form id="reservation-form" method="post" action="{{ url_for('reservations.main_page') }}">
-    {{ form.hidden_tag() }}
     <div id="registrationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -28,7 +27,6 @@
                 <span class="close-button">&times;</span>
             </div>
             <p>S registrací můžete provádět storna, změny a detailní náhledy na všechny Vaše rezervace.</p>
-            <form>
                 <div class="form-group">
                     <div class="checkbox-field">
                         <label for="continueWithoutReg">{{ form.submit_without_register.label }}</label>
@@ -46,9 +44,9 @@
                     <input type="password" id="password" name="password">
                 </div>
                 <button id="modalSubmitButton" class="btn btn btn-warning" type="button">Odeslat rezervaci</button>
-            </form>
         </div>
     </div>
+  
     {{ form.hidden_tag() }}
     <section class="section-blue" id="date_picker">
         <div class="global-margin display-form">

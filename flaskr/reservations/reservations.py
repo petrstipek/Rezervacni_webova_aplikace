@@ -29,7 +29,7 @@ def main_page():
     form.lesson_instructor_choices.choices = available_instructors
 
     if request.method == "POST":
-        secret_response = request.form["g-recaptcha-response"]
+        secret_response = request.form.get("g-recaptcha-response")
         print("Secret response:", secret_response)
         if secret_response:
             verify_response = requests.post(url= verify_url, data={'secret': recaptcha_private, 'response': secret_response}).json()

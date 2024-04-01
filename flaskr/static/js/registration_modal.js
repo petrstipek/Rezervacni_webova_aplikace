@@ -37,5 +37,4 @@ $(document).ready(function () {
     $('#modalSubmitButton').click(function () {
         document.getElementById("reservation-form").submit();
     });
-
 });
