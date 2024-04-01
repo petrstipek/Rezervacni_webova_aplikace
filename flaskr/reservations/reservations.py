@@ -9,6 +9,10 @@ from flask_login import current_user
 
 reservations_bp = Blueprint('reservations', __name__, template_folder='templates')
 
+@reservations_bp.route('/test')
+def test():
+    return render_template("blog/user/test.html")
+
 @reservations_bp.route('/reservation-check')
 def reservation_check():
     form = ReservationInformationForm()

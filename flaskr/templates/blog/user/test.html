@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/base_user.css') }}" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+        <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/navbars/">
+        <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <meta charset="UTF-8">
+
+        <link rel="icon" href="{{ url_for('static', filename='images/logo-bublava.png') }}" type="image/x-icon">
+
+        {% block head %} {% endblock %}
+    </head>
+    <body>
+        <div class="main-container">
+
+                <div class="navbar-colour">
+                    <nav class="navbar navbar-expand-xl navbar-dark global-margin navbar-colour navbar-custom">
+                        <img src="{{ url_for('static', filename='images/logo-bublava.png') }}" alt="Logo" style="height: 70px; margin-right: 10px;">
+                        <h1 class="title-header" style="margin-bottom: 0; font-size: 1.85rem;">Ski škola Bublava.</h1>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample06" aria-controls="navbarsExample06" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarsExample06">
+                            {% if current_user.is_authenticated %}
+                                {% if current_user.get_role() == "admin"%}
+                                    <ul class="navbar-nav ml-auto">
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('administration.admin_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'admin_page' else '' }}">Hlavní stránka</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('administration.reservations_overview') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservations_overview' else '' }}">Přehled rezervací</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('administration.reservations_admin') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservations_admin' else '' }}">Vyhledání rezervace</a>
+                                        </li>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle me-3" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Administrace
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                                <li><a class="dropdown-item" href="{{ url_for('administration.lessons_admin') }}">Dostupné hodiny</a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('administration.instructors_admin') }}">Instruktoři</a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('information.prices_page') }}">Ceník</a></li>
+                                                <li><a class="dropdown-item" href="{{ url_for('users.users_profile') }}">Profil</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                {% elif current_user.get_role() == "client" %}
+                                    <ul class="navbar-nav ml-auto">
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('reservations.main_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('users.users_reservations') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'users_reservations' else '' }}">Přehled rezervací</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.school_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'school' else '' }}">Škola</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.instructors_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a>
+                                        </li>
+                                        <li class="nat-item">
+                                            <a href="{{ url_for('users.users_profile') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'users_profile' else '' }}">Profil</a>
+                                        </li>
+                                    </ul>
+                                {% elif current_user.get_role() == "instructor" %}
+                                    <ul class="navbar-nav ml-auto">
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('reservations.main_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.school_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'school' else '' }}">Škola</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ url_for('information.instructors_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a>
+                                        </li>
+                                        <li class="nat-item">
+                                            <a href="{{ url_for('users.users_profile') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'users_profile' else '' }}">Profil</a>
+                                        </li>
+                                    </ul>
+                                {% endif %}
+                            {% else %}
+                                <ul class="navbar-nav ml-auto">
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('reservations.main_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'reservation_page' else '' }}">Rezervace</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('information.prices_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'prices' else '' }}">Ceník</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('information.instructors_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'instructors' else '' }}">Instruktoři</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('information.school_page') }}" class="nav-link px-2 me-2 {{ 'active' if active_page == 'school' else '' }}">O nás</a>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                            {% if current_user.is_authenticated %}
+                                <ul class="navbar-nav ml-auto">
+                                    <li class="nav-item">
+                                        <span class="navbar-text me-3">Uživatel: {{ current_user.jmeno }}</span>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('auth.logout') }}" class="btn btn-warning btn-select-reservation me-2">Odhlásit se</a>
+                                    </li>
+                                </ul>
+                            {% else %}
+                                <ul class="navbar-nav ml-auto">
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-select-reservation me-2">Přihlásit se</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url_for('reservations.reservation_check') }}" class="btn btn-warning btn-select-reservation" role="button">Správa rezervace</a>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </nav>
+                </div>
+                    
+
+            </section>  
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="background-color-full-width">
+                        <div class="global-margin">
+                            <div class="alert alert-{{ category }} alert-margin">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </button>
+                                {{ message }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block body %} {% endblock %}
+
+            <section class="footer-section">
+                <div class="container">
+                    <footer class="py-3 my-4">
+                        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                            <li class="nav-item"><a href="http://www.bublava.cz/cs" class="nav-link px-2 text-muted">Ski Bublava</a></li>
+                            <li class="nav-item"><a href="{{ url_for('information.contacts_page') }}" class="nav-link px-2 text-muted">Kontakty</a></li>
+                            <li class="nav-item"><a href="{{ url_for('registration.registration_user') }}" class="nav-link px-2 text-muted">Registrace</a></li>
+                        </ul>
+                        <p class="text-center text-muted">&copy; Lyžařská škola Bublava</p>
+                    </footer>
+                </div>
+            </section>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+        <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
+        <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+    </body>
+</html>
