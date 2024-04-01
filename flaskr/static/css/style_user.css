@@ -713,6 +713,11 @@ hr {
     .field-container .form-select {
         width: 100%;
     }
+
+    .form-select {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
 }
 
 .label-class,
@@ -873,6 +878,11 @@ hr {
     .submit-reservation-button {
         margin-bottom: 0;
     }
+
+    .form-select {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
 }
 
 @media (max-width:1240px) {
@@ -916,4 +926,63 @@ hr {
 .alert-martin {
     margin-bottom: 0px;
     flex: 1;
+}
+
+.navbar-colour {
+    background-color: #e0f3ff !important;
+    color: black !important;
+}
+
+.navbar-custom .nav-link,
+.navbar-custom .navbar-text {
+    color: black !important;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link:focus,
+.navbar-custom .navbar-text:hover {
+    color: #555;
+}
+
+.navbar-custom .dropdown-item {
+    color: black;
+}
+
+.navbar-custom .dropdown-item:hover,
+.navbar-custom .dropdown-item:focus {
+    color: #555;
+}
+
+.navbar-custom .navbar-toggler {
+    border: 1px solid grey !important;
+    padding: .25rem .25rem;
+    background-color: transparent;
+}
+
+.navbar-custom .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(0, 0, 0, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+}
+
+.form-check-input {
+    position: unset !important;
+}
+
+label {
+    margin-bottom: 0rem !important;
+}
+
+.label-custom {
+    margin-bottom: 19px !important;
+}
+
+.form-select {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+@media (max-width: 800px) {
+    .form-select {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
 }
