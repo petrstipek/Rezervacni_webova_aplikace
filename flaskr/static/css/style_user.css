@@ -986,3 +986,11 @@ label {
         padding-bottom: 6px !important;
     }
 }
+
+.navbar-custom {
+    text-align: center;
+}
+
+.nav-item-button {
+    margin-bottom: 10px;
+}
