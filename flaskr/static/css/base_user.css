@@ -1,0 +1,21 @@
+.header-section {
+    margin-bottom: 0px !important;
+    background-color: #e0f3ff;
+}
+
+.footer-section {
+    margin-bottom: 0px !important;
+    background-color: #e0f3ff;
+
+}
+
+.my-4 {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+body {
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}

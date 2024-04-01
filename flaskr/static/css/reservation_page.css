@@ -12,3 +12,11 @@
     margin-top: 5px;
     display: none;
 }
+
+.notes-field {
+    resize: none;
+}
+
+.display-form {
+    display: block !important;
+}

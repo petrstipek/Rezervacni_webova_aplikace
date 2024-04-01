@@ -2,30 +2,60 @@
 {% from 'bootstrap5/form.html' import render_form %}
 
 {% block head %}
-    <title>Rezervační stránka</title>
+    <title>Rezervace - Ski Bublava</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/i18n/jquery-ui-i18n.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/i18n/jquery-ui-i18n.min.js"></script>
 
     <link href="{{ url_for('static', filename='css/reservation_page.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/registration_modal.css') }}" rel="stylesheet">
 
 {% endblock %}
 
-
-
 {% block body %}
-<form method="post" action="{{ url_for('reservations.main_page') }}">
+<form id="reservation-form" method="post" action="{{ url_for('reservations.main_page') }}">
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chcete se registrovat?</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <p>S registrací můžete provádět storna, změny a detailní náhledy na všechny Vaše rezervace.</p>
+                <div class="form-group">
+                    <div class="checkbox-field">
+                        <label for="continueWithoutReg">{{ form.submit_without_register.label }}</label>
+                        <input type="checkbox" id="continueWithoutReg" name="continueWithoutReg">
+                    </div>
+                    <div class="checkbox-field">
+                        <label for="continueWithReg">{{ form.submit_with_register.label }}</label>
+                        <input type="checkbox" id="continueWithReg" name="continueWithReg">
+                    </div>
+                </div>
+                <div class="form-group" id="passwordField" style="display: none;">
+                    <div>
+                        <label for="password" id="password_label_popup">{{ form.password.label }}</label>
+                    </div>
+                    <input type="password" id="password" name="password">
+                </div>
+                <button id="modalSubmitButton" class="btn btn btn-warning" type="button">Odeslat rezervaci</button>
+        </div>
+    </div>
+  
     {{ form.hidden_tag() }}
     <section class="section-blue" id="date_picker">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Výběr termínu rezervace</h2>
             <div class="grid-container">
-                <!-- First Column -->
-                <div class="left-column">
-                    <div class="horizontal-fields-container-header">
+                <div class="horizontal-fields-group">
+                    <div class="horizontal-fields-container-header-test">
                         <div class="field-container d-flex align-items-center">
-                            <label for="lesson_type" class="me-2 no-wrap">{{ form.lesson_type.label }}</label>
+                            <label for="lesson_type" class="me-2 no-wrap label-class">{{ form.lesson_type.label }}</label>
                             {{ form.lesson_type(id="lesson_type", class="form-select") }}
                         </div>
                         <div class="field-container d-flex align-items-center">
@@ -33,66 +63,68 @@
                             {{ form.lesson_length(id="lesson_length", class="form-select") }}
                         </div>
                     </div>
+                    <div class="horizontal-fields-container-header-test">
+                        <div class="field-container d-flex align-items-center">
+                            <label for="lesson_instructor_choices" class="me-2 no-wrap">{{ form.lesson_instructor_choices.label }}</label>
+                            {{ form.lesson_instructor_choices(id="lesson_instructor", class="form-select") }}
+                        </div>
+                        <div class="field-container d-flex align-items-center">
+                            <label for="language_selection" class="me-2 no-wrap">{{ form.language_selection.label }}</label>
+                            {{ form.language_selection(id="language_selection", class="form-select") }}
+                        </div>
+                    </div>
+                </div>
+                <!-- First Column -->
+                <div class="left-column">
                     <div class="custom-date-picker-container">
                         <div id="datepicker" data-available-times-ind="{{ available_times_ind }}" data-available-times-group="{{ available_times_group }}"></div>
                     </div>
                 </div>
-        
                 <!-- Second Column -->
                 <div class="right-column">
-                    <div class="horizontal-fields-container-header">
-                        <div class="field-container d-flex align-items-center">
-                            <label for="lesson_instructor_choices" class="me-2">{{ form.lesson_instructor_choices.label }}</label>
-                            {{ form.lesson_instructor_choices(id="lesson_instructor", class="form-select") }}
-                        </div>
-                        <div class="field-container d-flex align-items-center">
-                            <label for="language_selection" class="me-2">{{ form.language_selection.label }}</label>
-                            {{ form.language_selection(id="language_selection", class="form-select") }}
-                        </div>
-                    </div>
                     <div class="times-container">
-                        {{ form.time }}
+                        {{ form.time_reservation }}
                     </div>
                 </div>
             </div>
         </div>
-        <hr class="global-margin">
+        <hr class="global-margin display-form">
     </section>
 
     <section class="section-grey" id="contact_information">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Kontaktní informace</h2>
             <div class="horizontal-fields-container-info">
                 <div class="field-container-pi">
                     <label for="name">{{ form.name.label }}</label>
-                    {{ form.name }}
+                    <span class="input-field-pi">{{ form.name(id="name", required=True) }}</span>
                 </div>
                 <div class="field-container-pi">
                     <label for="surname">{{ form.surname.label }}</label>
-                    <span class="input-field-pi">{{ form.surname }}</span>
+                    <span class="input-field-pi">{{ form.surname(id="surname") }}</span>
                 </div>
                 <div class="field-container-pi">
                     <label for="tel_number">{{ form.tel_number.label }}</label>
-                    {{ form.tel_number(id="reservation_tel_number") }}
+                    <span class="input-field-pi reservation_tel_number">{{ form.tel_number(title="Please fill in number", id="reservation_tel_number") }}</span>
                     <span id="tel_error" class="error-message"></span>
                 </div>
                 <div class="field-container-pi">
                     <label for="email">{{ form.email.label }}</label>
-                    {{ form.email }}
+                    <span class="input-field-pi">{{ form.email(id="email") }}</span>
                 </div>
             </div>
         </div>
-        <hr class="global-margin">
+        <hr class="global-margin display-form">
     </section>
     
     <section class="section-blue" id="students">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Žáci lekce</h2>
             <div class="form-block">
                 <div class="checkbox-container">
                     <div class="checkbox-field">
                         <label for="student_client">{{ form.student_client.label }}</label>
-                        {{ form.student_client(id="student_client_checkbox", checked=true) }}
+                        {{ form.student_client(id="student_client_checkbox") }}
                     </div>
                     <div class="checkbox-field">
                         <label for="more_students">{{ form.more_students.label }}</label>
@@ -101,26 +133,20 @@
                 </div>
                 <div class="horizontal-fields-container-info" id="client_student_details_section" style="display: none;">
                     <div class="field-container-pi">
-                        <label for="name_client_hidden" class="invisible-field">Jméno</label>
-                        <input id="name_client_hidden" name="name_client_hidden" type="text" class="invisible-field" disabled value="">
+                        <label for="name_client_hidden">Jméno</label>
+                        <input id="name_client_hidden" name="name_client_hidden" type="text" disabled value="">
                     </div>
                     <div class="field-container-pi">
-                        <label for="name_client_hidden" class="invisible-field">Příjmení</label>
-                        <input id="surname_client_hidden" name="surname_client_hidden" type="text" class="invisible-field" disabled value="">
+                        <label for="name_client_hidden">Příjmení</label>
+                        <input id="surname_client_hidden" name="surname_client_hidden" type="text" disabled value="">
                     </div>
                     <div class="field-container-pi">
                         {{ form.age_client.label }}
-                        {{ form.age_client(class_="age-field") }}
-                        {% for error in form.age_client.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
+                        {{ form.age_client(class_="age-field", id="age_client_main") }}
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client.label }}
-                        {{ form.experience_client(class_="selector-field") }}
-                        {% for error in form.experience_client.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
+                        {{ form.experience_client(class_="form-select") }}
                     </div>
                 </div>
             </div>
@@ -129,22 +155,22 @@
                 <div class="horizontal-fields-container-info">
                     <div class="field-container-pi">
                         <label for="name">{{ form.name_client1.label }}</label>
-                        {{ form.name_client1 }}
+                        {{ form.name_client1(id="name2") }}
                     </div>
                     <div class="field-container-pi">
                         <label for="surname">{{ form.surname_client1.label }}</label>
-                        {{ form.surname_client1 }}
+                        {{ form.surname_client1(id="surname2") }}
                     </div>
                     <div class="field-container-pi">
                         {{ form.age_client1.label }}
-                        {{ form.age_client1(class_="age-field") }}
+                        {{ form.age_client1(class_="age-field", id="age2") }}
                         {% for error in form.age_client1.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client1.label }}
-                        {{ form.experience_client1(class_="selector-field") }}
+                        {{ form.experience_client1(class_="form-select") }}
                         {% for error in form.experience_client1.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}
@@ -153,22 +179,22 @@
                 <div class="horizontal-fields-container-info">
                     <div class="field-container-pi">
                         <label for="name">{{ form.name_client2.label }}</label>
-                        {{ form.name_client2 }}
+                        {{ form.name_client2(id="name3") }}
                     </div>
                     <div class="field-container-pi">
                         <label for="surname">{{ form.surname_client2.label }}</label>
-                        {{ form.surname_client2 }}
+                        {{ form.surname_client2(id="surname3") }}
                     </div>
                     <div class="field-container-pi">
                         {{ form.age_client2.label }}
-                        {{ form.age_client2(class_="age-field") }}
+                        {{ form.age_client2(class_="age-field", id="age3") }}
                         {% for error in form.age_client2.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client2.label }}
-                        {{ form.experience_client2(class_="selector-field") }}
+                        {{ form.experience_client2(class_="form-select") }}
                         {% for error in form.experience_client2.errors %}
                             <span style="color: red;">{{ error }}</span>
                         {% endfor %}
@@ -176,15 +202,19 @@
                 </div>
             </div> 
         </div>
-        <hr class="global-margin"> 
+        <hr class="global-margin display-form"> 
     </section>
 
     <section class="section-grey last-section" id="reservation_send">
-        <div class="global-margin">
+        <div class="global-margin display-form">
             <h2 class="h2-headers">Odeslání rezervace</h2>
-            <div class="form-row">
+            <div class="form-grid">
                 {{ form.note(class="notes-field") }}
-                {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}
+                <button id="submit_reservation" class="submit-reservation-button g-recaptcha btn btn-warning btn btn-lg btn-send-reservation" 
+                data-sitekey="6LdmUpQpAAAAALHcMy_U6mDJ78OJuptLW9muSk23" 
+                data-callback='onSubmit' 
+                data-action='submit'
+                type="button">Odeslat rezervaci</button>
             </div>
         </div>
     </section>
@@ -192,5 +222,11 @@
 
 
 <script src="{{ url_for('static', filename='js/reservation.js') }}"></script>
+<script src="{{ url_for('static', filename='js/registration_modal.js') }}"></script>
 
+<script>
+    function onSubmit(token) {
+        document.getElementById("reservation-form").submit();
+    }
+</script>
 {% endblock %}

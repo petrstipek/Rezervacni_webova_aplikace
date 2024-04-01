@@ -1,0 +1,54 @@
+{% extends "base_user.html" %}
+
+{% block head %}
+    <title> user page </title>
+    <link href="{{ url_for('static', filename='css/style_sign_user.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/reservation_overview.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block signout %}
+<div class="d-none d-lg-block">
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-warning button-right-margin btn-select-reservation" role="button">Odhlášení</a>
+</div>
+{% endblock %}
+
+{% block bodytest %} Stránka popisující školu {% endblock %}
+{% block body %}
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Detaily rezervace</h3>
+        <div id="modalBody">
+            <p>Some details here...</p>
+        </div>
+        <hr>
+        <h3>Úprava rezervace</h3>
+        nějaká uprava
+        pole pro cas a termin
+    </div>
+</div>
+<section class="section-grey">
+    <div class="global-margin reservations-section-all">
+        <h2>Vaše obsazené hodiny</h2>
+        <div class="lessons-admin-grid">
+            <div class="horizontal-fields-container-admin-lessons">
+                <div class="containers-lessons">
+                    <input type="date" id="reservationDate" name="reservationDate">
+                </div>
+                <div class="containers-lessons">
+                    <input class="btn btn-warning" type="button" id="allReservations" name="allReservations" value="Zobrazit všechny rezervace">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="reservationDate" name="reservationDate">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="reservationDate" name="reservationDate">
+                </div>
+            </div>
+        </div>
+        <div id="reservationDetailsAll" class="table-all-reservations"></div>
+        <div id="paginationControlsSecondTable" class="pagination-controls"></div>
+    </div>
+</section>
+    <script src="{{ url_for('static', filename='js/instructors.js') }}"></script>
+{% endblock %}

@@ -1,11 +1,11 @@
 .section-blue {
-    background-color: #E0F4FF;
+    background-color: #ffffff;
     padding-bottom: 15px;
     padding-top: 15px;
 }
 
 .section-grey {
-    background-color: #F5F5F5;
+    background-color: #ffffff;
     margin-bottom: 0px;
     padding-bottom: 15px;
     padding-top: 15px;
@@ -13,7 +13,19 @@
 
 .navbar-custom {
     margin-bottom: 0 !important;
-    background-color: white !important;
+    background-color: #e0f3ff !important;
+}
+
+.header-admin-section {
+    background-color: #e0f3ff !important;
+}
+
+.footer-admin-section {
+    background-color: #e0f3ff !important;
+}
+
+.my-4 {
+    margin-top: 0px !important;
 }
 
 .horizontal-fields-container-admin-reservations {
@@ -32,6 +44,8 @@ header {
 .global-margin {
     margin-left: 190px;
     margin-right: 190px;
+    flex-direction: row;
+    flex: 1 !important;
 }
 
 .containers-reservations {
@@ -43,7 +57,6 @@ select {
     border-radius: 8px;
     border: 1px solid #ccc;
     padding: 4px;
-    width: 100%;
     box-sizing: border-box;
     text-align: center;
     margin: 10px
@@ -62,7 +75,6 @@ select {
 
 .reservation-table th,
 .reservation-table td {
-    border: 1px solid #000;
     padding: 8px;
 }
 
@@ -166,7 +178,6 @@ select {
     border-radius: 8px;
     border: 1px solid #ccc;
     padding: 4px;
-    width: 100%;
     box-sizing: border-box;
     text-align: center;
     margin: 10px
@@ -249,10 +260,6 @@ select {
     color: white;
 }
 
-.table-specific-reservations {
-    height: 250px;
-}
-
 @media screen and (max-width: 600px) {
 
     .reservation-table,
@@ -283,4 +290,94 @@ select {
 
 .lessons-admin-section {
     height: 100%;
+}
+
+.horizontal-fields-container-admin-reservations {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.containers-reservations {
+    flex-basis: calc(25% - 20px);
+    display: flex;
+    flex-direction: column;
+}
+
+.containers-reservations label {
+    margin-bottom: 5px;
+}
+
+.containers-reservations input,
+.containers-reservations select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.btn-send-reservation {
+    cursor: pointer;
+}
+
+.horizontal-fields-container-admin-lessons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.containers-lessons {
+    flex: 1;
+    min-width: 180px;
+    display: flex;
+    flex-direction: column;
+}
+
+.containers-lessons label {
+    margin-bottom: 5px;
+}
+
+.containers-lessons input,
+.containers-lessons select {
+    box-sizing: border-box;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 6px 12px;
+}
+
+.btn-send-reservation {
+    height: 38px;
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.btn-send-reservation:hover {
+    background-color: #0056b3;
+}
+
+.table-all-lessons th,
+.table-all-lessons td {
+    text-align: center;
+    padding: 10px;
+}
+
+.global-margin-flash {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    margin-left: 230px;
+    margin-right: 230px;
+    margin-bottom: 0px !important;
+
+}
+
+.background-color-full-width {
+    background-color: #f5f5f5;
 }

@@ -1,0 +1,873 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.global-margin {
+    margin-left: 230px;
+    margin-right: 230px;
+    flex: 1;
+}
+
+section {
+    margin-bottom: 15px;
+}
+
+.horizontal-fields-container-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.field-container .form-select {
+    flex-basis: 70%;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 5px;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;
+    height: auto;
+}
+
+.notes-field {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: vertical;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.checkbox-field label {
+    margin-right: 10px;
+}
+
+.checkbox-field input[type="checkbox"] {
+    transform: scale(1.5);
+    margin-right: 5px;
+}
+
+.large-checkbox {
+    transform: scale(1.5);
+    margin-right: 5px;
+}
+
+.invisible-field {
+    visibility: hidden;
+}
+
+.h2-headers {
+    margin-bottom: 15px;
+    padding-top: 15px;
+}
+
+.times-container {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.date-and-times-container {
+    display: flex;
+    align-items: start;
+    gap: 20px;
+}
+
+.btn-send-reservation {
+    padding: 15px 30px !important;
+    font-size: 20px !important;
+    border-radius: 10px !important;
+    background-color: #FBC639;
+}
+
+.btn-select-reservation {
+    background-color: #FBC639;
+}
+
+.no-wrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.field-container label {
+    flex-basis: 30%;
+    text-align: right;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.field-container .form-select {
+    flex-basis: 110%;
+}
+
+.section-blue {
+    background-color: #ffffff;
+    margin-bottom: 0px;
+}
+
+.section-grey {
+    background-color: #ffffff;
+    margin-bottom: 0px;
+}
+
+hr {
+    margin-top: 15px;
+    margin-bottom: 0px;
+    border: none;
+    height: 2px;
+    background-color: black;
+}
+
+.navbar-custom {
+    margin-bottom: 0 !important;
+}
+
+.last-section {
+    padding-bottom: 20px;
+}
+
+.times-grid-row {
+    display: flex;
+}
+
+.time-slot {
+    flex: 0 0 calc(40% - 10px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    box-sizing: border-box;
+    font-size: smaller;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.times-grid-row .time-slot:not(:last-child) {
+    margin-right: 10px;
+}
+
+.times-grid-row .time-slot:last-child {
+    margin-right: 0;
+}
+
+.nav-link.active {
+    background-color: #ffe3ac;
+    color: black !important;
+    border-radius: 8px;
+}
+
+.navbar-custom {
+    background-color: #e0f3ff !important;
+}
+
+.nav-item .active {
+    background-color: #ffe3ac;
+    color: black !important;
+    border-radius: 8px;
+}
+
+.nav-link:hover {
+    background-color: #FFE3AC;
+    color: black;
+    border-radius: 8px;
+    transition: none;
+}
+
+.form-layout {
+    width: 100%;
+    max-width: 600px;
+}
+
+.field-container .no-wrap {
+    flex-basis: 55%;
+}
+
+.field-container {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-date-picker-container .ui-datepicker {
+    width: 100%;
+    border-radius: 8px;
+    background-color: #F5F5F5 !important;
+}
+
+.custom-date-picker-container .ui-datepicker table {
+    width: 100%;
+    height: 100%;
+    background: white;
+}
+
+.custom-date-picker-container .ui-datepicker a {
+    text-align: center;
+    padding: 4px 0;
+    display: block;
+}
+
+.custom-date-picker-container .ui-datepicker a.ui-state-default {
+    font-size: 16px;
+}
+
+.custom-date-picker-container #datepicker .ui-datepicker td a:hover {
+    background-color: #FFE3AC !important;
+    color: black !important;
+}
+
+.custom-date-picker-container #datepicker .ui-datepicker td a.ui-state-highlight {
+    background-color: #F5F5F5 !important;
+    border-color: black;
+    color: black;
+    width: 100%;
+}
+
+.custom-date-picker-container #datepicker .ui-datepicker td a.ui-state-active {
+    border-color: black;
+    background-color: #FBC639 !important;
+    color: black !important;
+}
+
+.custom-date-picker-container #datepicker .ui-datepicker {
+    border: none !important;
+}
+
+.custom-date-picker-container .ui-datepicker td a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border: 1px solid #E0E0E0 !important;
+    border-radius: 8px;
+}
+
+.custom-date-picker-container .ui-datepicker .ui-datepicker-header {
+    background-color: #F5F5F5;
+    color: black;
+    text-align: center;
+    padding: 0px !important;
+    border-radius: 8px;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 48%;
+}
+
+.horizontal-fields-container-header,
+.times-container,
+.custom-date-picker-container {
+    width: 100%;
+}
+
+
+@media (max-width: 1680px) {
+
+    .global-margin {
+        margin-left: 180px;
+        margin-right: 180px;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    .global-margin {
+        margin-left: 140px !important;
+        margin-right: 140px !important;
+    }
+}
+
+@media (max-width: 1400px) {
+
+    .global-margin {
+        margin-left: 180px;
+        margin-right: 180px;
+    }
+
+    .horizontal-fields-container-header .field-container,
+    .custom-date-picker-container,
+    .times-container {
+        width: 100%;
+    }
+
+    .horizontal-fields-container-header {
+        flex-wrap: wrap;
+        display: block;
+    }
+
+    .field-container {
+        flex-basis: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+.times-grid-row {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.time-slot {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.time-slot {
+    display: block;
+    margin-bottom: 5px;
+    width: 100%;
+    align-items: center;
+}
+
+.time-slot-label {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    cursor: pointer;
+}
+
+.time-slot:hover {
+    background-color: #FFE3AC;
+}
+
+.time-slot.selected {
+    background-color: #FBC639;
+}
+
+.form-check-input {
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.count {
+    margin-left: 50px;
+}
+
+.horizontal-fields-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.horizontal-fields-container-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.field-container-pi {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.field-container-pi input,
+.field-container-pi select {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+.ui-datepicker-unselectable.ui-state-disabled .ui-state-default {
+    color: #ff1010 !important;
+    background-color: #f2f2f2 !important;
+    flex: 0 0 calc(40% - 10px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    border-radius: 8px;
+    background-color: #ebeef0 !important;
+    text-align: center;
+}
+
+.ui-datepicker {
+    padding: 0px !important;
+}
+
+.times-container,
+.custom-date-picker-container {
+    width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: start;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.times-container .time-slot {
+    width: 100% !important;
+    padding: 10px !important;
+}
+
+.times-grid {
+    width: 100%
+}
+
+.time-slot {
+    width: 100%;
+}
+
+.ui-datepicker-inline {
+    width: 100% !important;
+}
+
+.ui-datepicker table {
+    width: 100%;
+}
+
+.ui-datepicker-inline,
+.ui-datepicker.ui-widget-content {
+    display: block !important;
+    width: 100% !important;
+}
+
+.hasDatepicker {
+    width: 100%;
+}
+
+.times-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+}
+
+.time-slot {
+    padding: 10px;
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 48%;
+    overflow: hidden;
+}
+
+.right-column {
+    max-height: 338.312px;
+}
+
+.times-container {
+    overflow-y: scroll;
+}
+
+.error-message {
+    visibility: hidden;
+    height: 20px;
+    color: red;
+    font-size: 14px;
+}
+
+.no-times-available {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-right: 10px;
+    box-sizing: border-box;
+    font-size: smaller;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    color: red;
+    text-align: center;
+}
+
+/*responze*/
+
+.grid-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.horizontal-fields-container-header-test {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.field-container {
+    flex: 1;
+    min-width: 250px;
+}
+
+.left-column,
+.right-column {
+    flex-basis: 49%;
+    max-width: 49%;
+    display: flex;
+    flex-direction: column;
+}
+
+.horizontal-fields-container-header-test .field-container label {
+    margin-right: 10px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.horizontal-fields-container-header-test .field-container .form-select {
+    width: calc(100% - 10px);
+}
+
+.horizontal-fields-container-header-test .field-container label {
+    margin-bottom: 8px;
+}
+
+.horizontal-fields-container-header-test {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+    box-sizing: border-box;
+}
+
+.horizontal-fields-container-header-test:last-child {
+    margin-right: 0;
+}
+
+.field-container {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.horizontal-fields-container-header-test {
+    display: flex;
+    width: 48%;
+    justify-content: space-between;
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.horizontal-fields-container-header-test {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.horizontal-fields-container-header-test:last-child {
+    margin-right: 0;
+}
+
+.horizontal-fields-group {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.horizontal-fields-container-header-test {
+    display: flex;
+    flex: 1;
+    margin-right: 20px;
+}
+
+.horizontal-fields-container-header-test:last-child {
+    margin-right: 0;
+}
+
+.field-container,
+.custom-date-picker-container,
+.times-container {
+    width: 100%;
+}
+
+@media (max-width: 1380px) {
+    .grid-container {
+        gap: 0px;
+    }
+}
+
+.grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.left-column,
+.right-column {
+    flex-basis: calc(50% - 10px);
+    max-width: calc(50% - 10px);
+}
+
+@media (max-width: 991px) {
+    .global-margin {
+        margin-left: 100px !important;
+        margin-right: 100px !important;
+    }
+
+    .grid-container {
+        flex-direction: column;
+    }
+
+    .left-column,
+    .right-column {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+        flex-basis: auto;
+    }
+
+    .left-column:last-child,
+    .right-column:last-child {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 800px) {
+    .horizontal-fields-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .field-container:last-child {
+        margin-bottom: 0;
+    }
+
+    .field-container label,
+    .field-container .form-select {
+        width: 100%;
+    }
+}
+
+.label-class,
+.field-container label {
+    display: block;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 800px) {
+    .horizontal-fields-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .horizontal-fields-container-header-test {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .field-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+    }
+
+    .field-container label,
+    .field-container .form-select {
+        width: 90%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    .field-container:last-child {
+        margin-bottom: 0;
+    }
+
+    .field-container label:last-child,
+    .field-container .form-select:last-child {
+        margin-bottom: 0;
+    }
+
+    .label-class {
+        text-justify: auto;
+    }
+}
+
+@media (max-width: 730px) {
+    .global-margin {
+        margin-right: 50px !important;
+        margin-left: 50px !important;
+    }
+
+    .horizontal-fields-container-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .field-container-pi {
+        display: flex;
+        flex-direction: column;
+        width: 48%;
+    }
+
+    .input-field-pi {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .invisible-field {
+        display: none;
+    }
+}
+
+.form-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.notes-field,
+.submit-reservation-button {
+    flex: 1 1 auto;
+}
+
+.notes-field {
+    margin-right: 0;
+}
+
+@media (min-width: 651px) {
+    .notes-field {
+        margin-right: 50px;
+    }
+}
+
+@media (max-width: 790px) {
+    .form-grid {
+        flex-direction: column;
+    }
+
+    .notes-field,
+    .submit-reservation-button {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .notes-field {
+        margin-bottom: 10px;
+    }
+
+    .submit-reservation-button {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width:1240px) {
+    .notes-field {
+        width: 65%;
+    }
+}
+
+@media (max-width:1050px) {
+    .notes-field {
+        width: 55%;
+    }
+}
+
+@media (max-width:790px) {
+    .notes-field {
+        width: 100%;
+    }
+}
+
+@media (max-width:615px) {
+    .invisible-field {
+        display: none;
+    }
+}
+
+.global-margin-flash {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    margin-left: 230px;
+    margin-right: 230px;
+    margin-bottom: 0px !important;
+
+}
+
+.background-color-full-width {
+    background-color: #f5f5f5;
+}

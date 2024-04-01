@@ -1,0 +1,11 @@
+.form-control.login-fields {
+    height: 50px;
+    font-size: 18px;
+    padding-left: 45px;
+    padding-right: 45px;
+}
+
+.form-control.login-fields {
+    width: 100%;
+    max-width: 500px;
+}

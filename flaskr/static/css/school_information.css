@@ -1,0 +1,16 @@
+.school-container {
+    background-color: white;
+    margin-top: 10px;
+    border-radius: 8px;
+    padding: 30px;
+}
+
+body {
+    display: flex !important;
+}
+
+.main-container {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1;
+}

@@ -1,0 +1,159 @@
+.form-section h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input[disabled] {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: #e9ecef;
+    opacity: 1;
+}
+
+.form-control {
+    margin-left: 0px;
+}
+
+.center-secton {
+    align-self: center;
+}
+
+.container-reservation {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    min-height: 100vh !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.container-reservation {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 800px;
+}
+
+h1,
+h2,
+h3 {
+    color: #333;
+}
+
+.form-section h2 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: black;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: .5rem;
+    color: #666;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
+}
+
+.mt-3 {
+    margin-top: 1rem;
+    margin-bottom: 10px;
+}
+
+.container-reservation {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 1000px;
+}
+
+button,
+input[type="submit"] {
+    margin-top: 10px;
+    padding: 15px 30px !important;
+    font-size: 20px !important;
+    border-radius: 10px !important;
+    background-color: #FBC639;
+}
+
+.form-control {
+    text-align: left;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.right-section {
+    flex: 20%;
+}
+
+.left-section {
+    flex: 55%;
+}
+
+@media (max-width: 1200px) {
+    .flex-container {
+        flex-direction: column;
+    }
+
+    .left-section,
+    .right-section {
+        width: 100%;
+    }
+
+
+    .right-section {
+        order: -1;
+    }
+}
+
+.center-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

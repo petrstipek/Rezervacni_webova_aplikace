@@ -1,11 +1,11 @@
 .section-blue {
-    background-color: #E0F4FF;
+    background-color: #ffffff;
     padding-bottom: 15px;
     padding-top: 15px;
 }
 
 .section-grey {
-    background-color: #F5F5F5;
+    background-color: #ffffff;
     margin-bottom: 0px;
     padding-bottom: 15px;
     padding-top: 15px;
@@ -86,4 +86,137 @@ select {
 
 .instructor-table input[type="submit"]:hover {
     background-color: #cc5555;
+}
+
+.instructors-admin-grid {
+    display: grid;
+    gap: 20px;
+    margin: auto;
+}
+
+.horizontal-fields-container-admin-instructors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.containers-instructors {
+    flex: 1;
+    min-width: 220px;
+}
+
+.containers-instructors label {
+    font-weight: bold;
+    display: block;
+}
+
+.containers-instructors input,
+.containers-instructors select {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.submit-container {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-warning {
+    border-color: #FBC639;
+}
+
+.btn-warning:hover {
+    background-color: #FBC639;
+    border-color: #FBC639;
+}
+
+@media (max-width: 768px) {
+    .horizontal-fields-container-admin-instructors {
+        flex-direction: column;
+    }
+
+    .containers-instructors,
+    .submit-container {
+        flex-basis: auto;
+    }
+}
+
+.table .button-instructor-action {
+    width: 100%;
+    padding: 3px 8px !important;
+    font-size: 16px !important;
+    box-sizing: border-box;
+    margin: 2px 0;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.container-instructors {
+    height: 480px;
+}
+
+.pagination-container {
+    margin-top: auto;
+}
+
+.container-reservation {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive {
+    overflow-y: auto;
+    flex: 1;
+}
+
+@media screen and (max-width: 1790px) {
+    .container-instructors {
+        height: 570px;
+        margin-left: 10px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .container-instructors {
+        height: 500px;
+        margin-left: 10px;
+    }
+
+    .global-margin {
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .global-margin {
+        margin-left: 60px;
+        margin-right: 60px;
+    }
+}
+
+
+.table .button-instructor-delete {
+    width: 100%;
+    padding: 3px 8px !important;
+    font-size: 16px !important;
+    box-sizing: border-box;
+    margin: 2px 0;
+}
+
+.left-section {
+    flex: 53% !important;
+}
+
+.page-link {
+    background-color: #FBC639 !important;
+    border-color: #FBC639 !important;
+    color: black !important;
 }

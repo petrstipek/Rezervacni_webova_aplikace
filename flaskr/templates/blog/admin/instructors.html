@@ -1,0 +1,104 @@
+{% extends "base_admin.html" %}
+
+{% block head %}
+    <title> Změna rezervace </title>
+    <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_admin_instructors.css') }}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
+
+{% block body %}
+<div class="global-margin">
+    <div id="flash-messages"></div>
+    <div class="flex-container">
+        <div class="form-section left-section">
+            <form method="post" action="{{ url_for('administration.instructors_admin') }}">
+                {{ form.hidden_tag() }}
+                <div class="container-reservation mt-3">
+                    <h2>Instruktor</h2>
+                    <div class="form-section">
+                        <h2>Osobní údaje</h2>
+                        <div class="form-group">     
+                            {{ form.name.label }}
+                            {{ form.name(id="name", class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="surname">{{ form.surname.label(class="form-label") }}</label>
+                            {{ form.surname(id="surname", class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="tel_number">{{ form.tel_number.label(class="form-label") }}</label>
+                            {{ form.tel_number(id="tel_number", class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="email">{{ form.email.label(class="form-label") }}</label>
+                            {{ form.email(id="email", class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="date_birth">{{ form.date_birth.label }}</label>
+                            {{ form.date_birth(id="date_birth", class="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            <label for="date_started">{{ form.date_started.label(class="form-label") }}</label>
+                            {{ form.date_started(id="date_started", class="form-control") }}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>Registrační informace</h2>
+                        <div class="form-group">
+                            <label for="email">{{ form.password.label(class="form-label") }}</label>
+                            {{ form.password(id="password", class="form-control") }}
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>Dodatečné informace</h2>
+                        <div class="form-group">
+                            <label for="experience">{{ form.experience.label(class="form-label") }}</label>
+                            {{ form.experience(id="experience", class="form-control") }}
+                        </div>
+                    </div>
+                    <hr>               
+                    <div class="form-section">
+                        <h2>Uložit instruktora</h2>
+                        {{ form.submit(class="btn btn-warning btn-lg") }}
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="form-section right-section">
+            <div class="container-reservation container-instructors mt-3">
+                <h2>Základní přehled instruktorů</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Jméno a příjmení</th>
+                            <th>Akce</th>
+                            <th>Odstranění</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for instructor in instructors %}
+                            <tr>
+                                <td>{{ instructor.full_name }}</td>
+                                <td><button id="instructor-detail" class="btn btn-info btn-sm button-instructor-action" data-instructor-id="{{ instructor.ID_osoba }}">Zobrazit</button></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="pagination-container">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/reservation_change.js') }}"></script>
+<script src="{{ url_for('static', filename='js/instructors_admin.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+{% endblock %}

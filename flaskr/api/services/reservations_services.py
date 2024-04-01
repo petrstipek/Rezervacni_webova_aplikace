@@ -1,166 +1,200 @@
 from flaskr.db import get_db
 import sqlite3
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
+from flaskr.extensions import database
+from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Prirazeno, DostupneHodiny, MaVypsane, Zak
+from sqlalchemy.orm import aliased
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import func
 
 def delete_reservation_by_reservation_code(reservation_id):
-    db = get_db()
-    cur = db.cursor()
-    
     try:
-        cur.execute("SELECT 1 FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,))
-        if cur.fetchone() is None:
+        reservation = database.session.query(Rezervace).filter_by(rezervacni_kod=reservation_id).first()
+        if reservation is None:
             return False, "Rezervace nebyla nalezena!"
-        query_result = db.execute("SELECT * FROM rezervace WHERE rezervacni_kod = ?", (reservation_id,)).fetchone()
 
         today = datetime.now().date()
-        combined_datetime_str = f'{query_result["termin"]} {query_result["cas_zacatku"]}'
+        combined_datetime_str = f'{reservation.termin} {reservation.cas_zacatku}'
         time_now = datetime.now()
-        lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M')
+        lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
         time_difference = lesson_time - time_now
 
         if time_difference < timedelta(hours=2):
-            print("jo jsem tady")
             return False, "Rezervace nemůže být zrušena! Zbývá méně jak 2 hodiny do hodiny."
 
-        lesson_id = db.execute("select * from rezervace left join prirazeno using (ID_rezervace) left join Dostupne_hodiny using (ID_hodiny) where rezervacni_kod = ? ", (reservation_id,)).fetchone()
-        reservation_id = query_result["ID_rezervace"]
+        reservation_id = reservation.ID_rezervace
 
-        if query_result["typ_rezervace"] == "individual":
-            lesson_ids = cur.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchall()
-            for lesson_id_tuple in lesson_ids:
-                cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id_tuple[0],))
+        if reservation.typ_rezervace == "individual":
+            lessons = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).all()
+            for lesson in lessons:
+                database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson.ID_hodiny).update({"stav" : "volno"})
+
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
+
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
             
-            cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
-            db.commit()
-        elif query_result["typ_rezervace"] == "group":
-            student_count = query_result["pocet_zaku"]
-            lesson = db.execute("SELECT * from Dostupne_hodiny WHERE ID_hodiny = ?", (lesson_id["ID_hodiny"],)).fetchone()
-            lesson_occupancy = lesson["obsazenost"]
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
+
+            database.session.commit()
+
+        elif reservation.typ_rezervace == "group":
+            student_count = reservation.pocet_zaku
+            lesson_group = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).first()
+            lesson = database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).first()
+            lesson_occupancy = lesson.obsazenost
             new_availability = lesson_occupancy - student_count
-            db.execute("UPDATE Dostupne_hodiny SET obsazenost = ? WHERE ID_hodiny = ?", (new_availability, lesson["ID_hodiny"],))
+            database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).update({"obsazenost": new_availability})
 
-            cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
-            cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
 
-            db.commit()
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
+
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
+
+            database.session.commit()
 
         return True, "Ok"
     except sqlite3.Error as e:
-        db.rollback()
+        database.session.rollback()
         return False, "nok"
     
 def delete_reservation_by_reservation_id(reservation_id):
-    db = get_db()
-    cur = db.cursor()
-    
     try:
-        cur.execute("SELECT 1 FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-        if cur.fetchone() is None:
+        reservation = database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).first()
+        if reservation is None:
             return False, "Rezervace nebyla nalezena!"
 
-        lesson_ids = cur.execute("SELECT ID_hodiny from prirazeno WHERE ID_rezervace = ?", (reservation_id,)).fetchall()
-        for lesson_id_tuple in lesson_ids:
-            cur.execute("UPDATE Dostupne_hodiny SET stav = 'volno' WHERE ID_hodiny = ?", (lesson_id_tuple[0],))
-        
-        cur.execute("DELETE FROM rezervace WHERE ID_rezervace = ?", (reservation_id,))
-        cur.execute("DELETE from prirazeno WHERE ID_rezervace = ?", (reservation_id,))
-        cur.execute("DELETE from ma_vyuku WHERE ID_rezervace = ?", (reservation_id,))
-        db.commit()
+        today = datetime.now().date()
+        combined_datetime_str = f'{reservation.termin} {reservation.cas_zacatku}'
+        time_now = datetime.now()
+        lesson_time = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
+        time_difference = lesson_time - time_now
+
+        if time_difference < timedelta(hours=2):
+            return False, "Rezervace nemůže být zrušena! Zbývá méně jak 2 hodiny do hodiny."
+
+        if reservation.typ_rezervace == "individual":
+            lessons = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).all()
+            for lesson in lessons:
+                database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson.ID_hodiny).update({"stav" : "volno"})
+
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
+
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
+            
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
+
+            database.session.commit()
+
+        elif reservation.typ_rezervace == "group":
+            student_count = reservation.pocet_zaku
+            lesson_group = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).first()
+            lesson = database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).first()
+            lesson_occupancy = lesson.obsazenost
+            new_availability = lesson_occupancy - student_count
+            database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_group.ID_hodiny).update({"obsazenost": new_availability})
+
+            zak_ids = database.session.query(Zak).filter_by(ID_rezervace=reservation_id).all()
+            zak_ids = [id_tuple.ID_zak for id_tuple in zak_ids]
+
+            for zak_id in zak_ids:
+                database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
+
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
+
+            database.session.commit()
 
         return True, "Ok"
     except sqlite3.Error as e:
-        db.rollback()
+        database.session.rollback()
         return False, "nok"
     
-def get_paginated_reservation_details(identifier, identifier_type, page, per_page):
-    db = get_db()
-    #columns = ["ID_rezervace", "ID_osoba", "typ_rezervace", "termin", "platba", "cas_zacatku", "doba_vyuky", "jazyk", "pocet_zaku"]
-    columns = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "jméno instruktora", "příjmení instruktora"]
-    query_map = {
-    "reservationID": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where R.rezervacni_kod = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "name": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.prijmeni = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "email": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.email = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "tel-number": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where K.tel_cislo = ? order by R.termin, R.cas_zacatku", (identifier,)),
-    "all": ("select K.jmeno, K.prijmeni, R.termin, R.cas_zacatku, R.doba_vyuky, I.jmeno, I.prijmeni  from rezervace R left join Klient K on R.ID_osoba = K.ID_osoba left join  ma_vyuku MV on R.ID_rezervace = MV.ID_rezervace left join Instruktor I on I.ID_osoba = MV.ID_osoba where R.termin >= date('now') order by R.termin, R.cas_zacatku", ()),
-}
-
-    if identifier_type not in query_map:
-        return None, "Invalid reservation identifier"
-
-    sql_query, params = query_map[identifier_type]
-    paginated_sql_query = f"{sql_query} LIMIT ? OFFSET ?"
-    paginated_params = params + (per_page, (page - 1) * per_page)
-
-    query_result = db.execute(paginated_sql_query, paginated_params).fetchall()
-    total_items = db.execute(f"SELECT COUNT(*) FROM ({sql_query})", params).fetchone()[0]
-    
-    if query_result:
-        results_list = [{column: row[i] for i, column in enumerate(columns)} for row in query_result]
-        total_pages = (total_items + per_page - 1) // per_page
-        return {
-            "reservations": results_list,
-            "total_items": total_items,
-            "total_pages": total_pages,
-            "current_page": page
-        }, None
-    else:
-        return None, "Žádné rezervace nenalezeny!"
-    
 def fetch_available_group_times():
-    db = get_db()
-    query_result = db.execute("""
-        SELECT datum, cas_zacatku, (kapacita - obsazenost) as count
-        FROM dostupne_hodiny
-        WHERE stav = 'volno' AND typ_hodiny = 'group' AND obsazenost < kapacita
-        GROUP BY datum, cas_zacatku
-        ORDER BY datum, cas_zacatku;
-    """).fetchall()
+
+    query_result = database.session.query(
+        DostupneHodiny.datum,
+        DostupneHodiny.cas_zacatku,
+        (DostupneHodiny.kapacita - DostupneHodiny.obsazenost).label('count')
+    ).filter(
+        DostupneHodiny.stav == 'volno',
+        DostupneHodiny.typ_hodiny == 'group',
+        DostupneHodiny.obsazenost < DostupneHodiny.kapacita
+    ).group_by(
+        DostupneHodiny.datum, DostupneHodiny.cas_zacatku
+    ).order_by(
+        DostupneHodiny.datum, DostupneHodiny.cas_zacatku
+    ).all()
+
     return query_result
 
 def format_available_times(query_results):
     available_times = {}
     for row in query_results:
-        date_str = row['datum'].strftime('%Y-%m-%d')
-        time_str = row['cas_zacatku']
-        count = row['count']
-        
+        date_str = row[0].strftime('%Y-%m-%d')  
+        time_str = row[1].strftime('%H:%M')   
+        count = row[2]                        
+
         if date_str not in available_times:
             available_times[date_str] = []
-        
+
         available_times[date_str].append((time_str, count))
-    
+
     return available_times
 
 def fetch_available_times_for_individual_instructor(instructor_id=None):
-    db = get_db()
-    base_query = """
-        SELECT datum, cas_zacatku, COUNT(*) as count
-        FROM dostupne_hodiny LEFT JOIN ma_vypsane USING (ID_hodiny)
-        WHERE stav = 'volno' AND typ_hodiny = 'ind'
-    """
-    parameters = ()
-    if instructor_id and instructor_id != 0:
-        base_query += " AND ID_osoba = ?"
-        parameters = (instructor_id,)
+    base_query = database.session.query(
+        DostupneHodiny.datum,
+        DostupneHodiny.cas_zacatku,
+        func.count().label('count')
+    ).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny)\
+    .filter(DostupneHodiny.stav == 'volno', DostupneHodiny.typ_hodiny == 'ind')
     
-    base_query += " GROUP BY datum, cas_zacatku ORDER BY datum, cas_zacatku"
-    query_result = db.execute(base_query, parameters).fetchall()
+    if instructor_id and instructor_id != 0:
+        base_query = base_query.filter(MaVypsane.ID_osoba == instructor_id)
+
+    query_result = base_query.group_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).order_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).all()
     return query_result
 
 def get_reservation_detail(identifier):
-    db = get_db()
-    query_result = db.execute("SELECT termin, cas_zacatku, pocet_zaku, doba_vyuky, platba FROM Rezervace LEFT JOIN Instruktor USING (ID_osoba) WHERE rezervacni_kod = ?", (identifier,)).fetchone()
+    query_result = database.session.query(
+        Rezervace.termin,
+        Rezervace.cas_zacatku,
+        Rezervace.pocet_zaku,
+        Rezervace.doba_vyuky,
+        Rezervace.platba
+    ).outerjoin(Instruktor, Rezervace.ID_osoba == Instruktor.ID_osoba)\
+    .filter(Rezervace.rezervacni_kod == identifier)\
+    .first()
+
     columns = ["Termín", "Čas začátku", "Počet žáků", "Doba výuky", "Stav platby"]
+    
     if query_result:
         result_dict = {}
+        attrs = ['termin', 'cas_zacatku', 'pocet_zaku', 'doba_vyuky', 'platba']
         for i, column in enumerate(columns):
-            if isinstance(query_result[i], date):
-                formatted_date = query_result[i].strftime('%d.%m.%Y')
+            value = getattr(query_result, attrs[i])
+            if isinstance(value, date):
+                formatted_date = value.strftime('%d.%m.%Y')
                 result_dict[column] = formatted_date
+            elif isinstance(value, time):
+                formatted_time = value.strftime('%H:%M')
+                result_dict[column] = formatted_time
             else:
-                result_dict[column] = query_result[i]
+                result_dict[column] = value
         return result_dict
+
     return False

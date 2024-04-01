@@ -1,0 +1,165 @@
+{% extends "base_admin.html" %}
+
+{% block head %}
+    <title> Změna rezervace </title>
+    <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<div class="global-margin">
+<div class="flex-container">
+    <div class="form-section left-section">
+    <form id="reservation-change-form" method="post" action="{{ url_for('administration.reservation_change', reservation_id=reservation_id) }}">
+        {{ form.hidden_tag() }}
+                <div class="container-reservation mt-3">
+                    <h2>Změna rezervace</h2>
+                <div class="form-section">
+                <h2>Termín a čas rezervace</h2>
+                <div class="form-group">
+                    {{ form.date.label(class="form-label") }}
+                    {{ form.date(id="datepicker", class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.time_reservation.label(class="form-label") }}
+                    {{ form.time_reservation(id="reservation_time", class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Dodatečné informace</h2>
+                <div class="form-group">
+                    {{ form.lesson_length.label(class="form-label") }}
+                    {{ form.lesson_length(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.lesson_instructor_choices.label(class="form-label") }}
+                    {{ form.lesson_instructor_choices(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.language_selection.label(class="form-label") }}
+                    {{ form.language_selection(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.lesson_type.label(class="form-label") }}
+                    {{ form.lesson_type(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Kontaktní informace</h2>
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(id="name", class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.surname.label(class="form-label")}}
+                    {{ form.surname(id="surname", class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(id="email",class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.tel_number.label(class="form-label") }}
+                    {{ form.tel_number(id="reservation_tel_number", class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Žáci lekce</h2>
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ form.student_client.label(class="form-check-label") }}
+                        {{ form.student_client(class="form-check-input") }}
+                    </div>
+                    <div class="form-check">
+                        {{ form.more_students.label(class="form-check-label") }}
+                        {{ form.more_students(class="form-check-input") }}
+                    </div>
+                </div>
+                <hr>
+                <div id="zak1-section">
+                    <h3>Žák 1</h3>
+                    <div class="form-group">
+                        <label for="name_client_hidden">Jméno</label>
+                        <input id="name_client_hidden" class="form-control" name="name_client_hidden" type="text" disabled value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="surname_client_hidden">Příjmení</label>
+                        <input id="surname_client_hidden" class="form-control" name="surname_client_hidden" type="text" disabled value="">
+                    </div>
+                    <div class="form-group">
+                        {{ form.age_client.label}}
+                        {{ form.age_client(id="age_client_main", class="form-control")}}
+                    </div>
+                    <div class="form-group">
+                        {{ form.experience_client.label}}
+                        {{ form.experience_client(class="form-control")}}
+                    </div>
+                </div>
+                <div id="zak2-section">
+                    <h3>Žák 2</h3>
+                    <div class="form-group">
+                        {{ form.name_client1.label}}
+                        {{ form.name_client1(id="name2",class="form-control")}}
+                    </div>
+                    <div class="form-group">
+                        {{ form.surname_client1.label}}
+                        {{ form.surname_client1(id="surname2",class="form-control")}}
+                    </div>
+                    <div class="form-group">
+                        {{ form.age_client1.label}}
+                        {{ form.age_client1(id="age2", class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.experience_client1.label }}
+                        {{ form.experience_client1(class="form-control") }}
+                    </div>
+                </div>
+                <div id="zak3-section">
+                    <h3>Žák 3</h3>
+                    <div class="form-group">
+                        {{ form.name_client2.label}}
+                        {{ form.name_client2(id="name3", class="form-control")}}
+                    </div>
+                    <div class="form-group">
+                        {{ form.surname_client2.label}}
+                        {{ form.surname_client2(id="surname3", class="form-control")}}
+                    </div>
+                    <div class="form-group">
+                        {{ form.age_client2.label}}
+                        {{ form.age_client2(id="age3", class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.experience_client2.label }}
+                        {{ form.experience_client2(class="form-control") }}
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h2>Upravit rezervaci</h2>
+                    {{ form.note(class="form-control") }}
+                </div>
+                <input type="hidden" id="initialTime" name="initialTime" value="INITIAL_TIME_HERE">
+                {{ form.reservation_id(value=reservation_id) }}
+                {{ form.submit(class="btn btn-warning btn-lg") }}
+            </form>
+        </div>
+    </div>
+</div>
+    <div class="form-section right-section">
+        <div class="container-reservation mt-3">
+            <h2>Základní přehled</h2>
+            <p>Rezervace ID: {{ reservation_code }} </p>
+            <p>Datum rezervace: {{ reservation_date }} </p>
+            <p>Začátek rezervace: {{ reservation_time }}</p>
+            <p>Doba výuky: {{ reservation_duration }}</p>
+            <p>Počet žáků: {{ student_count }}</p>
+            <p>Stav platby: {{ reservation_payment }}</p>
+        </div>
+    </div>
+</div>
+</div>
+<script src="{{ url_for('static', filename='js/reservation_change.js') }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+{% endblock %}

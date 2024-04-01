@@ -10,7 +10,7 @@
     <div class="global-margin body-height">
         <h2>Informace o rezervaci</h2>
         <div class="grid-container reservation-check-container">
-            <div class="left-column col-md-6 col-sm-12 order-md-1 order-1">
+            <div class="left-column col-12 order-md-1 order-1">
                 <form id="reservationForm" method="post" class="reservation-form">
                     {{ form.hidden_tag() }}
                     <div class="horizontal-fields-container-res-check">
@@ -25,11 +25,12 @@
                     </div>
                 </form>
             </div>
-            <div class="right-column col-md-6 col-sm-12 order-md-2 order-2">
+            <div class="right-column col-md-6 col-sm-12 order-md-2 order-2 d-none d-md-block">
                 <div id="reservationDetails" class="reservation-details col-md-8"></div>
             </div>
         </div>
     </div>
 </section>
+
     <script src="{{ url_for('static', filename='js/reservation_check.js') }}"></script>
 {% endblock %}
