@@ -688,7 +688,8 @@ hr {
     .right-column {
         width: 100%;
         max-width: 100%;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        margin-top: 10px;
         flex-basis: auto;
     }
 
@@ -766,22 +767,37 @@ hr {
     }
 }
 
+@media (max-width: 400px) {
+    .title-header {
+        font-size: 1.6rem !important;
+    }
+
+    .navbar-toggler:hover {
+        text-decoration-color: initial;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        margin-bottom: 10px;
+    }
+}
+
 @media (max-width: 730px) {
     .global-margin {
-        margin-right: 50px !important;
-        margin-left: 50px !important;
+        margin-right: 10px !important;
+        margin-left: 10px !important;
     }
 
     .horizontal-fields-container-info {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+        flex-direction: column;
     }
 
     .field-container-pi {
         display: flex;
         flex-direction: column;
-        width: 48%;
+        width: 90%;
     }
 
     .input-field-pi {
@@ -791,6 +807,30 @@ hr {
 
     .invisible-field {
         display: none;
+    }
+
+    .checkbox-container {
+        flex-direction: column;
+    }
+
+    .checkbox-field {
+        width: 90%;
+    }
+
+    .count {
+        margin-left: 20px;
+    }
+
+    .custom-date-picker-container .ui-datepicker a.ui-state-default {
+        font-size: 13px;
+    }
+
+    .reservation-table th {
+        padding: 12px 15px;
+    }
+
+    img {
+        height: 50px !important;
     }
 }
 
@@ -870,5 +910,10 @@ hr {
 }
 
 .background-color-full-width {
-    background-color: #f5f5f5;
+    background-color: #ffffff;
+}
+
+.alert-martin {
+    margin-bottom: 0px;
+    flex: 1;
 }

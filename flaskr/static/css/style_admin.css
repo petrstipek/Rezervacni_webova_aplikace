@@ -381,3 +381,7 @@ select {
 .background-color-full-width {
     background-color: #f5f5f5;
 }
+
+.margin-flash {
+    margin-bottom: 0px;
+}
