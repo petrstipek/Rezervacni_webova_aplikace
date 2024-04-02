@@ -126,3 +126,10 @@ body {
         padding: 10px;
     }
 }
+
+@media (max-width: 800px) {
+    .custom-login {
+        margin-top: 10px;
+        margin-bottom: 1Opx;
+    }
+}

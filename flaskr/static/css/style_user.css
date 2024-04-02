@@ -390,10 +390,6 @@ hr {
     margin-right: 10px;
 }
 
-.count {
-    margin-left: 50px;
-}
-
 .horizontal-fields-container {
     display: flex;
     flex-wrap: wrap;
@@ -923,9 +919,12 @@ hr {
     background-color: #ffffff;
 }
 
-.alert-martin {
-    margin-bottom: 0px;
+.alert-margin {
+    display: flex;
+    flex-direction: row;
     flex: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .navbar-colour {
@@ -993,4 +992,26 @@ label {
 
 .nav-item-button {
     margin-bottom: 10px;
+}
+
+.count {
+    margin-right: 230px !important;
+}
+
+@media (max-width: 1350px) {
+    .count {
+        margin-right: 130px !important;
+    }
+}
+
+@media (max-width: 1115px) {
+    .count {
+        margin-right: 80px !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .count {
+        margin-right: 150px !important;
+    }
 }

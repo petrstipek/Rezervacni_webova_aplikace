@@ -350,7 +350,7 @@ $(document).ready(function () {
             var fields = ['#name', '#surname', '#email', '#reservation_tel_number', '#age_client_main'];
         }
         if (more_students) {
-            var fields = ['#name', '#surname', '#email', '#reservation_tel_number', '#name2', '#name3', '#surname2', '#surname3', '#age2', '#age3'];
+            var fields = ['#name', '#surname', '#email', '#reservation_tel_number',];
         }
         isFormValid = true;
 
