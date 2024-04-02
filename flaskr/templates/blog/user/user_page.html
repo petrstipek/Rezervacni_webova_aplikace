@@ -41,6 +41,34 @@
                         <input class="btn btn-warning userReservationDate" type="button" id="allReservations" name="allReservations" value="Zobrazit všechny rezervace">
                     </div>
                 </div>
+                <div id="reservationDetails" class="reservation-details col-md-8"></div>
+                    <div id="reservationDetails">
+                        <div class="table-responsive">
+                            <table class="price-table" id="reservationDetails">
+                                <thead>
+                                    <tr>
+                                        <th>Termín</th>
+                                        <th>Čas začátku</th>
+                                        <th>Počet žáků</th>
+                                        <th>Doba výuky</th>
+                                        <th>Stav platby</th>
+                                        <th>Instruktor</th>
+                                        <th>Detail rezervace</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="cell-termin">Zadejte ID pro zobrazení informací</td>
+                                        <td id="cell-cas-zacatku"></td>
+                                        <td id="cell-pocet-zaku"></td>
+                                        <td id="cell-doba-vyuky"></td>
+                                        <td id="cell-stav-platby"></td>
+                                        <td id="cell-button-detail"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 <div id="reservationDetailsAll" class="table-specific-reservations">
                 </div>
                 <div id="paginationControlsSecondTable" class="pagination-controls"></div>
