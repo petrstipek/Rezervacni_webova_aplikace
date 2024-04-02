@@ -23,7 +23,7 @@
             <div class="navbar-colour">
                 <nav class="navbar navbar-expand-xl navbar-dark global-margin navbar-colour navbar-custom">
                     <img src="{{ url_for('static', filename='images/logo-bublava.png') }}" alt="Logo" style="height: 70px; margin-right: 10px;">
-                    <h1 class="title-header" style="margin-bottom: 0; font-size: 1.85rem;">Ski škola Bublava.</h1>
+                    <h1 class="title-header" style="margin-bottom: 0; font-size: 1.85rem;">Ski škola Bublava</h1>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample06" aria-controls="navbarsExample06" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -119,7 +119,7 @@
                             </ul>
                         {% else %}
                             <ul class="navbar-nav ml-auto">
-                                <li class="nav-item">
+                                <li class="nav-item nav-item-button">
                                     <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-select-reservation me-2">Přihlásit se</a>
                                 </li>
                                 <li class="nav-item">
@@ -130,7 +130,6 @@
                     </div>
                 </nav>
             </div>
-
 
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
