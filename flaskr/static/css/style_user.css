@@ -930,6 +930,8 @@ hr {
 .navbar-colour {
     background-color: #e0f3ff !important;
     color: black !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
 }
 
 .navbar-custom .nav-link,
