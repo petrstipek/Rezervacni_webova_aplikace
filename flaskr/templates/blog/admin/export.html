@@ -1,0 +1,32 @@
+{% extends "base_admin.html" %}
+
+{% block head %}
+<title>Exporty dat</title>
+<link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_registration.css') }}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+<link href="{{ url_for('static', filename='css/export.css') }}" rel="stylesheet">
+
+{% endblock %}
+
+{% block body %}
+<div class="color-background">
+    <div class="global-margin">
+        <div class="body-login">
+            <div class="form-container export-container">
+                <h2 class="text-center mb-4">Exportování dat</h2>
+                <div class="d-flex flex-column align-items-start">
+                    <a href="{{ url_for('administration.export_instructors') }}" class="btn btn-warning mb-2 down-btn">Stažení - Instruktoři CSV</a>
+                    <a href="{{ url_for('administration.export_reservations') }}" class="btn btn-warning mb-2 down-btn">Stažení - Rezervace CSV</a>
+                    <a href="{{ url_for('administration.export_reservations_overview') }}" class="btn btn-warning mb-2 down-btn">Stažení - Přehled rezervací CSV</a>
+                    <a href="{{ url_for('administration.export_instructors_overview') }}" class="btn btn-warning mb-2 down-btn">Stažení - Přehled instruktorů CSV</a>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
+{% endblock %}

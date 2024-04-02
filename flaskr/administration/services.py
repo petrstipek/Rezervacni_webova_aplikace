@@ -11,6 +11,10 @@ from flaskr.auth.services import hash_password
 from werkzeug.utils import secure_filename
 import os
 from flask import current_app
+from flask import Response
+import csv
+from io import StringIO
+from sqlalchemy.inspection import inspect
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \
@@ -414,3 +418,45 @@ def update_instructor(instructor_id, form):
 def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def generate_instructors_data():
+    data = database.session.query(Instruktor).join(Osoba,Instruktor.ID_osoba==Osoba.ID_osoba).all()
+
+    si = StringIO()
+    cw = csv.writer(si)
+
+    cw.writerow(['Name', 'Surname', 'Email'])
+
+    for instructor in data:
+        cw.writerow([instructor.osoba.jmeno, instructor.osoba.prijmeni, instructor.osoba.email])
+
+    csv_content = "\ufeff" + si.getvalue()
+
+    response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
+    response.headers['Content-Disposition'] = 'attachment; filename="instructors.csv"'
+    return response
+
+def generate_reservations_data():
+    data = database.session.query(Rezervace).all()
+
+    si = StringIO()
+    cw = csv.writer(si)
+
+    mapper = inspect(Rezervace)
+    headers = [column.key for column in mapper.attrs]
+    cw.writerow(headers)
+
+    for instructor in data:
+        row = [getattr(instructor, header) for header in headers]
+        cw.writerow(row)
+
+    csv_content = "\ufeff" + si.getvalue()
+    response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
+    response.headers['Content-Disposition'] = 'attachment; filename="reservations.csv"'
+    return response
+
+def generate_instructors_overview():
+    return
+
+def generate_reservations_overview():
+    return

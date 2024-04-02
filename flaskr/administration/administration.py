@@ -235,3 +235,36 @@ def reservations_admin():
     form = ReservationInformationAdmin()
     return render_template("blog/admin/reservation_search.html", form=form, active_page="reservations_admin")
     
+@administration_bp.route('/export-data', methods=["GET"])
+@login_required
+@admin_required
+def export_data():
+    return render_template("blog/admin/export.html")
+
+@administration_bp.route('/export-instructors', methods=["GET"])
+@login_required
+@admin_required
+def export_instructors():
+    response = generate_instructors_data()
+    return response
+
+@administration_bp.route('/export-reservations', methods=["GET"])
+@login_required
+@admin_required
+def export_reservations():
+    response = generate_reservations_data()
+    return response
+
+@administration_bp.route('/export-reservations-overview', methods=["GET"])
+@login_required
+@admin_required
+def export_reservations_overview():
+    response = generate_reservations_overview()
+    return response
+
+@administration_bp.route('/export-instructors-overview', methods=["GET"])
+@login_required
+@admin_required
+def export_instructors_overview():
+    response = generate_instructors_overview()
+    return response

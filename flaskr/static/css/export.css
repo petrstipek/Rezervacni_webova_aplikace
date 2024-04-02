@@ -1,0 +1,15 @@
+.form-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.down-btn {
+    width: 100%;
+}
+
+.export-container {
+    display: flex;
+    flex-direction: column;
+    padding: 70px;
+}

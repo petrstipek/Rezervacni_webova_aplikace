@@ -19,3 +19,7 @@ body {
     display: flex !important;
     flex-direction: column !important;
 }
+
+.button-navbar {
+    margin-bottom: 10px;
+}

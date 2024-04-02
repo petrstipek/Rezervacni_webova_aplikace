@@ -123,12 +123,12 @@
             <div class="form-block">
                 <div class="checkbox-container">
                     <div class="checkbox-field">
-                        <label for="student_client">{{ form.student_client.label }}</label>
-                        {{ form.student_client(id="student_client_checkbox") }}
+                        <input id="student_client_checkbox" name="student_client" type="checkbox" value="y">
+                        <label for="student_client_checkbox">Žák stejný jako klient</label>
                     </div>
                     <div class="checkbox-field">
-                        <label for="more_students">{{ form.more_students.label }}</label>
-                        {{ form.more_students(id="more_students_checkbox") }}
+                        <input id="more_students_checkbox" name="more_students" type="checkbox" value="y">
+                        <label for="more_students_checkbox">Objednat více žáků</label>
                     </div>
                 </div>
                 <div class="horizontal-fields-container-info" id="client_student_details_section" style="display: none;">

@@ -20,3 +20,13 @@
 .display-form {
     display: block !important;
 }
+
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox-field input[type="checkbox"] {
+    margin-right: 10px;
+}
