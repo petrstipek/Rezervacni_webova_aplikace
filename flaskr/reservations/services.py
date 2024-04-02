@@ -81,6 +81,8 @@ def process_reservation(form):
         
     elif lesson_type =="group":
         result, message, message_type = group_reservation(reservation_id, student_count, date, time)
+    elif lesson_type =="group-ind":
+        result, message, message_type = individual_group_reservation(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one)
     
     if result:
         send_email('Rezervace lyžařské hodiny', 'jl6701543@gmail.com', 'felixgrent@gmail.com', 'text body emailu', "Vaše rezervace má ID: "  + identifier)
@@ -95,6 +97,40 @@ def individual_reservation(reservation_id, instructor_selected, lesson_length, s
         return individual_reservation_1hour(reservation_id, instructor_selected, student_count, date, time)
     elif lesson_length == "2hodiny":
         return individual_reservation_2hour(reservation_id, instructor_selected, student_count, date, time, time_plus_one)
+    
+def individual_group_reservation(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one):
+    if lesson_length == "1hodina":
+        return individual_group_reservation_1hour(reservation_id, instructor_selected, student_count, date, time)
+    elif lesson_length == "2hodiny":
+        return individual_group_reservation_2hour(reservation_id, instructor_selected, student_count, date, time, time_plus_one)
+    
+def individual_group_reservation_1hour(reservation_id, instructor_selected, student_count, date, time):
+    termin_date = datetime.strptime(date, '%Y-%m-%d').date()
+    cas_zacatku_time = datetime.strptime(time, '%H:%M').time() 
+
+    if instructor_selected == "0":
+        lesson_id = database.session.query(DostupneHodiny.ID_hodiny).filter(
+                        DostupneHodiny.datum == termin_date,
+                        DostupneHodiny.cas_zacatku == cas_zacatku_time,
+                        DostupneHodiny.stav == 'volno',
+                        DostupneHodiny.typ_hodiny == 'ind'
+                        ).first()
+        if lesson_id == None:
+                message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
+                return False, message, message_type
+        assign_instructor_lesson_1hour(lesson_id, reservation_id)
+    elif instructor_selected != "0":
+        lesson = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny).filter(and_(MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time, DostupneHodiny.stav=="volno", DostupneHodiny.typ_hodiny=="ind")).first()
+        if lesson == None:
+            message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
+            return False, message, message_type
+        assign_instructor_lesson_1hour(lesson.ID_hodiny, reservation_id)
+
+    message, message_type = "Rezervace proběhla úspěšně!", "success"
+    return True, message, message_type
+
+def individual_group_reservation_2hour(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one):
+    return
 
 def individual_reservation_1hour(reservation_id, instructor_selected, student_count, date, time):
     #db = get_db()
@@ -313,8 +349,6 @@ def insert_students(student_count, reservation_id, client_name_fields, client_su
                 vek=client_age_fields[i]
             )
             database.session.add(new_student)
-        
-        #database.session.commit()
     
     except Exception as e:
         database.session.rollback()
