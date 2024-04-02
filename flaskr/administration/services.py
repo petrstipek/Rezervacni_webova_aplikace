@@ -158,11 +158,12 @@ def process_reservation_change(form, reservation_id):
         return False, "Rezervace nebyla nalezena, opakujte akci!"
     zkus = True
 
-    time_str = form.time_reservation.data
-    datetime_obj = datetime.strptime(time_str, "%H:%M")
-    formatted_time = datetime_obj.time()
+    if form.change_time.data:
+        time_str = form.time_reservation.data
+        datetime_obj = datetime.strptime(time_str, "%H:%M")
+        formatted_time = datetime_obj.time()
 
-    if query_result.cas_zacatku == formatted_time and query_result.termin == form.date.data and query_result.pocet_zaku == length:
+    if not form.change_time.data and query_result.pocet_zaku == length:
         form_students = [
             {"name" : form.name.data , "surname" : form.surname.data, "age": form.age_client.data, "experience": form.experience_client.data},
             {"name" : form.name_client1.data, "surname" : form.surname_client1.data, "age": form.age_client1.data, "experience": form.experience_client1.data},

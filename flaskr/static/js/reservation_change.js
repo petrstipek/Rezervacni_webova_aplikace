@@ -218,3 +218,13 @@ $(document).ready(function () {
 
     $('#student_client, #more_students').change(updateVisibility);
 });
+
+$(document).ready(function () {
+    $('#change_time_checkbox').change(function () {
+        if ($(this).is(':checked')) {
+            $('#date-time-fields').slideDown();
+        } else {
+            $('#date-time-fields').slideUp();
+        }
+    });
+});
