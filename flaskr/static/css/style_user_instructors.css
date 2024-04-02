@@ -1,0 +1,90 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.tile-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    justify-content: space-around;
+}
+
+.tile {
+    width: calc(33.333% - 40px);
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tile img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.tile p {
+    padding: 15px;
+}
+
+@media (max-width: 800px) {
+    .tile {
+        width: calc(50% - 40px);
+    }
+}
+
+@media (max-width: 500px) {
+    .tile {
+        width: calc(100% - 40px);
+    }
+}
+
+.responsive-hero {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.responsive-image {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.tile-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.tile {
+    flex: 1 0 calc(33.333% - 80px);
+}
+
+@media (max-width: 768px) {
+
+    /* Adjust breakpoint as needed */
+    .tile {
+        /* Adjustments for smaller screens */
+        flex: 0 0 50%;
+        /* Two tiles per row on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Adjust breakpoint as needed */
+    .tile {
+        /* Adjustments for very small screens */
+        flex: 0 0 100%;
+        /* One tile per row on very small screens */
+    }
+}

@@ -1021,3 +1021,9 @@ label {
     padding: 2px;
     display: inline-block;
 }
+
+@media (max-width:800px) {
+    .h2-headers {
+        text-align: center;
+    }
+}
