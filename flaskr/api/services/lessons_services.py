@@ -4,18 +4,27 @@ from flaskr.models import DostupneHodiny, MaVypsane, Instruktor, Osoba
 from datetime import date, time
 
 def get_paginated_lessons(page, per_page, selected_date=None):
+    distinct_ids_subquery = database.session.query(
+    DostupneHodiny.ID_hodiny
+    ).distinct().subquery()
     base_query = database.session.query(
-            DostupneHodiny.ID_hodiny,
-            DostupneHodiny.datum,
-            DostupneHodiny.cas_zacatku,
-            Osoba.jmeno,
-            Osoba.prijmeni,
-            DostupneHodiny.stav,
-            DostupneHodiny.typ_hodiny,
-            (DostupneHodiny.kapacita - DostupneHodiny.obsazenost).label('Zbyvajici')
-        ).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny
-        ).outerjoin(Instruktor, MaVypsane.ID_osoba == Instruktor.ID_osoba
-        ).outerjoin(Osoba, Instruktor.ID_osoba == Osoba.ID_osoba)
+        distinct_ids_subquery.c.ID_hodiny,
+        DostupneHodiny.datum,
+        DostupneHodiny.cas_zacatku,
+        Osoba.jmeno,
+        Osoba.prijmeni,
+        DostupneHodiny.stav,
+        DostupneHodiny.typ_hodiny,
+        (DostupneHodiny.kapacita - DostupneHodiny.obsazenost).label('Zbyvajici')
+    ).join(
+        distinct_ids_subquery, DostupneHodiny.ID_hodiny == distinct_ids_subquery.c.ID_hodiny
+    ).outerjoin(
+        MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny
+    ).outerjoin(
+        Instruktor, MaVypsane.ID_osoba == Instruktor.ID_osoba
+    ).outerjoin(
+        Osoba, Instruktor.ID_osoba == Osoba.ID_osoba
+)
     if selected_date:
         filtered_query = base_query.filter(DostupneHodiny.datum == selected_date)
         lessons = filtered_query.limit(per_page).offset((page - 1) * per_page).all()

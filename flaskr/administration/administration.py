@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, flash, url_for, jsonify, request
+from flask import Blueprint, render_template, redirect, flash, url_for, jsonify, request, current_app
 from flask_login import login_required
 from flaskr.db import get_db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation, LessonChangeForm
@@ -10,6 +10,9 @@ from flaskr.auth.login_decorators import admin_required, client_required
 from flaskr.administration.services import get_reservation_details
 from flaskr.administration.services import process_reservation_change, get_available_lessons, lesson_capacity_change, lesson_instructor_change
 from flaskr.api.services.lessons_services import get_lesson_detail
+import os
+from werkzeug.utils import secure_filename
+
 
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
@@ -107,13 +110,6 @@ def admin_page():
 @login_required
 @admin_required
 def instructors_admin():
-    page = request.args.get('page', 1, type=int)
-    per_page = 3
-
-    total_instructors_count = instructors_count()
-    instructors_paginated = get_all_paginated_instructors(page, per_page)
-    total_pages = (total_instructors_count + per_page - 1) // per_page
-    
     form = InstructorInsertForm()
 
     if form.validate_on_submit():
@@ -125,6 +121,9 @@ def instructors_admin():
         date_birth = form.date_birth.data
         date_started = form.date_started.data
         password = form.password.data
+
+        text = form.text.data
+        file = form.image.data
 
         changes = False
         instructor = change_instructor_check(email)
@@ -138,9 +137,9 @@ def instructors_admin():
                 changes = True
 
         if instructor_exists(email) and changes == False:
-            flash("Instruktor již je veden v databázi!, V případě změn byla provedena aktualizace.", category="warning")
+            flash("Instruktor již je veden v databázi! V případě změn byla provedena aktualizace.", category="warning")
         elif changes == False:
-            add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password)
+            add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password, file, text)
             redirect(url_for("administration.instructors_admin"))
             flash("Instruktor byl úspěšně přidán, můžete vkládat dostupné hodiny.", category="success")
     else:
@@ -236,3 +235,36 @@ def reservations_admin():
     form = ReservationInformationAdmin()
     return render_template("blog/admin/reservation_search.html", form=form, active_page="reservations_admin")
     
+@administration_bp.route('/export-data', methods=["GET"])
+@login_required
+@admin_required
+def export_data():
+    return render_template("blog/admin/export.html")
+
+@administration_bp.route('/export-instructors', methods=["GET"])
+@login_required
+@admin_required
+def export_instructors():
+    response = generate_instructors_data()
+    return response
+
+@administration_bp.route('/export-reservations', methods=["GET"])
+@login_required
+@admin_required
+def export_reservations():
+    response = generate_reservations_data()
+    return response
+
+@administration_bp.route('/export-reservations-overview', methods=["GET"])
+@login_required
+@admin_required
+def export_reservations_overview():
+    response = generate_reservations_overview()
+    return response
+
+@administration_bp.route('/export-instructors-overview', methods=["GET"])
+@login_required
+@admin_required
+def export_instructors_overview():
+    response = generate_instructors_overview()
+    return response

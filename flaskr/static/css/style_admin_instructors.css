@@ -215,3 +215,8 @@ select {
     border-color: #FBC639 !important;
     color: black !important;
 }
+
+
+.page-item {
+    margin-left: 4px;
+}

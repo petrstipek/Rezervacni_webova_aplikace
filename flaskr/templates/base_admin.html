@@ -45,6 +45,7 @@
                                         <li><a class="dropdown-item" href="{{ url_for('administration.reservations_admin') }}">Vyhledání rezervace</a></li>
                                         <li><a class="dropdown-item" href="{{ url_for('administration.lessons_admin') }}">Dostupné hodiny</a></li>
                                         <li><a class="dropdown-item" href="{{ url_for('administration.instructors_admin') }}">Instruktoři</a></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('administration.export_data') }}">Export dat</a></li>
                                         <li><a class="dropdown-item" href="{{ url_for('information.prices_page') }}">Ceník</a></li>
                                         <li><a class="dropdown-item" href="{{ url_for('users.users_profile') }}">Profil</a></li>
                                     </ul>
@@ -117,7 +118,7 @@
                         </ul>
                     {% else %}
                         <ul class="navbar-nav ml-auto">
-                            <li class="nav-item nav-item-button">
+                            <li class="nav-item">
                                 <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-select-reservation me-2">Přihlásit se</a>
                             </li>
                             <li class="nav-item">

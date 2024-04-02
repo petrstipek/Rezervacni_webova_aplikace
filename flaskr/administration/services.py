@@ -8,6 +8,13 @@ from sqlalchemy import func
 from flaskr.reservations.services import process_reservation
 from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
 from flaskr.auth.services import hash_password
+from werkzeug.utils import secure_filename
+import os
+from flask import current_app
+from flask import Response
+import csv
+from io import StringIO
+from sqlalchemy.inspection import inspect
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \
@@ -17,16 +24,24 @@ def instructor_exists(email):
                 .first()
     return query_result is not None
 
-def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password):
+def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password, file, text):
     new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number,heslo=hash_password(password), prihl_jmeno=email)
+
+    if not allowed_file(file.filename):
+        return False
+    else:
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
 
     database.session.add(new_osoba)
     database.session.flush()
 
-    new_instruktor = Instruktor(ID_osoba=new_osoba.ID_osoba, seniorita=experience, datum_narozeni=date_birth, datum_nastupu=date_started)
+    new_instruktor = Instruktor(ID_osoba=new_osoba.ID_osoba, seniorita=experience, datum_narozeni=date_birth, datum_nastupu=date_started, image_path=filename, popis=text)
     database.session.add(new_instruktor)
     database.session.commit()
 
+    return True
 
 def get_available_instructors():
     query_result_instructors = database.session.query(Instruktor.ID_osoba, Osoba.jmeno, Osoba.prijmeni)\
@@ -373,13 +388,75 @@ def update_instructor(instructor_id, form):
         field_data = getattr(form, field_name).data
         if not field_data:
             return False, f"Pole '{field_name}' bylo ponecháno prázdné!"
-        
-    instructor = database.session.query(Osoba).join(Instruktor, Instruktor.ID_osoba == Osoba.ID_osoba).filter(Osoba.ID_osoba==instructor_id).first()
+
+    file = form.image.data
+    filename = None
+    if file and file.filename:
+        if not allowed_file(file.filename):
+            return False, "Soubor není povoleného typu!"
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+
+    instructor = database.session.query(Instruktor).join(Osoba).filter(Osoba.ID_osoba==instructor_id).first()
+
     if instructor:
-        instructor.jmeno = form.name.data
-        instructor.prijmeni = form.surname.data
-        instructor.email = form.email.data
-        instructor.tel_cislo = form.tel_number.data
-        instructor.heslo = hash_password(form.password.data)
+        instructor.osoba.jmeno = form.name.data
+        instructor.osoba.prijmeni = form.surname.data
+        instructor.osoba.email = form.email.data
+        instructor.osoba.tel_cislo = form.tel_number.data
+        instructor.osoba.heslo = hash_password(form.password.data)
+        if filename:
+            instructor.image_path = filename
+        instructor.popis = form.text.data
         database.session.commit()
         return True, "Instruktor byl úspěšně aktualizován."
+    else:
+        return False, "Instruktor nebyl nalezen!"
+
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def generate_instructors_data():
+    data = database.session.query(Instruktor).join(Osoba,Instruktor.ID_osoba==Osoba.ID_osoba).all()
+
+    si = StringIO()
+    cw = csv.writer(si)
+
+    cw.writerow(['Name', 'Surname', 'Email'])
+
+    for instructor in data:
+        cw.writerow([instructor.osoba.jmeno, instructor.osoba.prijmeni, instructor.osoba.email])
+
+    csv_content = "\ufeff" + si.getvalue()
+
+    response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
+    response.headers['Content-Disposition'] = 'attachment; filename="instructors.csv"'
+    return response
+
+def generate_reservations_data():
+    data = database.session.query(Rezervace).all()
+
+    si = StringIO()
+    cw = csv.writer(si)
+
+    mapper = inspect(Rezervace)
+    headers = [column.key for column in mapper.attrs]
+    cw.writerow(headers)
+
+    for instructor in data:
+        row = [getattr(instructor, header) for header in headers]
+        cw.writerow(row)
+
+    csv_content = "\ufeff" + si.getvalue()
+    response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
+    response.headers['Content-Disposition'] = 'attachment; filename="reservations.csv"'
+    return response
+
+def generate_instructors_overview():
+    return
+
+def generate_reservations_overview():
+    return
