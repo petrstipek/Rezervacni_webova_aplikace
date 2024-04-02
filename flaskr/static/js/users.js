@@ -42,66 +42,37 @@ $(document).ready(function () {
 
     function fetchReservationsAll(page, date) {
         var baseUrl = "/users-api/reservations";
-        var queryParams = [];
-
-        queryParams.push(`page=${page}`);
-        queryParams.push(`per_page=${perPageFirstTable}`);
-        if (date) {
-            queryParams.push(`selected_date=${date}`);
-        }
-        var url = baseUrl + "?" + queryParams.join("&");
+        var queryParams = [`page=${page}`, `per_page=${perPageFirstTable}`];
+        if (date) queryParams.push(`selected_date=${date}`);
+        var url = `${baseUrl}?${queryParams.join("&")}`;
 
         $.ajax({
             url: url,
             type: "GET",
             success: function (response) {
-                $('#reservationDetailsAll').empty();
+                var $tbody = $('#reservationDetails tbody').empty();
 
                 if (response.reservations.length === 0) {
-                    $('#reservationDetailsAll').text('No reservations found.');
+                    $tbody.append('<tr><td colspan="7">No reservations found.</td></tr>');
                     return;
                 }
 
-                var table = $('<table></table>').addClass('reservation-table');
-                var thead = $('<thead></thead>');
-                var tbody = $('<tbody></tbody>');
-                var headerRow = $('<tr></tr>');
-                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "stav platby"];
-
-                $.each(keyOrder, function (index, key) {
-                    headerRow.append($('<th></th>').text(key));
-                });
-                headerRow.append($('<th></th>').text('Instruktor'));
-                headerRow.append($('<th></th>').text('Detail rezervace'));
-                thead.append(headerRow);
-
                 $.each(response.reservations, function (index, reservation) {
-                    var row = $('<tr></tr>');
-                    $.each(keyOrder, function (i, key) {
-                        var value = reservation[key] || '';
-                        if (key === 'termín rezervace') {
-                            value = formatDate(value);
-                        }
-                        row.append($('<td></td>').text(value));
-                    });
-
-                    var instructorFullName = reservation['jméno instruktora'] + ' ' + reservation['příjmení instruktora'];
-                    row.append($('<td></td>').text(instructorFullName));
-
-                    var detailbutton = $(`<button class="detailReservation btn btn-primary" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
-                    row.append($('<td></td>').append(detailbutton));
-
-                    tbody.append(row);
+                    var instructorFullName = `${reservation['jméno instruktora'] || ''} ${reservation['příjmení instruktora'] || ''}`.trim();
+                    var rowHtml = `<tr>
+                        <td>${reservation['termín rezervace'] || 'N/A'}</td>
+                        <td>${reservation['čas začátku'] || 'N/A'}</td>
+                        <td>${reservation['pocet_zaku'] || 'N/A'}</td>
+                        <td>${reservation['doba výuky'] || 'N/A'}</td>
+                        <td>${reservation['stav platby'] || 'N/A'}</td>
+                        <td>${instructorFullName || 'N/A'}</td>
+                        <td></td> <!-- Placeholder for the button -->
+                    </tr>`;
+                    var $row = $(rowHtml);
+                    var $detailButton = $(`<button class="detailReservation btn btn-primary" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
+                    $row.find('td:last').append($detailButton);
+                    $tbody.append($row);
                 });
-
-                var rowsToAdd = perPageFirstTable - response.reservations.length;
-                for (var i = 0; i < rowsToAdd; i++) {
-                    tbody.append('<tr><td colspan="' + (keyOrder.length + 2) + '">&nbsp;</td></tr>');
-                }
-
-                table.append(thead).append(tbody);
-                $('#reservationDetailsAll').append(table);
-
                 totalPagesSecondTable = response.total_pages;
                 updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable);
             },
@@ -111,6 +82,10 @@ $(document).ready(function () {
             }
         });
     }
+
+
+
+
 
     function updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable) {
         $('#paginationControlsSecondTable').empty();

@@ -23,11 +23,6 @@ header {
     justify-content: space-between;
 }
 
-.global-margin {
-    margin-left: 190px;
-    margin-right: 190px;
-}
-
 .containers-instructors {
     text-align: center;
 }
