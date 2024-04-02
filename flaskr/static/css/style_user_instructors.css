@@ -71,20 +71,18 @@ html {
 
 @media (max-width: 768px) {
 
-    /* Adjust breakpoint as needed */
     .tile {
-        /* Adjustments for smaller screens */
         flex: 0 0 50%;
-        /* Two tiles per row on smaller screens */
     }
 }
 
 @media (max-width: 480px) {
 
-    /* Adjust breakpoint as needed */
     .tile {
-        /* Adjustments for very small screens */
         flex: 0 0 100%;
-        /* One tile per row on very small screens */
     }
+}
+
+.instructor-desc {
+    margin-bottom: 0px !important;
 }

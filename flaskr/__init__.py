@@ -18,6 +18,10 @@ from flaskr.instructors.instructors import instructors_bp
 from flaskr.api.users_api import users_api_bp
 from flaskr.api.instructors_api import instructors_api_bp
 from flaskr.auth.registration import registration_bp
+import errno
+from werkzeug.utils import secure_filename
+
+
 
 def create_application(test_config=None):
     application = Flask(__name__, instance_relative_config=True)
@@ -68,6 +72,16 @@ def create_application(test_config=None):
     application.config['MAIL_DEFAULT_SENDER'] = 'jl6701543@gmail.com'
 
     mail.init_app(application)
+
+    UPLOAD_FOLDER = 'static/uploads'
+    application.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+    try:
+        os.makedirs(os.path.join(application.root_path, application.config['UPLOAD_FOLDER']))
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
 
     with application.app_context():
         database.create_all()

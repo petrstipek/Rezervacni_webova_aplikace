@@ -125,6 +125,8 @@ def get_instructor_details(instructor_id):
         'email': instructor.email,
         'birth_date': birth_date_str,
         'start_work': start_work_str,
+        'image_path':instructor.instruktor.image_path,
+        'popis': instructor.instruktor.popis,
     }
     return instructor_dict
 

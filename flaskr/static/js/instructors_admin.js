@@ -48,6 +48,7 @@ $(document).ready(function () {
                 $('#date_birth').val(data.birth_date);
                 $('#date_started').val(data.start_work);
                 $('#experience').val(data.seniorita);
+                $('#text').val(data.popis)
 
             },
             error: function (xhr, status, error) {

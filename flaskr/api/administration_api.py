@@ -48,6 +48,7 @@ def delete_reservation_by_id(reservation_id):
 #nove-funguje
 @administration_api.route('/lesson/<int:lesson_id>', methods=["DELETE"])
 @login_required
+@admin_required
 def delete_lesson_admin(lesson_id):
     try:
         lesson_status = get_lesson_status(lesson_id)
@@ -61,6 +62,8 @@ def delete_lesson_admin(lesson_id):
     
 #nove - funguje
 @administration_api.route('/reservations', methods=['GET'])
+@login_required
+@admin_required
 def get_reservations():
     identifier = None
     reservation_identifier = None
@@ -97,6 +100,7 @@ def get_reservations():
     
 @administration_api.route("/lessons")
 @login_required
+@admin_required
 def get_lessons():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)
@@ -112,6 +116,7 @@ def get_lessons():
 
 @administration_api.route("/school/information")
 @login_required
+@admin_required
 def school_information():
     information = get_school_information()
     return

@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional, ValidationError
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 class PersonalInformationForm(FlaskForm):
 
@@ -94,6 +95,12 @@ class InstructorInsertForm(FlaskForm):
     date_birth = DateField('Datum narození', validators=[DataRequired()], format='%Y-%m-%d')
     date_started = DateField('Datum nástupu', validators=[DataRequired()], format='%Y-%m-%d')
     password = PasswordField(label="Heslo:", validators=[Optional()])
+
+    image = FileField('obrázek', validators=[Optional(),
+        FileAllowed(['jpg', 'png', 'jpeg', 'gif'], 'Images only!')
+    ])
+    text = StringField('Popis instruktora:', validators=[Optional()])
+
     submit = SubmitField(label="Uložit instruktora")
 
 class ReservationInformationAdmin(FlaskForm):

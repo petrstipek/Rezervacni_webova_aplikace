@@ -63,6 +63,8 @@ class Instruktor(Base):
     seniorita = Column(String(10), nullable=False)
     datum_narozeni = Column(Date, nullable=False)
     datum_nastupu = Column(Date, nullable=False)
+    image_path = Column(String(255))
+    popis = Column(String(255))
     osoba = relationship("Osoba", backref=backref("instruktor", uselist=False))
 
 class Klient(Base):

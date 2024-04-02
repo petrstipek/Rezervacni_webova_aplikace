@@ -24,36 +24,23 @@
                 <div class="container-reservation container-reservation-show mt-3 container-prices">
                     <div class="container-prices">
                         <div class="table-responsive">
-                            <h2 class="h2-headers">Instruktoři</h2>
+                            <h2 class="h2-headers">Naši instruktoři</h2>
                             <section class="hero-image">
                                 <img src="{{ url_for('static', filename='images/placeholder_wide.jpg') }}"  alt="A beautiful landscape" class="responsive-hero">
                             </section>
                             
                             <section class="tile-gallery">
-                                <div class="tile">
-                                    <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
-                                    <p>Instruktor: </p>
-                                </div>
-                                <div class="tile">
-                                    <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
-                                    <p>Instruktor: </p>
-                                </div>
-                                <div class="tile">
-                                    <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
-                                    <p>Instruktor: </p>
-                                </div>
-                                <div class="tile">
-                                    <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
-                                    <p>Instruktor: </p>
-                                </div>
-                                <div class="tile">
-                                    <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
-                                    <p>Instruktor: </p>
-                                </div>
-                                <div class="tile">
-                                    <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
-                                    <p>Instruktor: </p>
-                                </div>
+                                {% for instructor in instructors %}
+                                    <div class="tile">
+                                        {% if instructor.image_path %}
+                                            <img src="{{ url_for('static', filename='uploads/' + instructor.image_path) }}" alt="Image description" class="responsive-image">
+                                        {% else %}
+                                            <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
+                                        {% endif %}
+                                        <p class="instructor-desc">Instruktor: {{ instructor.osoba.jmeno }}</p>
+                                        <p class="instructor-desc">{{ instructor.popis }}</p>
+                                    </div>
+                                {% endfor %}
                                 <!--repetition-->
                             </section>
                         </div>
