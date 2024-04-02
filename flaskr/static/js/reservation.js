@@ -93,7 +93,7 @@ $(document).ready(function () {
         var instructorId = $('#lesson_instructor').val();
         var lessonType = $('#lesson_type').val();
 
-        if (lessonType === 'individual' && instructorId) {
+        if (lessonType === 'individual' || lessonType === "group-ind" && (instructorId)) {
             $.ajax({
                 url: '/reservations-api/lessons/' + instructorId + '/available-times',
                 type: 'GET',
@@ -336,7 +336,6 @@ $(document).ready(function () {
 
     var isFormValid = false;
     var student_client = $("#student_client_checkbox").prop('checked');
-    console.log(student_client)
 
     $('.btn-send-reservation').click(function (event) {
         event.preventDefault();
@@ -398,8 +397,5 @@ $(document).ready(function () {
     $(document).on('click', '.ui-datepicker-next, .ui-datepicker-prev', function () {
         adjustColumnHeights();
     });
-
     adjustColumnHeights();
-
-
 });
