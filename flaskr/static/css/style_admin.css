@@ -394,3 +394,8 @@ select {
     flex-direction: row;
     flex: 1;
 }
+
+.userReservationDate {
+    margin: 0px !important;
+    margin-bottom: 10px !important;
+}
