@@ -148,7 +148,7 @@ def instructors_admin():
 
     instructors_dict = get_all_instructors()
     instructors = [{'full_name': f"{instructor['jmeno']} {instructor['prijmeni']}", 'ID_osoba': instructor['ID_osoba']} for instructor in instructors_dict]
-    return render_template("blog/admin/instructors.html", form=form, active_page="instructors_admin")
+    return render_template("blog/admin/instructors_admin.html", form=form, active_page="instructors_admin")
 
 @administration_bp.route('/lessons-admin', methods=["POST", "GET"])
 @login_required
