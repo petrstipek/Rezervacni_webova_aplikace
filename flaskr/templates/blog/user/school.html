@@ -1,28 +1,43 @@
-{% extends "base_user.html" %}
+{% extends "base_admin.html" %}
 
 {% block head %}
-    <title> Změna rezervace </title>
+<title>O nás</title>
     <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style_user_reservation_check.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
-    
+    <link href="{{ url_for('static', filename='css/reservation_overview.css') }}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="{{ url_for('static', filename='css/reservation_search.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style_admin_lessons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/pop-up.css') }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='css/about_pages.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-<div class="global-margin">
-    <div class=" py-4 school-container">
-        <h2>Lyžařská škola Ski Bublava</h2>
-        <p>Lyžařská škola Ski Bublava naučí lyžovat Vás i Vaše děti. K výuce lyžování slouží od letoška nový Dětský park, pokročilejší žáci se s našimi instruktory mohou vydat na příjemné luční svahy sjezdovky a vleku Malý Bleiberg nebo i do dalších částí areálu. Další možností jsou víkendové lyžařské a snowboardové kurzy.</p>
-        <p>Sportovní klub Arnika Plzeň pro Vás ve Ski Centru Bublava - Stříbrná organizuje oblíbené víkendové lyžařské kurzy. Určeny jsou pro děti z Plzně, Sokolova, Chebu a z celého širokého okolí Ski Centra Bublava - Stříbrná. Bližší informace včetně přihlášky najdete na stránkách SK Arnika: <a href="http://www.sk-arnika.cz">www.sk-arnika.cz</a>.</p>
-        <p>Vybrat si můžete z několika druhů výuky:</p>
-        <ul>
-            <li>Skupinová výuka</li>
-            <li>Privátní výuka</li>
-            <li>Lyžařská škola pro děti</li>
-            <li>Večerní vyučování</li>
-        </ul>
-        <h3>Kontaktní informace a objednávky</h3>
-        <p>E-mail: <a href="mailto:havlova.d@seznam.cz">havlova.d@seznam.cz</a><br>Telefon: +420 722 242 060, +420 605 211 334</p>
+    <div id="flash-messages"></div>
+    <div class="flex-container flex-lessons">
+        <div class="form-section left-section">
+            <div class="global-margin">
+                <div class="container-reservation container-reservation-show mt-3 container-prices">
+                    <div class="container-prices">
+                        <div class="table-responsive">
+                            <h2 class="h2-headers">Lyžařská škola Ski Bublava</h2>
+                            <p>Lyžařská škola Ski Bublava naučí lyžovat Vás i Vaše děti. K výuce lyžování slouží od letoška nový Dětský park, pokročilejší žáci se s našimi instruktory mohou vydat na příjemné luční svahy sjezdovky a vleku Malý Bleiberg nebo i do dalších částí areálu. Další možností jsou víkendové lyžařské a snowboardové kurzy.</p>
+                            <p>Sportovní klub Arnika Plzeň pro Vás ve Ski Centru Bublava - Stříbrná organizuje oblíbené víkendové lyžařské kurzy. Určeny jsou pro děti z Plzně, Sokolova, Chebu a z celého širokého okolí Ski Centra Bublava - Stříbrná. Bližší informace včetně přihlášky najdete na stránkách SK Arnika: <a href="http://www.sk-arnika.cz">www.sk-arnika.cz</a>.</p>
+                            <p>Vybrat si můžete z několika druhů výuky:</p>
+                            <ul>
+                                <li>Skupinová výuka</li>
+                                <li>Privátní výuka</li>
+                                <li>Lyžařská škola pro děti</li>
+                                <li>Večerní vyučování</li>
+                            </ul>
+                            <h3>Kontaktní informace a objednávky</h3>
+                            <p>E-mail: <a href="mailto:havlova.d@seznam.cz">havlova.d@seznam.cz</a><br>Telefon: +420 722 242 060, +420 605 211 334</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
