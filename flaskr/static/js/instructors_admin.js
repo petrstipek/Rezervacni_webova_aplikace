@@ -12,7 +12,7 @@ function fetchInstructors(page) {
             $('.pagination').empty();
 
             $.each(instructors, function (index, instructor) {
-                $('table tbody').append('<tr><td>' + instructor.jmeno + " " + instructor.prijmeni + '</td><td><button class="btn btn-info btn-sm button-instructor-action" data-instructor-id="' + instructor.ID_osoba + '">Zobrazit</button></td><td><button class="btn btn-danger button-instructor-delete " data-instructor-id="' + instructor.ID_osoba + '">Odstranit</button></td></tr>');
+                $('table tbody').append('<tr><td>' + instructor.jmeno + " " + instructor.prijmeni + '</td><td><button class="btn btn-warning btn-sm button-instructor-action" data-instructor-id="' + instructor.ID_osoba + '">Zobrazit</button></td><td><button class="btn btn-danger button-instructor-delete " data-instructor-id="' + instructor.ID_osoba + '">Odstranit</button></td></tr>');
             });
 
             for (var i = 1; i <= total_pages; i++) {
@@ -69,7 +69,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
-                    var messageHtml = '<div class="alert alert-success">' + response.success + '</div>';
+                    alert("Instruktor byl úspěšně odstraněn.");
                     $('#flash-messages').html(messageHtml);
                     setTimeout(function () { $('#flash-messages .alert').fadeOut(); }, 5000);
                 }
@@ -77,7 +77,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : "An unknown error occurred.";
-                $('#flash-messages').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+                alert("Instruktor nebyl odstrěněn. " + errorMessage);
                 setTimeout(function () { $('#flash-messages .alert').fadeOut(); }, 5000);
             }
         });

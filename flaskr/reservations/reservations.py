@@ -34,16 +34,13 @@ def main_page():
 
     if request.method == "POST":
         secret_response = request.form.get("g-recaptcha-response")
-        print("Secret response:", secret_response)
         if secret_response:
             verify_response = requests.post(url= verify_url, data={'secret': recaptcha_private, 'response': secret_response}).json()
             if not verify_response.get("success"):
-                print("chbye v captacha")
                 flash("Chyba ve validaci Captcha. Opakujte prosím odeslání!", category="danger")
                 return render_template("blog/user/reservation_page.html", form=form, active_page="reservation_page")
         else:
             flash("Captcha chyba. Opakujte odeslání!", category="danger")
-            print("chyba v captacha")
             return render_template("blog/user/reservation_page.html", form=form, active_page="reservation_page")
         
         if form.validate_on_submit():
@@ -81,7 +78,7 @@ def main_page():
             'tel_number': 'Doplňte vaše telefonní číslo.',
             'email': 'Doplňte vaší emailovou adresu.',
             'age_client': 'Doplňte věk.',
-            'time': 'Doplňte čas výuky.',
+            'time_reservation': 'Doplňte čas výuky.',
             }
         
             error_messages = []

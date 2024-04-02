@@ -156,6 +156,7 @@
                     <ul class="nav justify-content-center border-bottom pb-3 mb-3">
                         <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Ski Bublava</a></li>
                         <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Kontakty</a></li>
+                        <li class="nav-item"><a href="{{ url_for('registration.registration_user') }}" class="nav-link px-2 text-muted">Registrace</a></li>
                     </ul>
                     <p class="text-center text-muted">&copy; Lyžařská škola Bublava</p>
                 </footer>
@@ -165,5 +166,6 @@
     
         <script src="https://getbootstrap.com/docs/4.0/assets/js/vendor/popper.min.js"></script>
         <script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script>
+        <script src="{{ url_for('static', filename='js/flash.js') }}"></script>
     </body>
 </html>

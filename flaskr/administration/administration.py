@@ -22,6 +22,7 @@ def reservation_change():
     
     reservation_id = request.args.get('reservation_id', '') or request.form.get('reservation_id', '')
     form.reservation_id.data = reservation_id
+    change_time = form.change_time.data
     
     reservation_details = get_reservation_details(reservation_id)
     available_instructors = get_all_instructors()
@@ -30,6 +31,8 @@ def reservation_change():
 
     time_reservation = reservation_details.get('cas_zacatku', '')
     form.time_reservation.choices = [(time_reservation, time_reservation)]
+
+    print("reservation_choices", form.time_reservation.choices)
 
     if request.method == "POST":
         date_str = form.date.data.strftime('%Y-%m-%d')
@@ -145,7 +148,7 @@ def instructors_admin():
 
     instructors_dict = get_all_instructors()
     instructors = [{'full_name': f"{instructor['jmeno']} {instructor['prijmeni']}", 'ID_osoba': instructor['ID_osoba']} for instructor in instructors_dict]
-    return render_template("blog/admin/instructors.html", form=form, active_page="instructors_admin")
+    return render_template("blog/admin/instructors_admin.html", form=form, active_page="instructors_admin")
 
 @administration_bp.route('/lessons-admin', methods=["POST", "GET"])
 @login_required

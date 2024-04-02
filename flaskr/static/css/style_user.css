@@ -777,8 +777,6 @@ hr {
         text-decoration-color: initial;
         display: flex;
         flex-direction: column;
-        flex: 1;
-        margin-bottom: 10px;
     }
 }
 

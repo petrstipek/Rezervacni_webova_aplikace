@@ -13,6 +13,11 @@
         {{ form.hidden_tag() }}
                 <div class="container-reservation mt-3">
                     <h2>Změna rezervace</h2>
+                    <div class="form-check">
+                        {{ form.change_time.label(class="form-check-label") }}
+                        {{ form.change_time(class="form-check-input") }}
+                    </div>
+                </div>
                 <div class="form-section">
                 <h2>Termín a čas rezervace</h2>
                 <div class="form-group">

@@ -155,6 +155,7 @@ class ChangeReservation(FlaskForm):
     
     student_client = BooleanField('Žák stejný jako klient', validators=[])
     more_students = BooleanField("Objednat více žáků", validators=[])
+    change_time = BooleanField("Změnit čas", validators=[])
 
     name_client1 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
     name_client2 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])

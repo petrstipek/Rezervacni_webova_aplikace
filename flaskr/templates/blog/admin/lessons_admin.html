@@ -43,7 +43,7 @@
                             </td>
                             <td>
                                 {{ form_lesson_change.lesson_id }}
-                                {{ form_lesson_change.submit(class_="submit-button") }}
+                                {{ form_lesson_change.submit(class="btn btn-warning submit-button") }}
                             </td>
                         </tr>
                     </tbody>
@@ -164,7 +164,6 @@
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script src="{{ url_for('static', filename='js/reservation_admin_check.js') }}"></script>
 <script type="text/javascript">
     var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
 </script>

@@ -47,6 +47,7 @@ input[type="submit"] {
     font-size: 16px !important;
     border-radius: 10px !important;
     background-color: #FBC639;
+    color: black;
 }
 
 .reservation-table {
