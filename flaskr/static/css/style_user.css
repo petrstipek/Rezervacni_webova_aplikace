@@ -1015,3 +1015,9 @@ label {
         margin-right: 150px !important;
     }
 }
+
+.red-border {
+    border: 2px solid red;
+    padding: 2px;
+    display: inline-block;
+}

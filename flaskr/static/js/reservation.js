@@ -399,3 +399,23 @@ $(document).ready(function () {
     });
     adjustColumnHeights();
 });
+
+$(document).ready(function () {
+    $('#reservation-form').submit(function (e) {
+        var isStudentClientChecked = $('#student_client_checkbox').is(':checked');
+        var isMoreStudentsChecked = $('#more_students_checkbox').is(':checked');
+
+        if (!isStudentClientChecked && !isMoreStudentsChecked) {
+            e.preventDefault();
+            alert('Zadejte prosím Žáky lekce! Vyberte alespoň jednu možnost.');
+            $('#student_client_checkbox, #more_students_checkbox').css('outline', '2px solid red');
+        } else {
+            $('#student_client_checkbox, #more_students_checkbox').css('outline', 'none');
+        }
+    });
+    $('#student_client_checkbox, #more_students_checkbox').change(function () {
+        if ($('#student_client_checkbox').is(':checked') || $('#more_students_checkbox').is(':checked')) {
+            $('#student_client_checkbox, #more_students_checkbox').css('outline', 'none');
+        }
+    });
+});
