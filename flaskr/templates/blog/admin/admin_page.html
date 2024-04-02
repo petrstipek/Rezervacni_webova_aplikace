@@ -1,21 +1,24 @@
 {% extends "base_admin.html" %}
 
 {% block head %}
-    <title> Administrátorská stránka </title>
+<title>Upravit profil uživatele</title>
+<link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_registration.css') }}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    
 {% endblock %}
 
 {% block body %}
-<section class="section-blue">
+<div class="color-background">
     <div class="global-margin">
-        <h2>Hlavní stránka administrace</h2>
-        <a>Vítejte na hlavní stránce administrace rezervačního systémů lyžařské školy!</a>
+        <div class="body-login">
+            <div class="form-container">
+                Admin page - in progress
+            </div>
+        </div>  
     </div>
-</section>
-<canvas id="reservationChart" width="400" height="200"></canvas>
-
-
-
-<script src="{{ url_for('static', filename='js/admin_dashboard_page.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+</div>
+<script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
 {% endblock %}
