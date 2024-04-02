@@ -6,8 +6,12 @@
     flex: 55% !important;
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1800px) {
     .flex-lessons {
         flex-direction: column;
+    }
+
+    .right-section {
+        order: -1;
     }
 }
