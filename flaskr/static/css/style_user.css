@@ -916,7 +916,7 @@ hr {
 }
 
 .background-color-full-width {
-    background-color: #ffffff;
+    background-color: white;
 }
 
 .alert-margin {
@@ -930,6 +930,8 @@ hr {
 .navbar-colour {
     background-color: #e0f3ff !important;
     color: black !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
 }
 
 .navbar-custom .nav-link,
@@ -1014,4 +1016,10 @@ label {
     .count {
         margin-right: 150px !important;
     }
+}
+
+.red-border {
+    border: 2px solid red;
+    padding: 2px;
+    display: inline-block;
 }

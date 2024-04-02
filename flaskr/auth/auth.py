@@ -32,15 +32,16 @@ def login():
             elif user.get_role() == 'client':
                 return redirect(url_for('users.users_reservations'))
             else:
-                flash("Unauthorized access.", category="danger")
+                flash("Nepovolený přístup, prosím přihlašte se!", category="danger")
                 return redirect(url_for('auth.login'))
         else:
-            flash("Invalid username or password.", category="danger")
+            flash("Nesprávné jméno nebo heslo!", category="danger")
     return render_template("auth/login.html", form=form)
 
 @auth_bp.route('/logout')
 def logout():
     logout_user()
+    flash("Byli jste úspěšně odhlášeni!", category="success")
     return redirect(url_for('reservations.main_page'))
 
 @login_manager.unauthorized_handler
