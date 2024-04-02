@@ -41,6 +41,7 @@ def login():
 @auth_bp.route('/logout')
 def logout():
     logout_user()
+    flash("Byli jste úspěšně odhlášeni!", category="success")
     return redirect(url_for('reservations.main_page'))
 
 @login_manager.unauthorized_handler
