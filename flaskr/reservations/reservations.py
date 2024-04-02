@@ -47,12 +47,8 @@ def main_page():
             return render_template("blog/user/reservation_page.html", form=form, active_page="reservation_page")
         
         if form.validate_on_submit():
-            #message, message_type = process_reservation(form)
-            print("jo jsem tady v submit")
             register_without = form.submit_without_register.data
             register_with = form.submit_with_register.data
-            print("Register without:", register_without)
-            print("Register with:", register_with)
 
             if register_with:
                 status_reg, message_reg = process_submit_registration(form)
