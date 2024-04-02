@@ -229,7 +229,6 @@ def check_two_hour_availability(fixed_iteration_type, instructor_selected, date,
             if query_result2 is None:
                 continue
             #instructor_id = query_result["ID_osoba"]
-            print(instructor_selected, "here")
             instructor_id = instructor_selected
             lessons_id = (query_result.ID_hodiny, query_result2.ID_hodiny)
             return instructor_id, lessons_id
@@ -243,8 +242,7 @@ def check_two_hour_availability(fixed_iteration_type, instructor_selected, date,
             query_result2 = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time_plus_one, MaVypsane.ID_osoba==id_osoba, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result2 is None:
                 continue
-            print(instructor_selected, "here2")
-            instructor_id = instructor_selected
+            instructor_id = id_osoba
             lessons_id = (query_result.ID_hodiny, query_result2.ID_hodiny)
             return instructor_id, lessons_id
     return False     
