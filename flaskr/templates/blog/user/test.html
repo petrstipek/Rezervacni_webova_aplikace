@@ -1,28 +1,54 @@
 {% extends "base_user.html" %}
 
 {% block head %}
-    <title> Změna rezervace </title>
-    <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style_user_reservation_check.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
-    
+    <title> user page </title>
+    <link href="{{ url_for('static', filename='css/style_sign_user.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/reservation_overview.css') }}" rel="stylesheet">
 {% endblock %}
 
+{% block signout %}
+<div class="d-none d-lg-block">
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-warning button-right-margin btn-select-reservation" role="button">Odhlášení</a>
+</div>
+{% endblock %}
+
+{% block bodytest %} Stránka popisující školu {% endblock %}
 {% block body %}
-<div class="global-margin">
-    <div class=" py-4 school-container">
-        <h2>Lyžařská škola Ski Bublava</h2>
-        <p>Lyžařská škola Ski Bublava naučí lyžovat Vás i Vaše děti. K výuce lyžování slouží od letoška nový Dětský park, pokročilejší žáci se s našimi instruktory mohou vydat na příjemné luční svahy sjezdovky a vleku Malý Bleiberg nebo i do dalších částí areálu. Další možností jsou víkendové lyžařské a snowboardové kurzy.</p>
-        <p>Sportovní klub Arnika Plzeň pro Vás ve Ski Centru Bublava - Stříbrná organizuje oblíbené víkendové lyžařské kurzy. Určeny jsou pro děti z Plzně, Sokolova, Chebu a z celého širokého okolí Ski Centra Bublava - Stříbrná. Bližší informace včetně přihlášky najdete na stránkách SK Arnika: <a href="http://www.sk-arnika.cz">www.sk-arnika.cz</a>.</p>
-        <p>Vybrat si můžete z několika druhů výuky:</p>
-        <ul>
-            <li>Skupinová výuka</li>
-            <li>Privátní výuka</li>
-            <li>Lyžařská škola pro děti</li>
-            <li>Večerní vyučování</li>
-        </ul>
-        <h3>Kontaktní informace a objednávky</h3>
-        <p>E-mail: <a href="mailto:havlova.d@seznam.cz">havlova.d@seznam.cz</a><br>Telefon: +420 722 242 060, +420 605 211 334</p>
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Detaily rezervace</h3>
+        <div id="modalBody">
+            <p>Some details here...</p>
+        </div>
+        <hr>
+        <h3>Úprava rezervace</h3>
+        nějaká uprava
+        pole pro cas a termin
     </div>
 </div>
+<section class="section-grey">
+    <div class="global-margin reservations-section-all">
+        <h2>Vaše obsazené hodiny</h2>
+        <div class="lessons-admin-grid">
+            <div class="horizontal-fields-container-admin-lessons">
+                <div class="containers-lessons">
+                    <input type="date" id="reservationDate" name="reservationDate">
+                </div>
+                <div class="containers-lessons">
+                    <input class="btn btn-warning" type="button" id="allReservations" name="allReservations" value="Zobrazit všechny rezervace">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="reservationDate" name="reservationDate">
+                </div>
+                <div class="containers-lessons" style="visibility: hidden;">
+                    <input type="date" id="reservationDate" name="reservationDate">
+                </div>
+            </div>
+        </div>
+        <div id="reservationDetailsAll" class="table-all-reservations"></div>
+        <div id="paginationControlsSecondTable" class="pagination-controls"></div>
+    </div>
+</section>
+    <script src="{{ url_for('static', filename='js/instructors.js') }}"></script>
 {% endblock %}

@@ -35,49 +35,30 @@ $(document).ready(function () {
             url: url,
             type: "GET",
             success: function (response) {
-                $('#reservationDetailsAll').empty();
+                var $tbody = $('#reservationDetails tbody').empty();
 
                 if (response.reservations.length === 0) {
-                    $('#reservationDetailsAll').text('No reservations found.');
+                    $tbody.append('<tr><td colspan="7">No reservations found.</td></tr>');
                     return;
                 }
-                var table = $('<table></table>').addClass('reservation-table');
-                var thead = $('<thead></thead>');
-                var tbody = $('<tbody></tbody>');
-                var headerRow = $('<tr></tr>');
-                var keyOrder = ["termín rezervace", "čas začátku", "doba výuky", "stav platby"]
-
-                $.each(keyOrder, function (index, key) {
-                    headerRow.append($('<th></th>').text(key));
-                });
-                headerRow.append($('<th></th>').text('Instruktor'));
-                headerRow.append($('<th></th>').text('Detail rezervace'));
-                thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
-                    var row = $('<tr></tr>');
-                    $.each(keyOrder, function (index, key) {
-                        var value = reservation[key];
-                        if (key === 'termín rezervace') {
-                            value = formatDate(value);
-                        }
-                        row.append($('<td></td>').text(value));
-                    });
-
-                    var instructorFullName = reservation['jméno instruktora'] + ' ' + reservation['příjmení instruktora'];
-                    row.append($('<td></td>').text(instructorFullName));
-
-                    var detailbutton = $(`<button class="detailReservation btn btn-primary" id="reservationDetail" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
-
-                    row.append($('<td></td>').append(detailbutton));
-                    tbody.append(row);
+                    var instructorFullName = `${reservation['jméno instruktora'] || ''} ${reservation['příjmení instruktora'] || ''}`.trim();
+                    var rowHtml = `<tr>
+                        <td>${reservation['termín rezervace'] || 'N/A'}</td>
+                        <td>${reservation['čas začátku'] || 'N/A'}</td>
+                        <td>${reservation['pocet_zaku'] || 'N/A'}</td>
+                        <td>${reservation['doba výuky'] || 'N/A'}</td>
+                        <td>${reservation['stav platby'] || 'N/A'}</td>
+                        <td>${instructorFullName || 'N/A'}</td>
+                        <td></td> <!-- Placeholder for the button -->
+                    </tr>`;
+                    var $row = $(rowHtml);
+                    var $detailButton = $(`<button class="detailReservation btn btn-primary" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
+                    $row.find('td:last').append($detailButton);
+                    $tbody.append($row);
                 });
-
-                table.append(thead).append(tbody);
-                $('#reservationDetailsAll').append(table);
-
                 totalPagesSecondTable = response.total_pages;
-
                 updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable);
             },
             error: function (xhr, status, error) {
@@ -143,11 +124,7 @@ $(document).ready(function () {
 
                 detailsHtml += '<hr>';
 
-                var deleteButton = $(`<button class="deleteReservation" data-id="${reservationId}">Storno</button>`);
 
-                detailsHtml += '<table class="action-buttons-table">';
-                detailsHtml += '<tr><th>Storno rezervace</th></tr>';
-                detailsHtml += '<tr><td>' + deleteButton.prop('outerHTML') + '</td></tr>';
                 detailsHtml += '</table>';
 
                 $('#modalBody').html(detailsHtml);
