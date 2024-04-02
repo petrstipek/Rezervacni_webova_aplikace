@@ -71,7 +71,7 @@ def add_individual_lesson(date_str, time_start, instructor_id, lesson_type, capa
     
     return True, "Hodina úspěšně přidána!"
 
-def add_group_lesson(db, date_str, time_start, instructor_ids, lesson_type, capacity):
+def add_group_lesson(date_str, time_start, instructor_ids, lesson_type, capacity):
     for instructor_id in instructor_ids:
         #query_result = db.execute('SELECT * from Dostupne_hodiny left join ma_vypsane using (ID_hodiny) WHERE datum = ? AND cas_zacatku = ? AND ID_osoba != ?', (date_str, time_start, instructor_id)).fetchone()
         
