@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy.orm import joinedload
 from sqlalchemy import and_
 from datetime import datetime, timedelta
-from sqlalchemy import func
+from sqlalchemy import func, case
 from flaskr.reservations.services import process_reservation
 from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
 from flaskr.auth.services import hash_password
@@ -459,7 +459,75 @@ def generate_reservations_data():
     return response
 
 def generate_instructors_overview():
-    return
+    session = database.session
+
+    query = session.query(
+        Osoba.jmeno.label('first_name'),
+        Osoba.prijmeni.label('last_name'),
+        func.count().label('total_lessons'),
+        func.sum(case((DostupneHodiny.typ_hodiny == 'ind', 1), else_=0)).label('individual_lessons'),
+        func.sum(case((DostupneHodiny.typ_hodiny == 'group', 1), else_=0)).label('group_lessons'),
+        func.sum(case((DostupneHodiny.typ_hodiny == 'group-ind', 1), else_=0)).label('group_lessons_individual')
+    ).join(
+        Instruktor, Osoba.ID_osoba == Instruktor.ID_osoba
+    ).join(
+        MaVypsane, Instruktor.ID_osoba == MaVypsane.ID_osoba
+    ).join(
+        DostupneHodiny, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny
+    ).filter(
+        DostupneHodiny.stav == 'obsazeno'
+    ).group_by(
+        Osoba.jmeno, Osoba.prijmeni
+    )
+
+    si = StringIO()
+    cw = csv.writer(si)
+
+    headers = ['Jméno', 'Příjmení', 'Celkový počet lekcí', 'individuální lekce', 'skupinové lekce', 'skupinové lekce individální']
+    cw.writerow(headers)
+
+    for row in query.all():
+        cw.writerow([row.first_name, row.last_name, row.total_lessons, row.individual_lessons, row.group_lessons])
+
+    csv_content = "\ufeff" + si.getvalue()
+
+    response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
+    response.headers['Content-Disposition'] = 'attachment; filename="instructors_data.csv"'
+
+    return response
 
 def generate_reservations_overview():
-    return
+    query = database.session.query(
+        Rezervace.ID_rezervace,
+        Rezervace.ID_osoba,
+        Rezervace.typ_rezervace,
+        Rezervace.termin,
+        Rezervace.cas_zacatku,
+        Rezervace.doba_vyuky,
+        Rezervace.jazyk,
+        Rezervace.pocet_zaku,
+        Rezervace.platba,
+        Rezervace.rezervacni_kod,
+        Rezervace.poznamka
+    )
+
+    si = StringIO()
+    cw = csv.writer(si)
+
+    mapper = inspect(Rezervace)
+    headers = [column.key for column in mapper.attrs]
+    headers = headers[1:11]
+    cw.writerow(headers)
+    print("headers", headers)
+
+    for reservation in query.all():
+
+        row = [getattr(reservation, header) for header in headers]
+        cw.writerow(row)
+
+    csv_content = "\ufeff" + si.getvalue()
+
+    response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
+    response.headers['Content-Disposition'] = 'attachment; filename="reservations.csv"'
+
+    return response
