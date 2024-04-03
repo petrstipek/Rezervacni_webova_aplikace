@@ -39,12 +39,15 @@ def register_new_user(form):
     existing_user = database.session.query(Osoba).filter(Osoba.email == form.email.data).first()
 
     if existing_user:
-        existing_user.jmeno = form.name.data
-        existing_user.prijmeni = form.surname.data
-        existing_user.tel_cislo = form.tel_number.data
-        existing_user.prihl_jmeno = form.email.data
-        existing_user.heslo = hash_password(form.password.data)
-        user = existing_user
+        #existing_user.jmeno = form.name.data
+        #existing_user.prijmeni = form.surname.data
+        #existing_user.tel_cislo = form.tel_number.data
+        #existing_user.prihl_jmeno = form.email.data
+        #existing_user.heslo = hash_password(form.password.data)
+        #user = existing_user
+        return None, "Účet s tímto emailem existuje!"
+
+
     else:
         new_osoba = Osoba(jmeno=form.name.data, prijmeni=form.surname.data, tel_cislo=form.tel_number.data, email=form.email.data, prihl_jmeno=form.email.data, heslo=hash_password(form.password.data))
         database.session.add(new_osoba)
@@ -56,10 +59,10 @@ def register_new_user(form):
 
     try:
         database.session.commit()
-        return user
+        return user, "Registrace proběhla úspěšně!"
     except Exception as e:
         database.session.rollback()
-        return False
+        return False, "Při registraci došlo k chybě!"
 
 def check_email(email):
     existing_user = database.session.query(Osoba).filter(Osoba.email==email).first()
