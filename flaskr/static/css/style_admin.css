@@ -406,8 +406,8 @@ h1 {
 
 @media (max-width: 1680px) {
     .global-margin {
-        margin-left: 180px;
-        margin-right: 180px;
+        margin-left: 180px !important;
+        margin-right: 180px !important;
     }
 }
 
