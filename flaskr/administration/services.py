@@ -27,12 +27,15 @@ def instructor_exists(email):
 def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password, file, text):
     new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number,heslo=hash_password(password), prihl_jmeno=email)
 
-    if not allowed_file(file.filename):
-        return False
+    if file: 
+        if not allowed_file(file.filename):
+            return False
+        else:
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
     else:
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+        filename = None
 
     database.session.add(new_osoba)
     database.session.flush()
