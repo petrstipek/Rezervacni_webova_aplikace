@@ -23,3 +23,7 @@ body {
 .button-navbar {
     margin-bottom: 10px;
 }
+
+.btn-header {
+    margin: 0px;
+}

@@ -113,13 +113,13 @@
                                 <span class="navbar-text me-3">Uživatel: {{ current_user.jmeno }}</span>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url_for('auth.logout') }}" class="btn btn-warning btn-select-reservation me-2">Odhlásit se</a>
+                                <a href="{{ url_for('auth.logout') }}" class="btn-header btn btn-warning btn-select-reservation me-2">Odhlásit se</a>
                             </li>
                         </ul>
                     {% else %}
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-select-reservation me-2 login-admin-btn">Přihlásit se</a>
+                                <a href="{{ url_for('auth.login') }}" class="btn-header btn btn-warning btn-select-reservation me-2 login-admin-btn">Přihlásit se</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{ url_for('reservations.reservation_check') }}" class="btn btn-warning btn-select-reservation" role="button">Správa rezervace</a>
