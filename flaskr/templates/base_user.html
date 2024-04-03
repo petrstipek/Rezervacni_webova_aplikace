@@ -138,9 +138,10 @@
                     {% for category, message in messages %}
                     <div class="background-color-full-width">
                         <div class="global-margin">
-                            <div class="alert alert-{{ category }} alert-margin">
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </button>
+                            <div class="alert alert-{{ category }} alert-margin {% if category == 'warning' %}persistent{% endif %}" role="alert">
+                                {% if category != 'warning' %}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                {% endif %}
                                 {{ message }}
                             </div>
                         </div>

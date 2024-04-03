@@ -20,6 +20,7 @@ def reservation_check():
 
 @reservations_bp.route("/", methods=["GET", "POST"])
 def main_page():
+    flash('Informace na této webové stránce jsou pouze testového charakterů a v žádném případě nejsou oficiálním sdělením společnosti!', 'warning')
     form = PersonalInformationForm()
     if current_user.is_authenticated:
         form.name.data = current_user.jmeno
