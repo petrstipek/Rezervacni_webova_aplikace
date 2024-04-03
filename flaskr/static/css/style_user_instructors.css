@@ -86,3 +86,8 @@ html {
 .instructor-desc {
     margin-bottom: 0px !important;
 }
+
+.container-instructors {
+    width: 100% !important;
+    max-width: 2000px !important;
+}
