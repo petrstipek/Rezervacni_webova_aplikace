@@ -1,6 +1,6 @@
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from flask import current_app, Blueprint, redirect, flash, url_for, render_template
-from flaskr.email.email import send_email
+from flaskr.email.email import send_email, send_password_reset
 from flaskr.auth.auth import auth_bp
 from flaskr.forms import PasswordRenewalForm, PasswordResetForm
 from flaskr.auth.services import check_email, change_password
@@ -27,7 +27,8 @@ def generate_reset_token(email):
 def send_reset_email(user):
     token = generate_reset_token(user.email)
     reset_url = url_for('auth.reset_password', token=token, _external=True)
-    send_email("Obnova Hesla", 'jl6701543@gmail.com', 'felixgrent@gmail.com', 'text body emailu', 'Link pro obnovení rezervace je: '+ reset_url )
+    send_password_reset(user.email, reset_url)
+    #send_email("Obnova Hesla", 'jl6701543@gmail.com', 'felixgrent@gmail.com', 'text body emailu', 'Link pro obnovení rezervace je: '+ reset_url )
 
 def validate_token(token):
     serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])

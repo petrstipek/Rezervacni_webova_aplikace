@@ -33,10 +33,10 @@ def create_application(test_config=None):
     bootstrap = Bootstrap5(application)
     csrf = CSRFProtect(application)
 
-    #application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(application.instance_path, 'database.sqlite')
-    #application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(application.instance_path, 'database.sqlite')
+    application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://felixgrent:woxdep-pypxo0-woqdyW@rds-mysql-skiressys.c9sa6ogi4a00.eu-north-1.rds.amazonaws.com/rds-mysql-skiressys'
+    #application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://felixgrent:woxdep-pypxo0-woqdyW@rds-mysql-skiressys.c9sa6ogi4a00.eu-north-1.rds.amazonaws.com/rds-mysql-skiressys'
     
     database.init_app(application)
 

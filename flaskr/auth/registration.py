@@ -9,11 +9,11 @@ registration_bp = Blueprint('registration', __name__, template_folder='templates
 def registration_user():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user_registered = register_new_user(form)
+        user_registered, message = register_new_user(form)
         if user_registered:
             flash("Registrace proběhla úspěšně, nyní se můžete přihlásit!", category="success")
             send_registration_confirmation(form.email.data)
             return redirect(url_for('auth.login'))
         else:
-            flash("Registrace neproběhla úspěšně, zkuste akci opakovat!", category="danger")
+            flash(message, category="danger")
     return render_template("/auth/registration.html", form=form)

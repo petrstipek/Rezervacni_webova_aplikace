@@ -8,6 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import and_
 from sqlalchemy.exc import SQLAlchemyError
 from flaskr.auth.services import register_new_user
+from flaskr.email.email import send_reservation_confirmation
 
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=[recipients])
@@ -85,7 +86,7 @@ def process_reservation(form):
         result, message, message_type = individual_group_reservation(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one)
     
     if result:
-        send_email('Rezervace lyžařské hodiny', 'jl6701543@gmail.com', 'felixgrent@gmail.com', 'text body emailu', "Vaše rezervace má ID: "  + identifier)
+        send_reservation_confirmation(email, new_reservation)
         database.session.commit()
         reservation_identifier = new_reservation.rezervacni_kod
         return message, message_type, reservation_identifier
@@ -148,17 +149,15 @@ def individual_group_reservation_2hour(reservation_id, instructor_selected, date
             message, message_type = "Nebyly nalezeny dvě po sobě jdoucí hodiny se stejným instruktorem!", "danger"
             return False, message, message_type
 
-    message, message_type = "Dvou hodinové lekce zarezervovány!", "success"
+    message, message_type = "Dvouhodinové lekce zarezervovány!", "success"
     return True, message, message_type
 
 def individual_reservation_1hour(reservation_id, instructor_selected, student_count, date, time):
-    #db = get_db()
     termin_date = datetime.strptime(date, '%Y-%m-%d').date()
     cas_zacatku_time = datetime.strptime(time, '%H:%M').time() 
     if instructor_selected == "0":
         found_number = 0
         for student in range(student_count):
-            #lesson_id = db.execute('SELECT ID_hodiny FROM dostupne_hodiny WHERE datum = ? AND cas_zacatku = ? AND stav = ? AND typ_hodiny = ?', (date, time, "volno", "ind")).fetchone()
             lesson_id = database.session.query(DostupneHodiny.ID_hodiny).filter(
                         DostupneHodiny.datum == termin_date,
                         DostupneHodiny.cas_zacatku == cas_zacatku_time,
@@ -177,7 +176,6 @@ def individual_reservation_1hour(reservation_id, instructor_selected, student_co
         if student_count > 1:
             message, message_type = "Pro volbu instruktora je možné mít pouze jednoho žáka!", "danger"
             return False, message, message_type
-        #lesson = db.execute('SELECT ID_hodiny, ID_osoba from dostupne_hodiny left join ma_vypsane using("ID_hodiny") WHERE ID_osoba = ? AND datum = ? AND cas_zacatku = ? and stav = ? AND typ_hodiny = ?', (instructor_selected, date, time, "volno", "ind")).fetchone()
         lesson = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny).filter(and_(MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time, DostupneHodiny.stav=="volno", DostupneHodiny.typ_hodiny=="ind")).first()
         if lesson == None:
             message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
@@ -210,35 +208,29 @@ def individual_reservation_2hour(reservation_id, instructor_selected, student_co
         if found_number < student_count:
             message, message_type = "Nebyly nalezeny dvě po sobě jdoucí hodiny se stejným instruktorem!", "danger"
             return False, message, message_type
-    message, message_type = "Dvou hodinové lekce zarezervovány!", "success"
+    message, message_type = "Dvouhodinové lekce zarezervovány!", "success"
     return True, message, message_type
 
 def check_two_hour_availability(fixed_iteration_type, instructor_selected, date, time, time_plus_one, instructors=None):
     termin_date = datetime.strptime(date, '%Y-%m-%d').date()
     cas_zacatku_time = datetime.strptime(time, '%H:%M').time()
-    cas_zacatku_time_plus_one = datetime.strptime(time_plus_one, '%H:%M').time() 
-    #db = get_db()
+    cas_zacatku_time_plus_one = datetime.strptime(time_plus_one, '%H:%M').time()
     if fixed_iteration_type:
         for i in range(2):
-            #query_result = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = ? and cas_zacatku = ? AND ID_osoba = ? AND typ_hodiny = ? order by ID_osoba', (date, time, instructor_selected, "ind")).fetchone()    
             query_result = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time, MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result is None:
                 continue
-            #query_result2 = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = ? and cas_zacatku = ? AND typ_hodiny = ?', (instructor_selected, date, time_plus_one, "ind")).fetchone()        
             query_result2 = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time_plus_one, MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result2 is None:
                 continue
-            #instructor_id = query_result["ID_osoba"]
             instructor_id = instructor_selected
             lessons_id = (query_result.ID_hodiny, query_result2.ID_hodiny)
             return instructor_id, lessons_id
     else:
         for id_osoba in instructors:
-            #query_result = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where stav = "volno" and datum = ? and cas_zacatku = ? AND ID_osoba = ? AND typ_hodiny = ? order by ID_osoba', (date, time, id_osoba, "ind")).fetchone()    
             query_result = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, MaVypsane.ID_osoba==id_osoba, DostupneHodiny.cas_zacatku==cas_zacatku_time, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result is None:
                 continue
-            #query_result2 = db.execute('select ID_osoba, ID_hodiny from ma_vypsane left join Dostupne_hodiny using (ID_hodiny) where ID_osoba = ? and datum = ? and cas_zacatku = ? AND typ_hodiny = ?', (id_osoba, date, time_plus_one, "ind")).fetchone()        
             query_result2 = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny==MaVypsane.ID_hodiny).filter(and_(DostupneHodiny.stav=="volno", DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time_plus_one, MaVypsane.ID_osoba==id_osoba, DostupneHodiny.typ_hodiny=="ind")).order_by(MaVypsane.ID_osoba).first()
             if query_result2 is None:
                 continue
