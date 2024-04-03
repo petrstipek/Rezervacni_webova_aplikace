@@ -27,7 +27,7 @@ def instructor_exists(email):
 def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password, file, text):
     new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number,heslo=hash_password(password), prihl_jmeno=email)
 
-    if file: 
+    if file:
         if not allowed_file(file.filename):
             return False
         else:
