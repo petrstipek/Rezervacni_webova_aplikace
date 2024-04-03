@@ -6,6 +6,7 @@ $(document).ready(function () {
 
     $(".close").click(function () {
         $("#detailModal").hide();
+        $("body").css("overflow", "auto");
     });
 
     $(document).on('change', '#lessonDate', function () {
