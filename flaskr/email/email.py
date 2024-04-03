@@ -25,7 +25,7 @@ def send_reservation_confirmation(user_email, reservation_details):
     <html>
         <body>
             <p>Dobrý den,</p>
-            <p>Děkujeme Vám za rezervaci hodiny v naší lyžařské škole.</p>
+            <p>děkujeme Vám za rezervaci hodiny v naší lyžařské škole.</p>
             <p>Níže naleznete všechny důležité informace týkající se Vaší rezervace:</p>
             <ul>
                 <li> Rezervační kód: {reservation_details.rezervacni_kod}</li>
@@ -52,7 +52,7 @@ def send_registration_confirmation(user_email):
     <html>
         <body>
             <p>Dobrý den,</p>
-            <p>Vítejte v lyžařské škole. Do webové aplikace školy se můžete přihlásit pomocí svého emailu a hesla, které jste uvedli při registraci.<br>V případě zapomenutí hesla je heslo možné na přihlašovací stránce obnovit.</p>
+            <p>vítejte v lyžařské škole. Do webové aplikace školy se můžete přihlásit pomocí svého emailu a hesla, které jste uvedli při registraci.<br>V případě zapomenutí hesla je heslo možné na přihlašovací stránce obnovit.</p>
             <p>Webová aplikace Vám umožňuje nahlížet na všechny Vaše rezervace spolu se všemi dostupnými detaily jako například termín, čas začátku, nebo zdali je rezervace zaplacena.<br>Rezervaci můžete v systému také upravovat a měnit její parametry.</p>
             <p>V případě dalších otázek se prosím obraťte přímo na školu, kontakty najdete v sekci <a href="{{ url_for('information.contacts_page') }}">Kontakty</a> nebo <a href="{{ url_for('information.school_page') }}">O nás</a>.</p>
             <p>Děkujeme za využívání rezervačního systému Ski školy Bublava.</p>
@@ -65,11 +65,34 @@ def send_registration_confirmation(user_email):
     
 
 def send_password_reset(user_email, reset_link):
-    msg = Message("Obnovení hesla", recipients=[user_email])
-    msg.body = f" {reset_link}"
-    mail.send(msg)
+    
+    html_content = f"""
+    <html>
+        <body>
+            <p>Dobrý den,</p>
+            <p>obdrželi jsme požadavek na změnu hesla. Pokud jste o změnu hesla nepožádali, prosím tento email ignorujte.</p>
+            <p>Pro změnu hesla využijte následující link:</p>
+            <p><a href="{reset_link}" style="color: #007BFF;">Změnit heslo</a></p>
+            <p>S přáním pěkného dne,<br>Rezervační systém.</p>
+        </body>
+    </html>
+    """
+    result = send_email("Obnova hesla - Ski škola Bublava", user_email, html_content)
 
-def reservation_cancelation(user_email, reservation_details):
-    msg = Message("Zrušení rezervace", recipients=[user_email])
-    msg.body = f" {reservation_details}"
-    mail.send(msg)
+def send_reservation_cancelation(user_email, reservation_code, payment):
+    if payment == "zaplaceno":
+        text_payment = "Vaše rezervace byla zaplacena! Pro vrácení penět se prosím stavte osobně na pokladně školy, případně kontaktujte školu pro vrácení penět na účet."
+    else:
+        text_payment = ""
+    html_content = f"""
+    <html>
+        <body>
+            <p>Dobrý den,</p>
+            <p>Informujeme Vás, že Vaše rezervace byla zrušena.</p>
+            <p>ID zrušené rezervace: {reservation_code}</p>
+            <p>{text_payment}</p>
+            <p>S přáním pěkného dne,<br>Rezervační systém.</p>
+        </body>
+    </html>
+    """
+    result = send_email("Zrušení rezervace - Ski škola Bublava", user_email, html_content)

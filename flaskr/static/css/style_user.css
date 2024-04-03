@@ -954,8 +954,8 @@ hr {
 
 .navbar-custom .navbar-toggler {
     border: 1px solid grey !important;
-    padding: .25rem .25rem;
-    background-color: transparent;
+    padding: .25rem .25rem !important;
+    background-color: transparent !important;
 }
 
 .navbar-custom .navbar-toggler-icon {

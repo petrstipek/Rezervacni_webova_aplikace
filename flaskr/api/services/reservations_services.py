@@ -6,6 +6,7 @@ from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Priraze
 from sqlalchemy.orm import aliased
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
+from flaskr.email.email import send_reservation_cancelation
 
 def delete_reservation_by_reservation_code(reservation_id):
     try:
@@ -22,7 +23,13 @@ def delete_reservation_by_reservation_code(reservation_id):
         if time_difference < timedelta(hours=2):
             return False, "Rezervace nemůže být zrušena! Zbývá méně jak 2 hodiny do hodiny."
 
+
         reservation_id = reservation.ID_rezervace
+        reservation_code = reservation.rezervacni_kod
+        payment = reservation.platba
+
+        client = database.session.query(Klient).join(Osoba, Klient.ID_osoba==Osoba.ID_osoba).filter(Osoba.ID_osoba==reservation.ID_osoba).first()
+        email = client.osoba.email
 
         if reservation.typ_rezervace == "individual":
             lessons = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).all()
@@ -61,10 +68,10 @@ def delete_reservation_by_reservation_code(reservation_id):
 
             database.session.commit()
 
-        return True, "Ok"
+        return True, "Ok", reservation_code, email, payment
     except sqlite3.Error as e:
         database.session.rollback()
-        return False, "nok"
+        return False, "nok", reservation_code, email, payment
     
 def delete_reservation_by_reservation_id(reservation_id):
     try:
@@ -72,6 +79,10 @@ def delete_reservation_by_reservation_id(reservation_id):
         if reservation is None:
             return False, "Rezervace nebyla nalezena!"
 
+        client = database.session.query(Klient).join(Osoba, Klient.ID_osoba==Osoba.ID_osoba).filter(Osoba.ID_osoba==reservation.ID_osoba).first()
+        email = client.osoba.email
+        reservation_code = reservation.rezervacni_kod
+        payment = reservation.platba
         today = datetime.now().date()
         combined_datetime_str = f'{reservation.termin} {reservation.cas_zacatku}'
         time_now = datetime.now()
@@ -117,6 +128,10 @@ def delete_reservation_by_reservation_id(reservation_id):
             database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
+
+        print("jsem teaady")
+        print(email, reservation_code, payment)
+        send_reservation_cancelation(email, reservation_code, payment)
 
         return True, "Ok"
     except sqlite3.Error as e:

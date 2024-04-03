@@ -1,13 +1,15 @@
 from flask import Blueprint, jsonify, request
 from flaskr.api.services.reservations_services import *
 from flaskr.api.administration_api import administration_api
+from flaskr.email.email import send_reservation_cancelation
 
 reservations_api_bp = Blueprint('reservations_api', __name__, template_folder='templates')
 
 @reservations_api_bp.route('/reservation/<int:reservation_code>', methods=['DELETE'])
 def delete_reservation_by_code(reservation_code):
-    success, message = delete_reservation_by_reservation_code(reservation_code)
+    success, message, reservation_code, email, payment  = delete_reservation_by_reservation_code(reservation_code)
     if success:
+        send_reservation_cancelation(email, reservation_code, payment)
         return jsonify({"success": True, "message": "Rezervace zrušena!"})
     else:
         return jsonify({"error": message}), 400 
