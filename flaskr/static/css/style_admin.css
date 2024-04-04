@@ -412,9 +412,23 @@ h1 {
 }
 
 .login-admin-btn {
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
 }
 
 .btn-header {
     margin: 0px;
+}
+
+@media (max-width: 991px) {
+    .global-margin {
+        margin-left: 100px !important;
+        margin-right: 100px !important;
+    }
+}
+
+@media (max-width: 730px) {
+    .global-margin {
+        margin-right: 10px !important;
+        margin-left: 10px !important;
+    }
 }
