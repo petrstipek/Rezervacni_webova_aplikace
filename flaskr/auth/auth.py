@@ -8,6 +8,7 @@ from functools import wraps
 auth_bp = Blueprint('auth', __name__, template_folder='templates')
 from flaskr.auth.renew_password import renew_password
 from flaskr.auth.renew_password import reset_password
+from flaskr.auth.registration import registration_user
 
 @login_manager.user_loader
 def load_user(user_id):
