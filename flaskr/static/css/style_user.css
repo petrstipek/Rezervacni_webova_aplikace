@@ -1029,3 +1029,7 @@ label {
         text-align: center;
     }
 }
+
+.login-admin-btn {
+    margin-bottom: 10px !important;
+}
