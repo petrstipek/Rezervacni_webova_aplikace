@@ -2,10 +2,11 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flaskr.forms import RegistrationForm
 from flaskr.auth.services import register_new_user
 from flaskr.email.email import send_registration_confirmation
+from flaskr.auth.auth import auth_bp
 
-registration_bp = Blueprint('registration', __name__, template_folder='templates')
+#registration_bp = Blueprint('registration', __name__, template_folder='templates')
 
-@registration_bp.route("/", methods=["GET", "POST"])
+@auth_bp.route("/registration", methods=["GET", "POST"])
 def registration_user():
     form = RegistrationForm()
     if form.validate_on_submit():

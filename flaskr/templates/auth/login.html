@@ -28,7 +28,7 @@
                     {{ form.password(id="password", class="form-control login-fields", placeholder="Heslo") }}
                     {{ form.submit(class="btn btn-warning btn btn-lg btn-send-reservation") }}
                     <div class="mt-3">
-                        <p>Nemáte účet? <a href="{{ url_for('registration.registration_user') }}"><i class="fas fa-user-plus"></i> Zaregistrujte se</a></p>
+                        <p>Nemáte účet? <a href="{{ url_for('auth.registration_user') }}"><i class="fas fa-user-plus"></i> Zaregistrujte se</a></p>
                         <p>Zapomněli jste heslo? <a href="{{ url_for('auth.renew_password') }}"><i class="fas fa-unlock-alt"></i> Obnovte si heslo</a></p>
                     </div>
                 </form>

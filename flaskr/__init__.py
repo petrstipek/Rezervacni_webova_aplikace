@@ -17,7 +17,7 @@ from flaskr.users.users import users_bp
 from flaskr.instructors.instructors import instructors_bp
 from flaskr.api.users_api import users_api_bp
 from flaskr.api.instructors_api import instructors_api_bp
-from flaskr.auth.registration import registration_bp
+#from flaskr.auth.registration import registration_bp
 import errno
 from werkzeug.utils import secure_filename
 
@@ -62,7 +62,7 @@ def create_application(test_config=None):
     application.register_blueprint(users_bp, url_prefix="/users")
     application.register_blueprint(users_api_bp, url_prefix="/users-api")
     application.register_blueprint(instructors_api_bp, url_prefix="/instructors-api")
-    application.register_blueprint(registration_bp, url_prefix="/registration")
+    #application.register_blueprint(registration_bp, url_prefix="/registration")
 
     application.config['MAIL_SERVER'] = 'smtp.gmail.com'
     application.config['MAIL_PORT'] = 587
