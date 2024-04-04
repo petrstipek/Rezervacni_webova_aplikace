@@ -180,7 +180,7 @@ class ChangeReservation(FlaskForm):
     experience_client2 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
     experience_client3 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
 
-    lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
+    lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová'),("group-ind", "Skupinová - 1 instruktor")], validators=[Optional()])
     lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
     lesson_instructor_choices = SelectField("Instruktor", choices = [], validators=[Optional()])
     language_selection = SelectField("Jazyk", choices=[("czech", "čeština"), ("deutsch", "deutsch"), ("english", "english")])
