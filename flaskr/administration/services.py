@@ -15,6 +15,7 @@ from flask import Response
 import csv
 from io import StringIO
 from sqlalchemy.inspection import inspect
+import calendar
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \
@@ -459,9 +460,11 @@ def generate_reservations_data():
     return response
 
 def generate_instructors_overview():
-    session = database.session
+    today = datetime.today()
+    first_day_of_month = datetime(today.year, today.month, 1)
+    last_day_of_month = datetime(today.year, today.month, calendar.monthrange(today.year, today.month)[1])
 
-    query = session.query(
+    query = database.session.query(
         Osoba.jmeno.label('first_name'),
         Osoba.prijmeni.label('last_name'),
         func.count().label('total_lessons'),
@@ -475,7 +478,9 @@ def generate_instructors_overview():
     ).join(
         DostupneHodiny, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny
     ).filter(
-        DostupneHodiny.stav == 'obsazeno'
+        DostupneHodiny.stav == 'obsazeno',
+        DostupneHodiny.datum >= first_day_of_month,
+        DostupneHodiny.datum <= last_day_of_month
     ).group_by(
         Osoba.jmeno, Osoba.prijmeni
     )
@@ -487,7 +492,7 @@ def generate_instructors_overview():
     cw.writerow(headers)
 
     for row in query.all():
-        cw.writerow([row.first_name, row.last_name, row.total_lessons, row.individual_lessons, row.group_lessons])
+        cw.writerow([row.first_name, row.last_name, row.total_lessons, row.individual_lessons, row.group_lessons, row.group_lessons_individual])
 
     csv_content = "\ufeff" + si.getvalue()
 

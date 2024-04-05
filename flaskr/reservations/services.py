@@ -276,7 +276,7 @@ def assign_instructor_lesson_1hour(lesson_id, reservation_id):
             .filter(MaVypsane.ID_hodiny == lesson_id).first()
         
         if instructor_result is None:
-            raise Exception("nenalezen instruktor pro tuto hodinu")
+            raise Exception("Nenalezen instruktor pro tuto hodinu")
         
         instructor_id = instructor_result.ID_osoba
 

@@ -92,11 +92,15 @@ $(document).ready(function () {
     function fetchAvailableTimes() {
         var instructorId = $('#lesson_instructor').val();
         var lessonType = $('#lesson_type').val();
+        selectedDate = $('#datepicker').val();
 
         if (lessonType === 'individual' || lessonType === "group-ind" && (instructorId)) {
             $.ajax({
                 url: '/reservations-api/lessons/' + instructorId + '/available-times',
                 type: 'GET',
+                data: {
+                    reservation_date: selectedDate
+                },
                 success: function (data) {
                     updateAvailableTimes(data);
                     console.log(data)

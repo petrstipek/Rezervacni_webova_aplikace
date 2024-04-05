@@ -19,7 +19,6 @@ def check_password(stored_password, user_password):
         return False 
 
 def authenticate_user(username, password):
-    #print(hash_password("noveheslo"))
     user = database.session.query(Osoba).filter_by(prihl_jmeno=username).first()
     if user and check_password(user.heslo, password):
         user = database.session.query(Osoba).filter(Osoba.prihl_jmeno == username).first()
@@ -39,14 +38,7 @@ def register_new_user(form):
     existing_user = database.session.query(Osoba).filter(Osoba.email == form.email.data).first()
 
     if existing_user:
-        #existing_user.jmeno = form.name.data
-        #existing_user.prijmeni = form.surname.data
-        #existing_user.tel_cislo = form.tel_number.data
-        #existing_user.prihl_jmeno = form.email.data
-        #existing_user.heslo = hash_password(form.password.data)
-        #user = existing_user
         return None, "Účet s tímto emailem existuje!"
-
 
     else:
         new_osoba = Osoba(jmeno=form.name.data, prijmeni=form.surname.data, tel_cislo=form.tel_number.data, email=form.email.data, prihl_jmeno=form.email.data, heslo=hash_password(form.password.data))

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, session, request, abort
-from flaskr.forms import PersonalInformationForm, ReservationInformationForm
+from flaskr.forms import ReservationInformationForm, ReservationInformationCheckForm
 from flaskr.reservations.services import *
 from flaskr.api.services.instructor_services import get_all_instructors
 from flaskr.extensions import recaptcha_private
@@ -15,21 +15,20 @@ def test():
 
 @reservations_bp.route('/reservation-check')
 def reservation_check():
-    form = ReservationInformationForm()
+    form = ReservationInformationCheckForm()
     return render_template("blog/user/user_reservation_check.html", form=form)
 
 @reservations_bp.route("/", methods=["GET", "POST"])
 def main_page():
     if request.method == "GET":
         flash('Informace na této webové stránce jsou pouze testového charakteru a v žádném případě nejsou oficiálním sdělením společnosti!', 'warning')
-    form = PersonalInformationForm()
+    form = ReservationInformationForm()
     if current_user.is_authenticated:
         form.name.data = current_user.jmeno
         form.surname.data = current_user.prijmeni
         form.email.data = current_user.email
         form.tel_number.data = current_user.tel_cislo
 
-    #opravit vůči 0?
     available_instructors = get_all_instructors()
     available_instructors = handle_all_instructors(available_instructors)
     form.lesson_instructor_choices.choices = available_instructors

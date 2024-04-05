@@ -1,19 +1,14 @@
-from flask import Blueprint, render_template, redirect, flash, url_for, jsonify, request, current_app
+from flask import Blueprint, render_template, redirect, flash, url_for, request
 from flask_login import login_required
-from flaskr.db import get_db
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation, LessonChangeForm
 from flaskr.administration.services import *
 from flaskr.reservations.services import handle_all_instructors
-from flaskr.api.services.instructor_services import get_all_instructors, get_all_paginated_instructors, instructors_count
+from flaskr.api.services.instructor_services import get_all_instructors
 from datetime import datetime
-from flaskr.auth.login_decorators import admin_required, client_required
+from flaskr.auth.login_decorators import admin_required
 from flaskr.administration.services import get_reservation_details
 from flaskr.administration.services import process_reservation_change, get_available_lessons, lesson_capacity_change, lesson_instructor_change
 from flaskr.api.services.lessons_services import get_lesson_detail
-import os
-from werkzeug.utils import secure_filename
-
-
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
