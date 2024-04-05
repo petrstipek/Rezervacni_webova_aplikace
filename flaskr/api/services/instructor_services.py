@@ -1,14 +1,24 @@
 from flaskr.extensions import database
-from flaskr.models import Osoba, Instruktor, MaVyuku
+from flaskr.models import Osoba, Instruktor, MaVyuku, MaVypsane, DostupneHodiny
+from datetime import datetime
 
 def instructor_has_lessons(instructor_id):
-    query_result = database.session.query(MaVyuku).filter_by(ID_osoba=instructor_id).first()
+    today = datetime.today()
+    query_result = database.session.query(DostupneHodiny).join(MaVypsane, MaVypsane.ID_hodiny==DostupneHodiny.ID_hodiny).filter(DostupneHodiny.datum >= today).filter(MaVypsane.ID_osoba==instructor_id).filter(DostupneHodiny.stav=="obsazeno").first()
     return query_result is not None
 
 def delete_instructor_by_id(instructor_id):
     try:
+        ma_vypsane_query = database.session.query(MaVypsane).filter_by(ID_osoba=instructor_id).all()
+        for entry in ma_vypsane_query:
+            if database.session.query(DostupneHodiny).filter_by(ID_hodiny=entry.ID_hodiny).filter_by(typ_hodiny="ind").first():
+                database.session.query(DostupneHodiny).filter_by(ID_hodiny=entry.ID_hodiny).delete()
+            else:
+                return False
+
         database.session.query(Instruktor).filter_by(ID_osoba=instructor_id).delete()
         database.session.query(Osoba).filter_by(ID_osoba=instructor_id).delete()
+
         database.session.commit()
     except Exception as e:
         database.session.rollback()

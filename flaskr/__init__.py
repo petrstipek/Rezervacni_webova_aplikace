@@ -37,7 +37,6 @@ def create_application(test_config=None):
     
     database.init_app(application)
     login_manager.init_app(application)
-    mail.init_app(application)
 
     login_manager.login_view = 'auth.login_page_admin'
 
@@ -65,6 +64,8 @@ def create_application(test_config=None):
     application.config['MAIL_USERNAME'] = 'jl6701543@gmail.com'
     application.config['MAIL_PASSWORD'] = 'qqlg wnwf bsni lzqm '
     application.config['MAIL_DEFAULT_SENDER'] = 'jl6701543@gmail.com'
+
+    mail.init_app(application)
 
 
     UPLOAD_FOLDER = 'static/uploads'
