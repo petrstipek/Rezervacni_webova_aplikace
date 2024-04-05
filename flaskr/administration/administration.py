@@ -97,9 +97,9 @@ def reservations_overview():
 @login_required
 @admin_required
 def admin_page():
-    counts = get_reservation_counts()
-    dates, reservation_counts = prepare_data_for_graph(counts)
-    return render_template("blog/admin/admin_page.html", dates=dates, reservation_counts=reservation_counts, active_page="admin_page")
+    fig = prepare_data_for_graph()
+    graph_html = fig.to_html(full_html=False)
+    return render_template("blog/admin/admin_page.html", active_page="admin_page", graph_html=graph_html)
 
 @administration_bp.route('/instructors-admin', methods=["POST", "GET"])
 @login_required

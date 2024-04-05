@@ -16,6 +16,7 @@ import csv
 from io import StringIO
 from sqlalchemy.inspection import inspect
 import calendar
+import plotly.graph_objects as go
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \
@@ -145,11 +146,22 @@ def get_reservation_counts():
 
 from datetime import datetime
 
-def prepare_data_for_graph(counts):
-    dates = [datetime.strptime(result[0], "%Y-%m-%d").strftime("%Y-%m-%d") if isinstance(result[0], str) else result[0].strftime("%Y-%m-%d") for result in counts]
-    reservation_counts = [result[1] for result in counts]
+def prepare_data_for_graph():
 
-    return dates, reservation_counts
+    #query_result = database.session.query(Instruktor.osoba.jmeno, func.count(DostupneHodiny.ID_hodiny).label("lesson_count")).join(MaVypsane, Instruktor.ID_osoba == MaVypsane.ID_osoba).join(DostupneHodiny, MaVypsane.ID_hodiny == DostupneHodiny.ID_hodiny).group_by(Instruktor.ID_osoba).all()
+
+    query_result = database.session.query(
+    Osoba.jmeno, 
+    func.count(DostupneHodiny.ID_hodiny).label("lesson_count")
+    ).join(Instruktor, Osoba.ID_osoba == Instruktor.ID_osoba).join(MaVypsane, Instruktor.ID_osoba == MaVypsane.ID_osoba).join(DostupneHodiny, MaVypsane.ID_hodiny == DostupneHodiny.ID_hodiny).group_by(Osoba.jmeno).all()
+    
+    instructors = [result[0] for result in query_result]
+    lesson_counts = [result[1] for result in query_result]
+
+    fig = go.Figure([go.Bar(x=instructors, y=lesson_counts)])
+    fig.update_layout(title='Number of Lessons by Instructor',xaxis_title='Instructor', yaxis_title='Number of Lessons')
+
+    return fig
 
 def process_reservation_change(form, reservation_id):
     query_result = database.session.query(Rezervace).filter(Rezervace.ID_rezervace == reservation_id).first()
