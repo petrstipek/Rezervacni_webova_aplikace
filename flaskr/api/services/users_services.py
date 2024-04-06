@@ -16,7 +16,8 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         Rezervace.doba_vyuky.label('doba výuky'),
         InstruktorOsoba.jmeno.label('jméno instruktora'),
         InstruktorOsoba.prijmeni.label('příjmení instruktora'),
-        Rezervace.platba.label('stav platby')
+        Rezervace.platba.label('stav platby'),
+        Rezervace.pocet_zaku.label('počet žáků')
     ).join(KlientOsoba, Rezervace.ID_osoba == KlientOsoba.ID_osoba)\
     .outerjoin(MaVyuku, Rezervace.ID_rezervace == MaVyuku.ID_rezervace)\
     .outerjoin(InstruktorOsoba, MaVyuku.ID_osoba == InstruktorOsoba.ID_osoba)
@@ -49,7 +50,8 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         'doba výuky': lesson[5],
         'jméno instruktora': lesson[6],
         'příjmení instruktora': lesson[7],
-        'stav platby': lesson[8]
+        'stav platby': lesson[8],
+        'počet žáků' : lesson[9],
     } for lesson in lessons]
 
     return {

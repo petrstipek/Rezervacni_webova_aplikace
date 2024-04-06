@@ -62,7 +62,7 @@ $(document).ready(function () {
                     var rowHtml = `<tr>
                         <td>${reservation['termín rezervace'] || 'N/A'}</td>
                         <td>${reservation['čas začátku'] || 'N/A'}</td>
-                        <td>${reservation['pocet_zaku'] || 'N/A'}</td>
+                        <td>${reservation['počet žáků'] || 'N/A'}</td>
                         <td>${reservation['doba výuky'] || 'N/A'}</td>
                         <td>${reservation['stav platby'] || 'N/A'}</td>
                         <td>${instructorFullName || 'N/A'}</td>
