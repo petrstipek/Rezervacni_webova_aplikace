@@ -15,7 +15,7 @@ def detail():
     if details:
         return jsonify(details)
     else:
-        return jsonify({'error': 'Reservation not found'}), 404
+        return jsonify({'error': 'Rezervace nebyla nalezena'}), 404
 
 #nove-funguje
 @administration_api.route('/reservation/payment', methods=["POST"])

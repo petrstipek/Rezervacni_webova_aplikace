@@ -6,7 +6,6 @@ information_bp = Blueprint('information', __name__, template_folder='templates')
 @information_bp.route('/our-instructors')
 def instructors_page():
     instructors = get_all_instructors()
-
     return render_template("blog/user/instructors.html", active_page = "instructors", instructors=instructors)
 
 @information_bp.route('/school')

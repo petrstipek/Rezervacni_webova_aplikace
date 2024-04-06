@@ -25,8 +25,9 @@ def get_reservation(reservation_identifier):
 @reservations_api_bp.route('/lessons/<int:instructor_id>/available-times')
 @reservations_api_bp.route('/lessons/available-times')
 def get_available_lessons(instructor_id = None):
+    date = request.args.get('reservation_date')
     if instructor_id != None:
-        query_result_ind = fetch_available_times_for_individual_instructor(instructor_id)
+        query_result_ind = fetch_available_times_for_individual_instructor(instructor_id, date)
         available_times_ind = format_available_times(query_result_ind)
         return jsonify(available_times_ind)
     else:

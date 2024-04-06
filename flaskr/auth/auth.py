@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flaskr.forms import LoginForm, PasswordRenewalForm
-from flask_login import logout_user, current_user
+from flask import Blueprint, render_template, flash, redirect, url_for
+from flaskr.forms import LoginForm
+from flask_login import logout_user
 from flaskr.extensions import login_manager
 from flaskr.auth.services import *
 from functools import wraps
@@ -25,7 +25,6 @@ def login():
         password = form.password.data
         user = authenticate_user(username, password)
         if user:
-            login_user(user)
             if user.get_role() == 'admin':
                 return redirect(url_for('administration.admin_page'))
             elif user.get_role() == 'instructor':

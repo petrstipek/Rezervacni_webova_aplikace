@@ -1,7 +1,7 @@
 {% extends "base_admin.html" %}
 
 {% block head %}
-<title>Upravit profil uživatele</title>
+<title>Admin page</title>
 <link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
@@ -14,8 +14,9 @@
 <div class="color-background">
     <div class="global-margin">
         <div class="body-login">
+            <h3>Admin page - in progress</h3>
             <div class="form-container">
-                Admin page - in progress
+                {{ graph_html|safe }}
             </div>
         </div>  
     </div>

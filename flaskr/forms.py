@@ -1,39 +1,40 @@
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional, ValidationError
-from flask_wtf.file import FileField, FileRequired, FileAllowed
+from flask_wtf.file import FileField, FileAllowed
 
-class PersonalInformationForm(FlaskForm):
+class ReservationInformationForm(FlaskForm):
+    lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
+    tel_number = StringField('Telefonní číslo', validators=[
+        DataRequired(),
+        Regexp(r'^\+?1?\d{9,15}$', message="Formát telefonního čísla: '+1XXXXXXXXX' (X značí číslice, '+1' a délka 9 až 15 číslic jsou volitelné).")
+    ], render_kw={"type": "tel"})
+    lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová'), ("group-ind", "Skupinová - 1 instruktor")], validators=[Optional()])
+    date = HiddenField("date", validators=[DataRequired()])
+    time_reservation = HiddenField("time", validators=[DataRequired()])
 
+    submit = SubmitField('Odeslat rezervaci')
+    
+    
     name_validator = Regexp(r"^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ]+([-' ][a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ]+)*$",
     message="Jméno může obsahovat pouze písmena, pomlčky, apostrofy a mezery.")
 
     name = StringField(label="Jméno", validators=[Length(min=2, max=20), DataRequired(),name_validator])
     surname = StringField(label="Příjmení", validators=[Length(min=2, max=30), DataRequired(),name_validator])
     password = PasswordField(label="Heslo:", validators=[Optional()])
-    
-    tel_number = StringField('Telefonní číslo', validators=[
-        DataRequired(),
-        Regexp(r'^\+?1?\d{9,15}$', message="Formát telefonního čísla: '+999999999'!")
-    ], render_kw={"type": "tel"})
     email =  StringField('Email', validators=[DataRequired(), Email()], render_kw={"type": "email"})
     age_client = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
     experience_client = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
-    
     student_client = BooleanField('Žák stejný jako klient', validators=[])
     more_students = BooleanField("Objednat více žáků", validators=[])
-
     submit_with_register = BooleanField("Pokračovat s registrací.", validators=[Optional()])
     submit_without_register = BooleanField("Pokračovat bez registrace.", validators=[Optional()])
-
     name_client1 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
     name_client2 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
     name_client3 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
-
     surname_client1 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
     surname_client2 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
     surname_client3 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
-
     age_client1 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
     age_client2 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
     age_client3 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
@@ -43,7 +44,6 @@ class PersonalInformationForm(FlaskForm):
     experience_client3 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
 
     lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová'), ("group-ind", "Skupinová - 1 instruktor")], validators=[Optional()])
-    lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
     lesson_instructor_choices = SelectField("Instruktor", choices = [])
     language_selection = SelectField("Jazyk", choices=[("czech", "čeština"), ("deutsch", "deutsch"), ("english", "english")])
 
@@ -55,9 +55,7 @@ class PersonalInformationForm(FlaskForm):
     lesson_length_hidden = HiddenField()
     lesson_instructor_choices_hidden = HiddenField()
 
-    submit = SubmitField('Odeslat rezervaci')
-
-class ReservationInformationForm(FlaskForm):
+class ReservationInformationCheckForm(FlaskForm):
     reservation_id = StringField("ID rezervace", validators=[DataRequired()])
     submit = SubmitField('Získat informace')
 
