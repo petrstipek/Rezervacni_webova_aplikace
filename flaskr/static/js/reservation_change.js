@@ -128,7 +128,9 @@ $(document).ready(function () {
         if (selectedDate) {
             $.ajax({
                 url: "/reservations-api/lessons/0/available-times",
-                data: { date: selectedDate },
+                data: {
+                    reservation_date: selectedDate
+                },
                 type: 'GET',
                 success: function (data) {
                     updateAvailableTimes(data);

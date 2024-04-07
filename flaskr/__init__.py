@@ -23,6 +23,7 @@ def create_application(test_config=None):
     application = Flask(__name__, instance_relative_config=True)
     application.config.from_mapping(
         SECRET_KEY='dev',
+        SECURITY_PASSWORD_SALT = 'dev'
     )
 
     bootstrap = Bootstrap5(application)

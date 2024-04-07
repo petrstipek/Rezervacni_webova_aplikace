@@ -19,7 +19,7 @@ def send_reservation_confirmation(user_email, reservation_details):
     elif reservation_details.typ_rezervace == "group":
         typ_rezervace = "Skupinová - více instruktorů."
     else:
-        typ_rezervace = "Individuální - jeden instruktor."
+        typ_rezervace = "Individuální."
 
     html_content = f"""
     <html>
