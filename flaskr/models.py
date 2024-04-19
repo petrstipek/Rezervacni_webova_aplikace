@@ -21,10 +21,10 @@ class Osoba(Base):
     ID_osoba = Column(Integer, primary_key=True)
     jmeno = Column(String(20), nullable=False)
     prijmeni = Column(String(30), nullable=False)
-    email = Column(String(30), nullable=False)
+    email = Column(String(255), nullable=False)
     tel_cislo = Column(String(15), nullable=False)
-    prihl_jmeno = Column(String(20))
-    heslo = Column(String(60))
+    prihl_jmeno = Column(String(255))
+    heslo = Column(String(255))
 
     password_change_attempts = Column(Integer, default=0, nullable=False)
     last_password_change_attempt = Column(DateTime)
@@ -91,7 +91,7 @@ class Rezervace(Base):
     pocet_zaku = Column(Integer, nullable=False)
     platba = Column(String(20), nullable=False)
     rezervacni_kod = Column(String(20), nullable=False)
-    poznamka = Column(String(100))
+    poznamka = Column(String(255))
     klient = relationship(Klient, backref='rezervace')
 
 class MaVyuku(Base):
