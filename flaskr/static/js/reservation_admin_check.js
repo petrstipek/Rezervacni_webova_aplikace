@@ -357,7 +357,7 @@ $(document).ready(function () {
                 var zakNames = response.Zak.map(function (zak) { return zak.jmeno_zak; }).join(', ');
                 var zakExperiences = response.Zak.map(function (zak) { return zak.zkusenost_zak; }).join(', ');
                 var zakAges = response.Zak.map(function (zak) { return zak.vek_zak; }).join(', ');
-                var emergency = response.Instruktor_emergency.map(function (instruktor) { return instruktor.pohotovost; }).join(', ');
+                var emergency = response.Instruktor_emergency[0].pohotovost;
                 detailsHtml += '<tr><th>Žáci lekce</th><td>' + (zakNames || 'N/A') + '</td></tr>';
                 detailsHtml += '<tr><th>Zkušenosti žáků</th><td>' + (zakExperiences || 'N/A') + '</td></tr>';
                 detailsHtml += '<tr><th>Věk žáků</th><td>' + (zakAges || 'N/A') + '</td></tr>';
@@ -370,7 +370,7 @@ $(document).ready(function () {
                 var deleteButton = $('<button class="btn btn-warning deleteReservation" data-id="' + reservationId + '">Storno</button>');
                 var paymentButton = $('<button class="btn btn-warning markAsPaid" data-id="' + reservationId + '">Označit zaplaceno</button>');
                 var changeButton = $('<button class="btn btn-primary changeReservation" data-id="' + reservationId + '">Změnit rezervaci</button>');
-                var instructorButton = $('<button class="btn btn-primary markEmergency" data-id="' + reservationId + '">Pohotovost instruktor</button>');
+                var instructorButton = $('<button class="btn btn-primary markEmergency" data-id="' + reservationId + '">Označit pohotovost</button>');
 
                 detailsHtml += '<table class="action-buttons-table">';
                 detailsHtml += '<thead>';

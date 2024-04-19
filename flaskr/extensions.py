@@ -6,6 +6,6 @@ mail = Mail()
 login_manager = LoginManager()
 database = SQLAlchemy()
 
-recaptcha_private = "6LdmUpQpAAAAAEzCoZWnmEffNUxHCWB_adG1N608"
-recaptcha_public = "6LdmUpQpAAAAALHcMy_U6mDJ78OJuptLW9muSk23"
+recaptcha_private = "6Ldfh6spAAAAADhvDry4Qm9fKZgx_Th_okQZbeW3"
+recaptcha_public = "6Ldfh6spAAAAANtsZZU3rLBv85NBJQFz-71nYcX3"
 verify_url = "https://www.google.com/recaptcha/api/siteverify"

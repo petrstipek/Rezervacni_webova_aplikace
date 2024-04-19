@@ -105,8 +105,8 @@ def get_reservation_details(reservation_id):
     zaks = database.session.query(Zak).filter(Zak.ID_rezervace == reservation_id).all()
     zak_list = [{'ID_zak': zak.ID_zak, 'jmeno_zak': zak.jmeno, 'prijmeni_zak': zak.prijmeni, 'vek_zak': zak.vek, 'zkusenost_zak': zak.zkusenost} for zak in zaks]
 
-    instructor_data = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).all()
-    instructor_list = [{'pohotovost': instructor.pohotovost} for instructor in instructor_data]
+    instructor_data = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).first()
+    instructor_list = [{'pohotovost': instructor_data.pohotovost} ]
 
     combined_details = {
         **reservation_detail, 
@@ -123,13 +123,25 @@ def get_school_information():
     available_times_count = database.session.query(DostupneHodiny).filter(DostupneHodiny.obsazenost=="volno").count()
 
 def emergency_status(reservation_id):
-    query = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).first()
-    if query.pohotovost == "pohotovost":
-        database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).update({"pohotovost" : None})
-        message = "Pohotovost byla zrušena"
-    else:
-        database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).update({"pohotovost" : "pohotovost"})
-        message = "Pohotovost byla nastavena"
-    database.session.commit()
-    return message
+    reservations = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).all()
 
+    if not reservations:
+        return "No reservations found with the given ID."
+
+    changes = {
+        "set_to_pohotovost": 0,
+        "unset_from_pohotovost": 0
+    }
+
+    for reservation in reservations:
+        if reservation.pohotovost == "pohotovost":
+            reservation.pohotovost = None
+            changes["unset_from_pohotovost"] += 1
+        else:
+            reservation.pohotovost = "pohotovost"
+            changes["set_to_pohotovost"] += 1
+
+    database.session.commit()
+
+    message = (f"Pohotovost byla nastavena pro {changes['set_to_pohotovost']} instruktorů; " f"Pohotovost byla zrušena pro {changes['unset_from_pohotovost']} instruktorů.")
+    return message
