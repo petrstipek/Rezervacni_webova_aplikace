@@ -108,16 +108,16 @@
                                     <a href="{{ url_for('users.users_profile') }}" class="navbar-text me-3 nav-link px-2 me-2">Uživatel: {{ current_user.jmeno }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('auth.logout') }}" class="btn btn-warning btn-select-reservation me-2">Odhlásit se</a>
+                                    <a href="{{ url_for('auth.logout') }}" class="btn btn-warning btn-login btn-select-reservation me-2">Odhlásit se</a>
                                 </li>
                             </ul>
                         {% else %}
                             <ul class="navbar-nav ml-auto">
                                 <li class="nav-item">
-                                    <a href="{{ url_for('auth.login') }}" class="btn-header btn btn-warning btn-select-reservation me-2 button-navbar login-admin-btn">Přihlásit se</a>
+                                    <a href="{{ url_for('auth.login') }}" class="btn-login btn-header btn btn-warning btn-select-reservation me-2 button-navbar login-admin-btn">Přihlásit se</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('reservations.reservation_check') }}" class="btn-header btn btn-warning btn-select-reservation" role="button">Správa rezervace</a>
+                                    <a href="{{ url_for('reservations.reservation_check') }}" class="btn-login btn-header btn btn-warning btn-select-reservation" role="button">Správa rezervace</a>
                                 </li>
                             </ul>
                         {% endif %}
