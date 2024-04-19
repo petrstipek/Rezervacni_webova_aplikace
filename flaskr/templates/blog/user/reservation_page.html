@@ -24,17 +24,16 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Chcete se registrovat?</h2>
-                <span class="close-button">&times;</span>
             </div>
             <p>S registrací můžete provádět storna, změny a detailní náhledy na všechny Vaše rezervace.</p>
                 <div class="form-group">
                     <div class="checkbox-field">
-                        <label for="continueWithoutReg">{{ form.submit_without_register.label }}</label>
                         <input type="checkbox" id="continueWithoutReg" name="continueWithoutReg">
+                        <label for="continueWithoutReg">{{ form.submit_without_register.label }}</label>
                     </div>
                     <div class="checkbox-field">
-                        <label for="continueWithReg">{{ form.submit_with_register.label }}</label>
                         <input type="checkbox" id="continueWithReg" name="continueWithReg">
+                        <label for="continueWithReg">{{ form.submit_with_register.label }}</label>
                     </div>
                 </div>
                 <div class="form-group" id="passwordField" style="display: none;">
@@ -48,7 +47,7 @@
     </div>
   
     {{ form.hidden_tag() }}
-    <section class="section-blue" id="date_picker">
+    <section class="section-blue" id="date_picker" data-logged-in="{{ login_control }}">
         <div class="global-margin display-form">
             <h2 class="h2-headers">Výběr termínu rezervace</h2>
             <div class="grid-container">
@@ -211,7 +210,7 @@
             <div class="form-grid">
                 {{ form.note(class="notes-field") }}
                 <button id="submit_reservation" class="submit-reservation-button g-recaptcha btn btn-warning btn btn-lg btn-send-reservation" 
-                data-sitekey="6Ldfh6spAAAAANtsZZU3rLBv85NBJQFz-71nYcX3" 
+                data-sitekey="6LdmUpQpAAAAALHcMy_U6mDJ78OJuptLW9muSk23" 
                 data-callback='onSubmit' 
                 data-action='submit'
                 type="button">Odeslat rezervaci</button>

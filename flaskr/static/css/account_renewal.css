@@ -9,3 +9,7 @@
     width: 100%;
     max-width: 500px;
 }
+
+input.left-aligned-placeholder::placeholder {
+    text-align: left;
+}

@@ -21,7 +21,8 @@ def reservation_check():
 @reservations_bp.route("/", methods=["GET", "POST"])
 def main_page():
     if request.method == "GET":
-        flash('Informace na této webové stránce jsou pouze testového charakteru a v žádném případě nejsou oficiálním sdělením společnosti!', 'warning')
+        pass
+        #flash('Informace na této webové stránce jsou pouze testového charakteru a v žádném případě nejsou oficiálním sdělením společnosti!', 'warning')
     form = ReservationInformationForm()
     if current_user.is_authenticated:
         form.name.data = current_user.jmeno
@@ -90,5 +91,6 @@ def main_page():
             flash("Prosím, opravte následující chyby: " + ", ".join(error_messages), category="danger")
             print("Form errors:", form.errors)
             
-    return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form, is_logged_in=current_user.is_authenticated)
+    login_control = 'true' if current_user.is_authenticated else 'false'
+    return render_template("blog/user/reservation_page.html", active_page="reservation_page", form=form, is_logged_in=current_user.is_authenticated, login_control=login_control)
 

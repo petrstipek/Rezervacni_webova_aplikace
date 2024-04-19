@@ -73,7 +73,7 @@ $(document).ready(function () {
                 }
 
                 totalPages = response.pages;
-                updatePaginationControls(totalPages, page);
+                updatePaginationControls(totalPages, currentPage);
             },
             error: function (xhr, status, error) {
                 console.error("Error: " + status + " - " + error);
@@ -81,8 +81,28 @@ $(document).ready(function () {
             }
         });
     }
+    //---
 
+    function updatePaginationControls(totalPages, currentPage) {
+        $('#paginationControlsFirstTable').empty();
 
+        let prevDisabled = currentPage <= 1 ? "disabled" : "";
+        $('#paginationControlsFirstTable').append(`<button id="prevPage" ${prevDisabled} onclick="${currentPage - 1}">Předchozí</button>`);
+
+        let nextDisabled = currentPage >= totalPages ? "disabled" : "";
+        $('#paginationControlsFirstTable').append(`<button id="nextPage" ${nextDisabled} onclick="${currentPage + 1}">Další</button>`);
+    }
+
+    $('#paginationControlsFirstTable').on('click', '#prevPage:not([disabled])', function () {
+        fetchLessons(--currentPage, selectedDate);
+    });
+
+    $('#paginationControlsFirstTable').on('click', '#nextPage:not([disabled])', function () {
+        fetchLessons(++currentPage, selectedDate);
+    });
+
+    //----
+    /*
     function updatePaginationControls(totalPages, currentPage) {
         $('#paginationControls').empty();
 
@@ -106,6 +126,8 @@ $(document).ready(function () {
             fetchLessons(++currentPage, selectedDate);
         }
     });
+    */
+    //--
 
     window.deleteLesson = function (lessonId) {
         $.ajax({

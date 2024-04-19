@@ -920,11 +920,12 @@ hr {
 }
 
 .alert-margin {
-    display: flex;
+    display: flex !important;
     flex-direction: row;
     flex: 1;
     margin-top: 10px;
     margin-bottom: 10px;
+    align-items: center;
 }
 
 .navbar-colour {

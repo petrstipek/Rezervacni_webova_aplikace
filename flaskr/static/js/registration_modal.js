@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var submission = false;
+    var is_logged_in = $('section').data('logged-in');
 
     //localStorage.setItem("modalShown", "false");
     //$("#registrationModal").show();
@@ -24,9 +25,15 @@ $(document).ready(function () {
         $('#registrationModal').hide();
     });
 
+    console.log("tady jsem")
+    if (is_logged_in == false) {
+        console.log("nejsem prihlasen")
+    } else {
+        console.log("jsem prihlasen")
+    }
 
     $("#reservation-form").on("submit", function (event) {
-        if (submission == false && localStorage.getItem("modalShown") !== "true") {
+        if (submission == false && localStorage.getItem("modalShown") !== "true" && is_logged_in == false) {
             event.preventDefault();
             submission = true;
             $("#registrationModal").show();

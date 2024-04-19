@@ -17,8 +17,6 @@ from flaskr.api.users_api import users_api_bp
 from flaskr.api.instructors_api import instructors_api_bp
 import errno
 
-
-
 def create_application(test_config=None):
     application = Flask(__name__, instance_relative_config=True)
     application.config.from_mapping(
@@ -67,7 +65,6 @@ def create_application(test_config=None):
     application.config['MAIL_DEFAULT_SENDER'] = 'jl6701543@gmail.com'
 
     mail.init_app(application)
-
 
     UPLOAD_FOLDER = 'static/uploads'
     application.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

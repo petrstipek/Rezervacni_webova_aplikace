@@ -164,6 +164,7 @@ select {
 .container-reservation {
     display: flex;
     flex-direction: column;
+    margin-right: 8px;
 }
 
 .table-responsive {
@@ -219,4 +220,8 @@ select {
 
 .page-item {
     margin-left: 4px;
+}
+
+.alert {
+    padding: 0px;
 }

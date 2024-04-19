@@ -27,7 +27,6 @@ function fetchInstructors(page) {
 
 $(document).ready(function () {
     fetchInstructors(1);
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
     $('table').on('click', '.button-instructor-action', function () {
         var instructorId = $(this).data('instructor-id');

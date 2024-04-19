@@ -90,7 +90,8 @@ def get_reservation_details(reservation_id):
             'email_klienta': reservation_query.klient.osoba.email,
             'tel_cislo_klienta': reservation_query.klient.osoba.tel_cislo,
             'poznamka': reservation_query.poznamka,
-            'pocet_zaku': reservation_query.pocet_zaku
+            'pocet_zaku': reservation_query.pocet_zaku,
+            'jazyk' : reservation_query.jazyk
         }
 
     instructor_query = database.session.query(Instruktor).outerjoin(Osoba, Instruktor.ID_osoba==Osoba.ID_osoba).outerjoin(MaVyuku, Instruktor.ID_osoba==MaVyuku.ID_osoba).filter(MaVyuku.ID_rezervace==reservation_id).first()
@@ -104,10 +105,14 @@ def get_reservation_details(reservation_id):
     zaks = database.session.query(Zak).filter(Zak.ID_rezervace == reservation_id).all()
     zak_list = [{'ID_zak': zak.ID_zak, 'jmeno_zak': zak.jmeno, 'prijmeni_zak': zak.prijmeni, 'vek_zak': zak.vek, 'zkusenost_zak': zak.zkusenost} for zak in zaks]
 
+    instructor_data = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).all()
+    instructor_list = [{'pohotovost': instructor.pohotovost} for instructor in instructor_data]
+
     combined_details = {
         **reservation_detail, 
         'Instructor': instructor_detail,
-        'Zak': zak_list
+        'Zak': zak_list,
+        'Instruktor_emergency': instructor_list
     }
     return combined_details
 
@@ -115,8 +120,16 @@ def get_reservation_details(reservation_id):
 def get_school_information():
     today = datetime.today().date()
     reservation_count = database.session.query(Rezervace).filter(Rezervace.termin==today).count()
-    print(reservation_count)
-
     available_times_count = database.session.query(DostupneHodiny).filter(DostupneHodiny.obsazenost=="volno").count()
-    print(available_times_count)
+
+def emergency_status(reservation_id):
+    query = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).first()
+    if query.pohotovost == "pohotovost":
+        database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).update({"pohotovost" : None})
+        message = "Pohotovost byla zrušena"
+    else:
+        database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).update({"pohotovost" : "pohotovost"})
+        message = "Pohotovost byla nastavena"
+    database.session.commit()
+    return message
 

@@ -86,8 +86,8 @@ def process_reservation(form):
         result, message, message_type = individual_group_reservation(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one)
     
     if result:
-        send_reservation_confirmation(email, new_reservation)
         database.session.commit()
+        send_reservation_confirmation(email, new_reservation)
         reservation_identifier = new_reservation.rezervacni_kod
         return message, message_type, reservation_identifier
     

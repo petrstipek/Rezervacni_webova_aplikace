@@ -4,4 +4,5 @@ $(document).ready(function () {
             $(this).remove();
         });
     }, 5000);
+
 });

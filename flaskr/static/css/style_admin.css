@@ -386,6 +386,7 @@ select {
 
 .alert-margin {
     display: block !important;
+    margin-bottom: 10px !important
 }
 
 .body-color {

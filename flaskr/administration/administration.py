@@ -152,7 +152,7 @@ def lessons_admin():
     form = LessonInsertForm()
 
     available_instructors = get_available_instructors()
-    form.lesson_instructor_choices.choices = available_instructors
+    form.lesson_instructor_choices.choices = available_instructors[1:]
     form.lesson_instructor_choices2.choices = available_instructors
     form.lesson_instructor_choices3.choices = available_instructors
     form.lesson_instructor_choices4.choices = available_instructors
