@@ -41,11 +41,7 @@ def register_new_user(form):
         return None, "Účet s tímto emailem existuje!"
 
     else:
-        print("hesla")
-        print(form.password.data)
-        print(form.email.data)
         hashed_password = hash_password(form.password.data)
-        print(hashed_password)
         new_osoba = Osoba(jmeno=form.name.data, prijmeni=form.surname.data, tel_cislo=form.tel_number.data, email=form.email.data, prihl_jmeno=form.email.data, heslo=hashed_password)
         database.session.add(new_osoba)
         database.session.flush()
