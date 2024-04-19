@@ -16,6 +16,8 @@ def renew_password():
         if email_user_instance:
             send_reset_email(email_user_instance)
             flash("Na Vaší emailovou adresu byl odeslán odkaz pro obnovu hesla!", category="success")
+            return redirect(url_for('auth.login'))
+
         else:
             flash("Email v systému neexistuje, zkuste to prosím znovu!", category="danger")
     return render_template('/auth/renew_password.html', form=form)

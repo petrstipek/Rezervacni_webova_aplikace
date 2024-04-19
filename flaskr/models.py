@@ -98,6 +98,7 @@ class MaVyuku(Base):
     __tablename__ = 'ma_vyuku'
     ID_osoba = Column(Integer, ForeignKey('instruktor.ID_osoba'), primary_key=True)
     ID_rezervace = Column(Integer, ForeignKey('rezervace.ID_rezervace'), primary_key=True)
+    pohotovost = Column(String(100))
     instruktor = relationship(Instruktor, backref='ma_vyuku')
     rezervace = relationship(Rezervace, backref='ma_vyuku')
 

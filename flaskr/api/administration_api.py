@@ -16,6 +16,14 @@ def detail():
         return jsonify(details)
     else:
         return jsonify({'error': 'Rezervace nebyla nalezena'}), 404
+    
+@administration_api.route('/reservation/emergency' , methods=["POST"])
+@login_required
+@admin_required
+def emergency_reservation():
+    reservation_id = request.args.get('reservation_id')
+    message = emergency_status(reservation_id)
+    return jsonify({'status': 'success', 'message': message}), 200
 
 #nove-funguje
 @administration_api.route('/reservation/payment', methods=["POST"])

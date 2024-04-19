@@ -108,7 +108,7 @@ $(document).ready(function () {
                     $("input[name='date']").val(selectedDate);
                 },
                 error: function (error) {
-                    console.error('Error fetching available times:', error);
+                    console.error('Při aktualizaci hodin nastala chyba!', error);
                 }
             });
         } else if (lessonType === 'group') {
@@ -417,6 +417,7 @@ $(document).ready(function () {
             $('#student_client_checkbox, #more_students_checkbox').css('outline', 'none');
         }
     });
+
     $('#student_client_checkbox, #more_students_checkbox').change(function () {
         if ($('#student_client_checkbox').is(':checked') || $('#more_students_checkbox').is(':checked')) {
             $('#student_client_checkbox, #more_students_checkbox').css('outline', 'none');

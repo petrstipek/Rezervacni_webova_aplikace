@@ -90,7 +90,8 @@ def get_reservation_details(reservation_id):
             'email_klienta': reservation_query.klient.osoba.email,
             'tel_cislo_klienta': reservation_query.klient.osoba.tel_cislo,
             'poznamka': reservation_query.poznamka,
-            'pocet_zaku': reservation_query.pocet_zaku
+            'pocet_zaku': reservation_query.pocet_zaku,
+            'jazyk' : reservation_query.jazyk
         }
 
     instructor_query = database.session.query(Instruktor).outerjoin(Osoba, Instruktor.ID_osoba==Osoba.ID_osoba).outerjoin(MaVyuku, Instruktor.ID_osoba==MaVyuku.ID_osoba).filter(MaVyuku.ID_rezervace==reservation_id).first()
@@ -104,10 +105,14 @@ def get_reservation_details(reservation_id):
     zaks = database.session.query(Zak).filter(Zak.ID_rezervace == reservation_id).all()
     zak_list = [{'ID_zak': zak.ID_zak, 'jmeno_zak': zak.jmeno, 'prijmeni_zak': zak.prijmeni, 'vek_zak': zak.vek, 'zkusenost_zak': zak.zkusenost} for zak in zaks]
 
+    instructor_data = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).first()
+    instructor_list = [{'pohotovost': instructor_data.pohotovost} ]
+
     combined_details = {
         **reservation_detail, 
         'Instructor': instructor_detail,
-        'Zak': zak_list
+        'Zak': zak_list,
+        'Instruktor_emergency': instructor_list
     }
     return combined_details
 
@@ -115,8 +120,28 @@ def get_reservation_details(reservation_id):
 def get_school_information():
     today = datetime.today().date()
     reservation_count = database.session.query(Rezervace).filter(Rezervace.termin==today).count()
-    print(reservation_count)
-
     available_times_count = database.session.query(DostupneHodiny).filter(DostupneHodiny.obsazenost=="volno").count()
-    print(available_times_count)
 
+def emergency_status(reservation_id):
+    reservations = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).all()
+
+    if not reservations:
+        return "No reservations found with the given ID."
+
+    changes = {
+        "set_to_pohotovost": 0,
+        "unset_from_pohotovost": 0
+    }
+
+    for reservation in reservations:
+        if reservation.pohotovost == "pohotovost":
+            reservation.pohotovost = None
+            changes["unset_from_pohotovost"] += 1
+        else:
+            reservation.pohotovost = "pohotovost"
+            changes["set_to_pohotovost"] += 1
+
+    database.session.commit()
+
+    message = (f"Pohotovost byla nastavena pro {changes['set_to_pohotovost']} instruktorů; " f"Pohotovost byla zrušena pro {changes['unset_from_pohotovost']} instruktorů.")
+    return message
