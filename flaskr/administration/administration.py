@@ -93,13 +93,21 @@ def reservation_change():
 def reservations_overview():
     return render_template('/blog/admin/reservation_overview.html', active_page="reservations_overview")
 
-@administration_bp.route('/admin-page', methods=["GET", "POST"])
+@administration_bp.route('/main-page')
 @login_required
 @admin_required
-def admin_page():
+def main_admin_page():
+    return render_template('/blog/admin/main_admin_page.html', active_page="admin_page")
+
+@administration_bp.route('/graphs')
+@login_required
+@admin_required
+def graphs_page():
     fig = prepare_data_for_graph()
+    fig_reservation = prepare_data_reservations_graph()
+    graph_reservation_html = fig_reservation.to_html(full_html=False)
     graph_html = fig.to_html(full_html=False)
-    return render_template("blog/admin/admin_page.html", active_page="admin_page", graph_html=graph_html)
+    return render_template('/blog/admin/admin_page.html', graph_html=graph_html, graph_reservation_html=graph_reservation_html)
 
 @administration_bp.route('/instructors-admin', methods=["POST", "GET"])
 @login_required

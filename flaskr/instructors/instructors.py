@@ -13,4 +13,4 @@ instructors_bp = Blueprint('instructor', __name__, template_folder='templates')
 def instructors_reservations():
     user_id = current_user.get_id()
     user = database.session.query(Osoba).filter(Osoba.ID_osoba==user_id).first()
-    return render_template("/blog/instructors/instructors_page.html", instructor_name=user.jmeno)
+    return render_template("/blog/instructors/instructors_page.html", instructor_name=user.jmeno, active_page="instructors_reservations")

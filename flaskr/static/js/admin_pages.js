@@ -81,7 +81,6 @@ $(document).ready(function () {
             }
         });
     }
-    //---
 
     function updatePaginationControls(totalPages, currentPage) {
         $('#paginationControlsFirstTable').empty();
@@ -100,34 +99,6 @@ $(document).ready(function () {
     $('#paginationControlsFirstTable').on('click', '#nextPage:not([disabled])', function () {
         fetchLessons(++currentPage, selectedDate);
     });
-
-    //----
-    /*
-    function updatePaginationControls(totalPages, currentPage) {
-        $('#paginationControls').empty();
-
-        if (currentPage > 1) {
-            $('#paginationControls').append(`<button id="prevPage">Předchozí</button>`);
-        }
-
-        if (currentPage < totalPages) {
-            $('#paginationControls').append(`<button id="nextPage">Další</button>`);
-        }
-    }
-
-    $('#paginationControls').on('click', '#prevPage', function () {
-        if (currentPage > 1) {
-            fetchLessons(--currentPage, selectedDate);
-        }
-    });
-
-    $('#paginationControls').on('click', '#nextPage', function () {
-        if (currentPage < totalPages) {
-            fetchLessons(++currentPage, selectedDate);
-        }
-    });
-    */
-    //--
 
     window.deleteLesson = function (lessonId) {
         $.ajax({

@@ -17,6 +17,7 @@ from io import StringIO
 from sqlalchemy.inspection import inspect
 import calendar
 import plotly.graph_objects as go
+from collections import defaultdict
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \
@@ -159,8 +160,52 @@ def prepare_data_for_graph():
     lesson_counts = [result[1] for result in query_result]
 
     fig = go.Figure([go.Bar(x=instructors, y=lesson_counts)])
-    fig.update_layout(title='Number of Lessons by Instructor',xaxis_title='Instructor', yaxis_title='Number of Lessons')
+    fig.update_layout(title='Počet lekcí pro instruktora',xaxis_title='Instruktor', yaxis_title='Počet lekcí')
 
+    return fig
+
+def prepare_data_reservations_graph():
+    end_date = datetime.today().date()
+    start_date = end_date - timedelta(days=end_date.weekday())
+
+    counts = (database.session.query(func.date(Rezervace.termin), Rezervace.typ_rezervace, func.count(Rezervace.ID_rezervace))
+            .filter(Rezervace.termin >= start_date)
+            .filter(Rezervace.termin <= end_date)
+            .group_by(func.date(Rezervace.termin), Rezervace.typ_rezervace)
+            .order_by(func.date(Rezervace.termin), Rezervace.typ_rezervace)
+            .all())
+    
+    type_data = defaultdict(lambda: defaultdict(int))
+    dates = set()
+
+    for date, typ, count in counts:
+        type_data[typ][date.isoformat()] = count
+        dates.add(date.isoformat())
+
+    sorted_dates = sorted(dates)
+    types = ['individual', 'group-ind', 'group']
+    final_data = {typ: [type_data[typ][date] for date in sorted_dates] for typ in types}
+
+    fig = go.Figure()
+
+    for typ in types:
+        fig.add_trace(go.Bar(
+            x=sorted_dates,
+            y=final_data[typ],
+            name=typ
+        ))
+
+    fig.update_layout(
+        barmode='group',
+        title='Počet rezervací dle data a typu',
+        xaxis_title='Datum',
+        yaxis_title='Počet rezervací',
+        xaxis=dict(
+            type='category',
+            tickformat='%Y-%m-%d'
+        )
+    )
+    
     return fig
 
 def process_reservation_change(form, reservation_id):
