@@ -1,4 +1,4 @@
-# Rezervacni_webova_aplikace/Reservation_web_application
+# Reservation Web Application
 Rezervační webová aplikace pro lyžařskou školu.
 Tato webová aplikace byla vytvořena v rámci bakalářské práce na Vysoké Škole Ekonomické, Fakulta informatiky a statistiky.
 
