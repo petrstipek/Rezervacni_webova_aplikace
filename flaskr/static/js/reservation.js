@@ -222,6 +222,7 @@ $(document).ready(function () {
 
         timesHtml += '</div>';
         document.querySelector('.times-container').innerHTML = timesHtml;
+        adjustColumnHeights()
     }
 
     $.datepicker.regional['cs'] = {
@@ -387,6 +388,7 @@ $(document).ready(function () {
     function adjustColumnHeights() {
         var leftColumnHeight = $('.left-column').outerHeight();
         $('.right-column').css('min-height', leftColumnHeight);
+        $('.right-column').css('max-height', leftColumnHeight);
     }
 
     $("#datepicker").datepicker({
