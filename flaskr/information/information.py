@@ -15,7 +15,3 @@ def school_page():
 @information_bp.route('/prices')
 def prices_page():
     return render_template("blog/user/prices.html", active_page = "prices")
-
-@information_bp.route('/contact')
-def contacts_page():
-    return render_template("blog/user/contacts.html", active_page = "prices")
