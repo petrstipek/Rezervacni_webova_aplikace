@@ -8,4 +8,5 @@ database = SQLAlchemy()
 
 recaptcha_private = "6Ldfh6spAAAAADhvDry4Qm9fKZgx_Th_okQZbeW3"
 recaptcha_public = "6Ldfh6spAAAAANtsZZU3rLBv85NBJQFz-71nYcX3"
+
 verify_url = "https://www.google.com/recaptcha/api/siteverify"

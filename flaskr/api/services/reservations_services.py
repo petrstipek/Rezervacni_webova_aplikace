@@ -103,9 +103,9 @@ def delete_reservation_by_reservation_id(reservation_id):
             for zak_id in zak_ids:
                 database.session.query(Zak).filter_by(ID_zak=zak_id).delete()
             
-            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
             database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).delete()
             database.session.query(MaVyuku).filter_by(ID_rezervace=reservation_id).delete()
+            database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).delete()
 
             database.session.commit()
 

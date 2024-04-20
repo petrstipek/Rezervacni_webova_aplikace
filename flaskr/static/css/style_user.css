@@ -1038,3 +1038,13 @@ label {
 .btn-login {
     margin-bottom: 0px !important;
 }
+
+.section-blue .h4-headers {
+    margin-top: 0;
+    /* removes any default top margin */
+    margin-bottom: 10px;
+    /* gives some space below the title */
+    text-align: left;
+    margin-top: 5px;
+    /* aligns text to the left */
+}
