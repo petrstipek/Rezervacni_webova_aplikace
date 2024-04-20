@@ -1046,3 +1046,8 @@ label {
 .nav-item {
     margin-bottom: 8px !important;
 }
+
+.navbar-custom {
+    margin-top: 0px !important;
+    justify-content: space-between !important;
+}
