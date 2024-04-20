@@ -92,7 +92,7 @@ def delete_reservation_by_reservation_id(reservation_id):
         if time_difference < timedelta(hours=2):
             return False, "Rezervace nemůže být zrušena! Zbývá méně jak 2 hodiny do hodiny."
 
-        if reservation.typ_rezervace == "individual":
+        if reservation.typ_rezervace == "individual" or reservation.typ_rezervace == "group-ind":
             lessons = database.session.query(Prirazeno).filter_by(ID_rezervace=reservation_id).all()
             for lesson in lessons:
                 database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson.ID_hodiny).update({"stav" : "volno"})
@@ -129,8 +129,6 @@ def delete_reservation_by_reservation_id(reservation_id):
 
             database.session.commit()
 
-        print("jsem teaady")
-        print(email, reservation_code, payment)
         send_reservation_cancelation(email, reservation_code, payment)
 
         return True, "Ok"
