@@ -4,12 +4,17 @@ from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange,
 from flask_wtf.file import FileField, FileAllowed
 
 class ReservationInformationForm(FlaskForm):
-    lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
+    lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), 
+                                                        ("2hodiny", "2 hodiny")])
     tel_number = StringField('Telefonní číslo', validators=[
         DataRequired(),
-        Regexp(r'^\+?1?\d{9,15}$', message="Formát telefonního čísla: '+1XXXXXXXXX' (X značí číslice, '+1' a délka 9 až 15 číslic jsou volitelné).")
-    ], render_kw={"type": "tel"})
-    lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová'), ("group-ind", "Skupinová - 1 instruktor")], validators=[Optional()])
+        Regexp(r'^\+?1?\d{9,15}$', message="Formát telefonního čísla: '+1XXXXXXXXX'\
+                (X značí číslice, '+1' a délka 9 až 15 číslic jsou volitelné).")
+                ], render_kw={"type": "tel"})
+    lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'),
+                                                ('group', 'Skupinová'), 
+                                                ("group-ind", "Skupinová - 1 instruktor")], 
+                                        validators=[Optional()])
     date = HiddenField("date", validators=[DataRequired()])
     time_reservation = HiddenField("time", validators=[DataRequired()])
 
@@ -29,9 +34,9 @@ class ReservationInformationForm(FlaskForm):
     more_students = BooleanField("Objednat více žáků", validators=[])
     submit_with_register = BooleanField("Pokračovat s registrací.", validators=[Optional()])
     submit_without_register = BooleanField("Pokračovat bez registrace.", validators=[Optional()])
-    name_client1 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
-    name_client2 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
-    name_client3 = StringField(label="Jméno", validators=[Length(min=2, max=30), Optional()])
+    name_client1 = StringField(label="Jméno", render_kw={"placeholder": "Žák 2"}, validators=[Length(min=2, max=30), Optional()])
+    name_client2 = StringField(label="Jméno", render_kw={"placeholder": "Žák 3"}, validators=[Length(min=2, max=30), Optional()])
+    name_client3 = StringField(label="Jméno", render_kw={"placeholder": "Žák 4"}, validators=[Length(min=2, max=30), Optional()])
     surname_client1 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
     surname_client2 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
     surname_client3 = StringField(label="Příjmení", validators=[Length(min=2, max=30), Optional()])
