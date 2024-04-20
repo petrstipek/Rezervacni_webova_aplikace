@@ -74,7 +74,8 @@ $(document).ready(function () {
                     $tbody.append($row);
                 });
                 totalPagesSecondTable = response.total_pages;
-                updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable);
+                //updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable);
+                updatePaginationControls(totalPagesSecondTable, currentPageSecondTable);
             },
             error: function (xhr, status, error) {
                 console.error("Error: " + status + " - " + error);
@@ -83,9 +84,27 @@ $(document).ready(function () {
         });
     }
 
+    function updatePaginationControls(totalPages, currentPage) {
+        $('#paginationControlsFirstTable').empty();
+
+        let prevDisabled = currentPage <= 1 ? "disabled" : "";
+        console.log(prevDisabled)
+        $('#paginationControlsFirstTable').append(`<button id="prevPage" ${prevDisabled} onclick="${currentPage - 1}">Předchozí</button>`);
+
+        let nextDisabled = currentPage >= totalPages ? "disabled" : "";
+        $('#paginationControlsFirstTable').append(`<button id="nextPage" ${nextDisabled} onclick="${currentPage + 1}">Další</button>`);
+    }
+
+    $('#paginationControlsFirstTable').on('click', '#prevPage:not([disabled])', function () {
+        fetchReservationsAll(--currentPageSecondTable, null);
+    });
+
+    $('#paginationControlsFirstTable').on('click', '#nextPage:not([disabled])', function () {
+        fetchReservationsAll(++currentPageSecondTable, null);
+    });
 
 
-
+    /*
 
     function updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable) {
         $('#paginationControlsSecondTable').empty();
@@ -105,6 +124,7 @@ $(document).ready(function () {
             fetchReservationsAll(++currentPageSecondTable, null);
         }
     });
+    */
 
     function formatDate(originalDateString) {
         const date = new Date(originalDateString);
@@ -145,6 +165,15 @@ $(document).ready(function () {
 
                 var deleteButton = $('<button class="btn btn-warning deleteReservation" data-id="' + reservationId + '">Storno</button>');
                 var changeButton = $('<button class="btn btn-primary changeReservation" data-id="' + reservationId + '">Změnit rezervaci</button>');
+
+                var reservationDate = new Date(response.termin_rezervace);
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (reservationDate < today) {
+                    deleteButton.prop('disabled', true);
+                    changeButton.prop('disabled', true);
+                }
 
                 detailsHtml += '<table class="action-buttons-table">';
                 detailsHtml += '<thead>';
