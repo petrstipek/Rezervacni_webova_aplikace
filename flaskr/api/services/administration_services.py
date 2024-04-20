@@ -3,6 +3,10 @@ from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba, 
 from sqlalchemy.orm import aliased
 from datetime import datetime
 
+def get_client_details(reservation_id):
+    reservation = database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).first()
+    client = database.session.query(Osoba).filter(Osoba.ID_osoba == reservation.ID_osoba).first()
+    return client.email
 
 def get_reservation_payment_status(reservation_id):
     reservation = database.session.query(Rezervace.platba).filter_by(ID_rezervace=reservation_id).first()

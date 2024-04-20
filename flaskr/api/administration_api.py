@@ -31,20 +31,18 @@ def emergency_reservation():
 @login_required
 @admin_required
 def reservation_payment_status():
-    try:
-        reservation_id = request.args.get('reservation_id')
-        reservation = get_reservation_payment_status(reservation_id)
-        if not reservation:
-            return jsonify({'status': 'error', 'message': 'Rezervace nenalezena!'}), 404
-        payment_status = reservation[0]
-        if payment_status == "nezaplaceno":
-            mark_reservation_as_paid(reservation_id)
-            send_payment_confirmation(reservation_id)
-            return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
-        elif payment_status == "zaplaceno":
-            return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': 'Error!'}), 500
+    reservation_id = request.args.get('reservation_id')
+    reservation = get_reservation_payment_status(reservation_id)
+    if not reservation:
+        return jsonify({'status': 'error', 'message': 'Rezervace nenalezena!'}), 404
+    payment_status = reservation[0]
+    if payment_status == "nezaplaceno":
+        mark_reservation_as_paid(reservation_id)
+        email = get_client_details(reservation_id)
+        send_payment_confirmation(email, reservation_id)
+        return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
+    elif payment_status == "zaplaceno":
+        return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
     
 #nove-funguje
 @administration_api.route('/reservation/<reservation_id>', methods=['DELETE'])

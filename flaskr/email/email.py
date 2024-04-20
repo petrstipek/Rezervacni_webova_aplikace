@@ -1,6 +1,6 @@
 from flask_mail import Message
 from flaskr.extensions import mail
-from flaskr.email.email_services import get_instructor_email
+from flaskr.email.email_services import get_instructor_email, get_reservation_code
 
 def send_email(subject, recipients, html_body):
     sender = "jl6701543@gmail.com"
@@ -96,9 +96,11 @@ def send_reservation_cancelation(user_email, reservation_code, payment):
     </html>
     """
     result = send_email("Zrušení rezervace - Ski škola Bublava", user_email, html_content)
+    return result
 
 
-def send_payment_confirmation(user_email, reservation_code):
+def send_payment_confirmation(user_email, reservation_id):
+    reservation_code = get_reservation_code(reservation_id)
     html_content = f"""
     <html>
         <body>
@@ -110,4 +112,3 @@ def send_payment_confirmation(user_email, reservation_code):
     </html>
     """
     result = send_email("Potvrzení platby - Ski škola Bublava", user_email, html_content)
-    return result
