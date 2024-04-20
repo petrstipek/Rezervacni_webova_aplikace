@@ -54,7 +54,7 @@ $(document).ready(function () {
                 $tbody.empty();
 
                 if (response.reservations.length === 0) {
-                    $tbody.append('<tr><td colspan="8">No reservations found.</td></tr>');
+                    $tbody.append('<tr><td colspan="8">Žádné rezervace nenalezeny.</td></tr>');
                     return;
                 }
 
