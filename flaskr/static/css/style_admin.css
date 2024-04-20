@@ -199,7 +199,12 @@ select {
     background-color: #ffe3ac;
     color: black !important;
     border-radius: 8px;
-    margin-bottom: 8px !important;
+}
+
+@media (max-width:1200px) {
+    .nav-item .active {
+        margin-bottom: 8px !important;
+    }
 }
 
 .nav-link:hover {
@@ -413,8 +418,10 @@ h1 {
     }
 }
 
-.login-admin-btn {
-    margin-bottom: 10px !important;
+@media (max-width: 1200px) {
+    .login-admin-btn {
+        margin-bottom: 10px !important;
+    }
 }
 
 .btn-header {

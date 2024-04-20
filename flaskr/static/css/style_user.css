@@ -1035,16 +1035,20 @@ label {
     }
 }
 
-.login-admin-btn {
-    margin-bottom: 10px !important;
-}
 
 .btn-login {
     margin-bottom: 0px !important;
 }
 
-.nav-item {
-    margin-bottom: 8px !important;
+@media (max-width:1200px) {
+    .nav-item {
+        margin-bottom: 8px !important;
+    }
+
+    .login-admin-btn {
+        margin-bottom: 10px !important;
+    }
+
 }
 
 .navbar-custom {
