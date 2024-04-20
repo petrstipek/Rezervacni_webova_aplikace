@@ -59,7 +59,8 @@ $(document).ready(function () {
                     $tbody.append($row);
                 });
                 totalPagesSecondTable = response.total_pages;
-                updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable);
+                //updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable);
+                updatePaginationControls(totalPagesSecondTable, currentPageSecondTable);
             },
             error: function (xhr, status, error) {
                 console.error("Error: " + status + " - " + error);
@@ -68,23 +69,22 @@ $(document).ready(function () {
         });
     }
 
-    function updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable) {
-        $('#paginationControlsSecondTable').empty();
-        $('#paginationControlsSecondTable').append(`<button id="prevPageAll">Previous</button>`);
-        $('#paginationControlsSecondTable').append(`<button id="nextPageAll">Next</button>`);
+    function updatePaginationControls(totalPages, currentPage) {
+        $('#paginationControlsFirstTable').empty();
 
+        let prevDisabled = currentPage <= 1 ? "disabled" : "";
+        $('#paginationControlsFirstTable').append(`<button id="prevPage" ${prevDisabled} onclick="${currentPage - 1}">Předchozí</button>`);
+
+        let nextDisabled = currentPage >= totalPages ? "disabled" : "";
+        $('#paginationControlsFirstTable').append(`<button id="nextPage" ${nextDisabled} onclick="${currentPage + 1}">Další</button>`);
     }
 
-    $('#paginationControlsSecondTable').on('click', '#prevPageAll', function () {
-        if (currentPageSecondTable > 1) {
-            fetchReservationsAll(--currentPageSecondTable, null);
-        }
+    $('#paginationControlsFirstTable').on('click', '#prevPage:not([disabled])', function () {
+        fetchReservationsAll(--currentPageSecondTable, null);
     });
 
-    $('#paginationControlsSecondTable').on('click', '#nextPageAll', function () {
-        if (currentPageSecondTable < totalPagesSecondTable) {
-            fetchReservationsAll(++currentPageSecondTable, null);
-        }
+    $('#paginationControlsFirstTable').on('click', '#nextPage:not([disabled])', function () {
+        fetchReservationsAll(++currentPageSecondTable, null);
     });
 
     function formatDate(originalDateString) {
@@ -115,15 +115,18 @@ $(document).ready(function () {
                 detailsHtml += '<tr><th>Stav Platby</th><td>' + response.platba + '</td></tr>';
                 detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + response.Instructor.jmeno_instruktora + ' ' + response.Instructor.prijmeni_instruktora + '</td></tr>';
                 detailsHtml += '<tr><th>Poznámka</th><td>' + response.poznamka + '</td></tr>';
+                detailsHtml += '<tr><th>Jazyk lekce</th><td>' + response.jazyk + '</td></tr>';
                 detailsHtml += '<tr><th>Počet žáků</th><td>' + response.pocet_zaku + '</td></tr>';
 
 
                 var zakNames = response.Zak.map(function (zak) { return zak.jmeno_zak; }).join(', ');
+                var zakExperiences = response.Zak.map(function (zak) { return zak.zkusenost_zak; }).join(', ');
+                var zakAges = response.Zak.map(function (zak) { return zak.vek_zak; }).join(', ');
+                var emergency = response.Instruktor_emergency[0].pohotovost;
                 detailsHtml += '<tr><th>Žáci lekce</th><td>' + (zakNames || 'N/A') + '</td></tr>';
-                detailsHtml += '</table>';
-
-                detailsHtml += '<hr>';
-
+                detailsHtml += '<tr><th>Zkušenosti žáků</th><td>' + (zakExperiences || 'N/A') + '</td></tr>';
+                detailsHtml += '<tr><th>Věk žáků</th><td>' + (zakAges || 'N/A') + '</td></tr>';
+                detailsHtml += '<tr><th>Pohotovost instruktora</th><td>' + (emergency || 'není pohotovost') + '</td></tr>';
 
                 detailsHtml += '</table>';
 

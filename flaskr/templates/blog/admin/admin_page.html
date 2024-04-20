@@ -3,20 +3,22 @@
 {% block head %}
 <title>Administrátorská stránka | Ski škola Bublava</title>
 <link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/graphs_admin.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename='css/style_registration.css') }}" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     
 {% endblock %}
-
 {% block body %}
 <div class="color-background">
     <div class="global-margin">
-        <div class="body-login">
-            <h3>Admin page - in progress</h3>
-            <div class="form-container">
+        <div class="body-login graphs">
+            <div class="form-container graph-container">
                 {{ graph_html|safe }}
+            </div>
+            <div class="form-container graph-container">
+                {{ graph_reservation_html|safe }}
             </div>
         </div>  
     </div>

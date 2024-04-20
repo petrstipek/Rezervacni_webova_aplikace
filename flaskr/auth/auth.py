@@ -26,7 +26,7 @@ def login():
         user = authenticate_user(username, password)
         if user:
             if user.get_role() == 'admin':
-                return redirect(url_for('administration.admin_page'))
+                return redirect(url_for('administration.main_admin_page'))
             elif user.get_role() == 'instructor':
                 return redirect(url_for('instructor.instructors_reservations'))
             elif user.get_role() == 'client':

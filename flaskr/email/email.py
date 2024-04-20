@@ -96,3 +96,18 @@ def send_reservation_cancelation(user_email, reservation_code, payment):
     </html>
     """
     result = send_email("Zrušení rezervace - Ski škola Bublava", user_email, html_content)
+
+
+def send_payment_confirmation(user_email, reservation_code):
+    html_content = f"""
+    <html>
+        <body>
+            <p>Dobrý den,</p>
+            <p>Informujeme Vás, že Vaše platba za rezervaci byla úspěšně zaznamenána.</p>
+            <p>ID rezervace: {reservation_code}</p>
+            <p>S přáním pěkného dne,<br>Rezervační systém.</p>
+        </body>
+    </html>
+    """
+    result = send_email("Potvrzení platby - Ski škola Bublava", user_email, html_content)
+    return result

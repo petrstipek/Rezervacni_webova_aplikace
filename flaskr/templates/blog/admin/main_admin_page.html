@@ -1,0 +1,35 @@
+{% extends "base_admin.html" %}
+
+{% block head %}
+<title>Hlavní stránka - admin| Ski škola Bublava</title>
+<link href="{{ url_for('static', filename='css/style_login.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_user.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/school_information.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/style_registration.css') }}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/export.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/main_admin_page.css') }}" rel="stylesheet">
+
+
+{% endblock %}
+
+{% block body %}
+<div class="color-background">
+    <div class="global-margin">
+        <div class="body-login">
+            <div class="form-container export-container">
+                <h3>Vítejte v rezervační systému</h3>
+                <a>Pokračujte do jedné z následujících částí aplikace.</a>
+                <div class="nav-buttons">
+                    <a href="{{ url_for('administration.reservations_overview') }}" class="button nav-link">Přehled rezervací</a>
+                    <a href="{{ url_for('administration.reservations_admin') }}" class="button nav-link">Vyhledání rezervací</a> 
+                    <a href="{{ url_for('administration.lessons_admin') }}" class="button nav-link ">Dostupné hodiny</a> 
+                    <a href="{{ url_for('administration.instructors_admin') }}" class="button nav-link">Instruktoři</a>
+                    <a href="{{ url_for('administration.export_data') }}" class="button nav-link">Export dat</a>
+                    <a href="{{ url_for('administration.graphs_page') }}" class="button nav-link">Grafy</a>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+{% endblock %}

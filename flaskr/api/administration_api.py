@@ -4,6 +4,7 @@ from flaskr.api.services.administration_services import *
 from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
 from flaskr.api.services.lessons_services import get_paginated_lessons, get_lesson_details
 from flaskr.auth.login_decorators import admin_required
+from flaskr.email.email import send_payment_confirmation
 
 administration_api = Blueprint('administration-api', __name__, template_folder='templates')
 
@@ -38,6 +39,7 @@ def reservation_payment_status():
         payment_status = reservation[0]
         if payment_status == "nezaplaceno":
             mark_reservation_as_paid(reservation_id)
+            send_payment_confirmation(reservation_id)
             return jsonify({'status': 'success', 'message': 'Rezervace označena jako zaplacená!'}), 200
         elif payment_status == "zaplaceno":
             return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
