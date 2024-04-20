@@ -434,3 +434,7 @@ h1 {
         margin-left: 10px !important;
     }
 }
+
+.navbar-custom {
+    margin-top: 0px !important;
+}
