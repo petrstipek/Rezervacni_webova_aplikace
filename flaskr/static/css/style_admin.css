@@ -199,6 +199,7 @@ select {
     background-color: #ffe3ac;
     color: black !important;
     border-radius: 8px;
+    margin-bottom: 8px !important;
 }
 
 .nav-link:hover {

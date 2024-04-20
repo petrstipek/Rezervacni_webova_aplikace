@@ -956,13 +956,17 @@ hr {
 }
 
 .navbar-custom .navbar-toggler {
-    border: 1px solid grey !important;
     padding: .25rem .25rem !important;
-    background-color: transparent !important;
 }
 
 .navbar-custom .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(0, 0, 0, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+    height: 30px;
+    width: 30px;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none !important;
 }
 
 .form-check-input {
@@ -1039,12 +1043,6 @@ label {
     margin-bottom: 0px !important;
 }
 
-.section-blue .h4-headers {
-    margin-top: 0;
-    /* removes any default top margin */
-    margin-bottom: 10px;
-    /* gives some space below the title */
-    text-align: left;
-    margin-top: 5px;
-    /* aligns text to the left */
+.nav-item {
+    margin-bottom: 8px !important;
 }
