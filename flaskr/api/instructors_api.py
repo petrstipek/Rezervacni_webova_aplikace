@@ -11,7 +11,6 @@ instructors_api_bp = Blueprint('instructors_api', __name__, template_folder='tem
 @login_required
 def delete_instructor_admin():
     instructor_id = request.args.get('instructor_id')
-    print(instructor_has_lessons(instructor_id))
     if instructor_has_lessons(instructor_id):
         return jsonify({"error": "Instruktor má hodiny s aktivní budoucí rezervací!"}), 400
     else:

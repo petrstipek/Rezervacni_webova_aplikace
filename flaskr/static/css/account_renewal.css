@@ -10,6 +10,7 @@
     max-width: 500px;
 }
 
-input.left-aligned-placeholder::placeholder {
+.left-aligned-placeholder {
     text-align: left;
+    padding-left: 10px !important;
 }

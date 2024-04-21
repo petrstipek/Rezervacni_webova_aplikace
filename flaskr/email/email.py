@@ -12,7 +12,8 @@ def send_reservation_confirmation(user_email, reservation_details):
     formatted_time = reservation_details.cas_zacatku.strftime('%H:%M')
     formatted_date = reservation_details.termin.strftime('%d.%m.%Y')
 
-    instructor = get_instructor_email(reservation_details.ID_rezervace)
+    instructors = get_instructor_email(reservation_details.ID_rezervace)
+    final_instructor = ", ".join(instructors)
 
     if reservation_details.typ_rezervace == "group-ind":
         typ_rezervace = "Skupinová individuální - jeden instruktor."
@@ -31,7 +32,7 @@ def send_reservation_confirmation(user_email, reservation_details):
                 <li> Rezervační kód: {reservation_details.rezervacni_kod}</li>
                 <li>Termín rezervace: {formatted_date}</li>
                 <li>Čas rezervace: {formatted_time}</li>
-                <li>Instruktor: {instructor}</li>
+                <li>Instruktor: {final_instructor}</li>
                 <li>Stav platby: {reservation_details.platba}</li>
                 <li>Délka rezervace: {reservation_details.doba_vyuky}</li>
                 <li>Počet žáků: {reservation_details.pocet_zaku}</li>
