@@ -61,8 +61,9 @@ $(document).ready(function () {
                 response.reservations.forEach(function (reservation, index) {
                     if (index < 10) {
                         var row = $('<tr></tr>');
-                        row.append($('<td></td>').text(reservation['jméno klienta'] || 'N/A'));
-                        row.append($('<td></td>').text(reservation['příjmení klienta'] || 'N/A'));
+                        row.append($('<td></td>').text(reservation['rezervační kód'] || 'N/A'));
+                        var clientFullName = (reservation['jméno klienta'] || '') + ' ' + (reservation['příjmení klienta'] || '');
+                        row.append($('<td></td>').text(clientFullName.trim() || 'N/A'));
                         row.append($('<td></td>').text(reservation['termín rezervace'] || 'N/A'));
                         row.append($('<td></td>').text(reservation['čas začátku'] || 'N/A'));
                         row.append($('<td></td>').text(reservation['doba výuky'] || 'N/A'));
@@ -110,7 +111,7 @@ $(document).ready(function () {
                 $('#reservationDetailsAll').empty();
 
                 if (response.reservations.length === 0) {
-                    $('#reservationDetailsAll').text('No reservations found.');
+                    $('#reservationDetailsAll').text('Žádné rezervace nenalezeny.');
                     return;
                 }
 
@@ -118,17 +119,26 @@ $(document).ready(function () {
                 var thead = $('<thead></thead>');
                 var tbody = $('<tbody></tbody>');
                 var headerRow = $('<tr></tr>');
-                var keyOrder = ["jméno klienta", "příjmení klienta", "termín rezervace", "čas začátku", "doba výuky", "stav platby"];
+                var keyOrder = ["termín rezervace", "čas začátku", "doba výuky", "stav platby"];
 
+                headerRow.append($('<th></th>').text("rezeravační kód"));
+                headerRow.append($('<th></th>').text('Klient'));
                 $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));
                 });
+
+
                 headerRow.append($('<th></th>').text('Instruktor'));
                 headerRow.append($('<th></th>').text('Detail rezervace'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
                     var row = $('<tr></tr>');
+                    var clientFullName = (reservation['jméno klienta'] || '') + ' ' + (reservation['příjmení klienta'] || '');
+                    row.append($('<td></td>').text(reservation['rezervační kód'] || 'N/A'));
+                    row.append($('<td></td>').text(clientFullName));
+
+
                     $.each(keyOrder, function (i, key) {
                         var value = reservation[key] || '';
                         if (key === 'termín rezervace') {
@@ -148,7 +158,7 @@ $(document).ready(function () {
 
                 var rowsToAdd = perPageFirstTable - response.reservations.length;
                 for (var i = 0; i < rowsToAdd; i++) {
-                    tbody.append('<tr><td colspan="' + (keyOrder.length + 2) + '">&nbsp;</td></tr>');
+                    tbody.append('<tr><td colspan="' + (keyOrder.length + 4) + '">&nbsp;</td></tr>');
                 }
 
                 table.append(thead).append(tbody);
@@ -182,49 +192,7 @@ $(document).ready(function () {
     $('#paginationControlsFirstTable').on('click', '#nextPage:not([disabled])', function () {
         fetchReservations(++currentPageFirstTable);
     });
-    //-----
-    /*
-    function updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable) {
-        console.log("jsem spustedn")
-        $('#paginationControlsSecondTable').empty();
 
-        let prevDisabled = currentPageSecondTable <= 1 ? "disabled" : "";
-        $('#paginationControlsSecondTable').append(`<button id="prevPage" ${prevDisabled} onclick="changePage(${currentPageSecondTable - 1})">Předchozí</button>`);
-
-        let nextDisabled = currentPageSecondTable >= totalPagesSecondTable ? "disabled" : "";
-        $('#paginationControlsSecondTable').append(`<button id="nextPage" ${nextDisabled} onclick="changePage(${currentPageSecondTable + 1})">Další</button>`);
-    }
-
-    $('#paginationControlsSecondTable').on('click', '#prevPage:not([disabled])', function () {
-        fetchReservations(--currentPageSecondTable);
-    });
-
-    $('#paginationControlsSecondTable').on('click', '#nextPage:not([disabled])', function () {
-        fetchReservations(++currentPageSecondTable);
-    });
-
-
-    /*
-    function updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable) {
-        $('#paginationControlsSecondTable').empty();
-        $('#paginationControlsSecondTable').append(`<button id="prevPageAll">Předchozí</button>`);
-        $('#paginationControlsSecondTable').append(`<button id="nextPageAll">Další</button>`);
-
-    }
-
-    $('#paginationControlsSecondTable').on('click', '#prevPageAll', function () {
-        if (currentPageSecondTable > 1) {
-            fetchReservationsAll(--currentPageSecondTable, null);
-        }
-    });
-
-    $('#paginationControlsSecondTable').on('click', '#nextPageAll', function () {
-        if (currentPageSecondTable < totalPagesSecondTable) {
-            fetchReservationsAll(++currentPageSecondTable, null);
-        }
-    });
-    */
-    //-----
     $('#reservationForm').submit(function (event) {
         event.preventDefault();
         currentPageFirstTable = 1;
@@ -345,10 +313,25 @@ $(document).ready(function () {
                 detailsHtml += '<tr><th>Jméno a příjmení klienta</th><td>' + response.jmeno_klienta + ' ' + response.prijmeni_klienta + '</td></tr>';
                 detailsHtml += '<tr><th>Kontakt na klienta</th><td> email: ' + response.email_klienta + ', tel. číslo: ' + response.tel_cislo_klienta + '</td></tr>';
                 detailsHtml += '<tr><th>Datum rezervace</th><td>' + response.termin_rezervace + '</td></tr>';
+                detailsHtml += '<tr><th>Typ rezervace</th><td>' + response.typ_rezervace + '</td></tr>';
                 detailsHtml += '<tr><th>Začátek výuky</th><td>' + response.cas_zacatku + '</td></tr>';
                 detailsHtml += '<tr><th>Doba výuky</th><td>' + response.doba_vyuky + '</td></tr>';
                 detailsHtml += '<tr><th>Stav Platby</th><td>' + response.platba + '</td></tr>';
-                detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + response.Instructor.jmeno_instruktora + ' ' + response.Instructor.prijmeni_instruktora + '</td></tr>';
+                //detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + response.Instructor.jmeno_instruktora + ' ' + response.Instructor.prijmeni_instruktora + '</td></tr>';
+
+                if (Array.isArray(response.Instructor)) {
+                    var instructorNames = response.Instructor.map(function (instructor) {
+                        return instructor.jmeno_instruktora + ' ' + instructor.prijmeni_instruktora;
+                    });
+
+                    var namesString = instructorNames.join(', ');
+
+                    detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + namesString + '</td></tr>';
+                } else {
+                    detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>No instructors assigned</td></tr>';
+                }
+
+
                 detailsHtml += '<tr><th>Poznámka</th><td>' + response.poznamka + '</td></tr>';
                 detailsHtml += '<tr><th>Jazyk lekce</th><td>' + response.jazyk + '</td></tr>';
                 detailsHtml += '<tr><th>Počet žáků</th><td>' + response.pocet_zaku + '</td></tr>';

@@ -18,7 +18,7 @@ $(document).ready(function () {
             success: function (response) {
                 alert("Rezervace smazána.");
                 fetchReservationsAll(currentPageFirstTable, null);
-                fetchReservations(page)
+                $('#detailModal').css('display', 'none');
             },
             error: function (xhr, status, error) {
                 var response = JSON.parse(xhr.responseText);
@@ -53,24 +53,26 @@ $(document).ready(function () {
                 var $tbody = $('#reservationDetails tbody').empty();
 
                 if (response.reservations.length === 0) {
-                    $tbody.append('<tr><td colspan="7">No reservations found.</td></tr>');
+                    $tbody.append('<tr><td colspan="7">Žádné rezervace nenalezeny.</td></tr>');
                     return;
                 }
 
                 $.each(response.reservations, function (index, reservation) {
-                    var instructorFullName = `${reservation['jméno instruktora'] || ''} ${reservation['příjmení instruktora'] || ''}`.trim();
+
                     var rowHtml = `<tr>
+                        <td>${reservation['rezervační kód'] || 'N/A'}</td>
                         <td>${reservation['termín rezervace'] || 'N/A'}</td>
                         <td>${reservation['čas začátku'] || 'N/A'}</td>
                         <td>${reservation['počet žáků'] || 'N/A'}</td>
                         <td>${reservation['doba výuky'] || 'N/A'}</td>
                         <td>${reservation['stav platby'] || 'N/A'}</td>
-                        <td>${instructorFullName || 'N/A'}</td>
+                        
                         <td></td> <!-- Placeholder for the button -->
                     </tr>`;
                     var $row = $(rowHtml);
                     var $detailButton = $(`<button class="detailReservation btn btn-primary" data-id="${reservation.ID_rezervace}">Detail rezervace</button>`);
                     $row.find('td:last').append($detailButton);
+
                     $tbody.append($row);
                 });
                 totalPagesSecondTable = response.total_pages;
@@ -103,29 +105,6 @@ $(document).ready(function () {
         fetchReservationsAll(++currentPageSecondTable, null);
     });
 
-
-    /*
-
-    function updatePaginationControlsSecondTable(totalPagesSecondTable, currentPageSecondTable) {
-        $('#paginationControlsSecondTable').empty();
-        $('#paginationControlsSecondTable').append(`<button id="prevPageAll">Previous</button>`);
-        $('#paginationControlsSecondTable').append(`<button id="nextPageAll">Next</button>`);
-
-    }
-
-    $('#paginationControlsSecondTable').on('click', '#prevPageAll', function () {
-        if (currentPageSecondTable > 1) {
-            fetchReservationsAll(--currentPageSecondTable, null);
-        }
-    });
-
-    $('#paginationControlsSecondTable').on('click', '#nextPageAll', function () {
-        if (currentPageSecondTable < totalPagesSecondTable) {
-            fetchReservationsAll(++currentPageSecondTable, null);
-        }
-    });
-    */
-
     function formatDate(originalDateString) {
         const date = new Date(originalDateString);
         const day = date.getDate();
@@ -152,7 +131,19 @@ $(document).ready(function () {
                 detailsHtml += '<tr><th>Začátek výuky</th><td>' + response.cas_zacatku + '</td></tr>';
                 detailsHtml += '<tr><th>Doba výuky</th><td>' + response.doba_vyuky + '</td></tr>';
                 detailsHtml += '<tr><th>Stav Platby</th><td>' + response.platba + '</td></tr>';
-                detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + response.Instructor.jmeno_instruktora + ' ' + response.Instructor.prijmeni_instruktora + '</td></tr>';
+
+                if (Array.isArray(response.Instructor)) {
+                    var instructorNames = response.Instructor.map(function (instructor) {
+                        return instructor.jmeno_instruktora + ' ' + instructor.prijmeni_instruktora;
+                    });
+
+                    var namesString = instructorNames.join(', ');
+
+                    detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + namesString + '</td></tr>';
+                } else {
+                    detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>No instructors assigned</td></tr>';
+                }
+
                 detailsHtml += '<tr><th>Poznámka</th><td>' + response.poznamka + '</td></tr>';
                 detailsHtml += '<tr><th>Počet žáků</th><td>' + response.pocet_zaku + '</td></tr>';
 

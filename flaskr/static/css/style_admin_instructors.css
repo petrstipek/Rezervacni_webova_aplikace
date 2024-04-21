@@ -174,14 +174,14 @@ select {
 
 @media screen and (max-width: 1790px) {
     .container-instructors {
-        height: 570px;
+        height: auto;
         margin-left: 10px;
     }
 }
 
 @media screen and (max-width: 1200px) {
     .container-instructors {
-        height: 500px;
+        height: auto;
         margin-left: 10px;
     }
 
@@ -224,4 +224,56 @@ select {
 
 .alert {
     padding: 0px;
+}
+
+.instructors-pagination {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.scroll-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.tile-gallery {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.tile {
+    flex: 0 0 auto;
+    width: 200px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: inline-block;
+}
+
+.tile img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: auto;
+}
+
+.scroll-container::-webkit-scrollbar {
+    height: 8px;
+    background-color: #f5f5f5;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+    border: 2px solid #f5f5f5;
 }

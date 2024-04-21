@@ -91,3 +91,36 @@ html {
     width: 100% !important;
     max-width: 2000px !important;
 }
+
+.scroll-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.tile-gallery {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding: 20px;
+    gap: 20px;
+}
+
+.tile {
+    display: inline-flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    white-space: normal;
+}
+
+.tile img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.tile p {
+    padding: 15px;
+}

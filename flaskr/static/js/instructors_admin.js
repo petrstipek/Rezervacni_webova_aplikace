@@ -1,31 +1,31 @@
-function fetchInstructors(page) {
-    $.ajax({
-        url: '/instructors-api/instructors-list?page=' + page,
-        type: 'GET',
-        dataType: 'json',
-        success: function (response) {
-            var instructors = response.instructors;
-            var total_pages = response.total_pages;
-            var current_page = response.current_page;
-
-            $('table tbody').empty();
-            $('.pagination').empty();
-
-            $.each(instructors, function (index, instructor) {
-                $('table tbody').append('<tr><td>' + instructor.jmeno + " " + instructor.prijmeni + '</td><td><button class="btn btn-warning btn-sm button-instructor-action" data-instructor-id="' + instructor.ID_osoba + '">Zobrazit</button></td><td><button class="btn btn-danger button-instructor-delete " data-instructor-id="' + instructor.ID_osoba + '">Odstranit</button></td></tr>');
-            });
-
-            for (var i = 1; i <= total_pages; i++) {
-                $('.pagination').append('<li class="page-item ' + (i === current_page ? 'active' : '') + '"><a class="page-link" href="javascript:fetchInstructors(' + i + ')">' + i + '</a></li>');
-            }
-        },
-        error: function (error) {
-            console.log(error);
-        }
-    });
-}
-
 $(document).ready(function () {
+
+    function fetchInstructors(page) {
+        $.ajax({
+            url: '/instructors-api/instructors-list?page=' + page,
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                var instructors = response.instructors;
+                var total_pages = response.total_pages;
+                var current_page = response.current_page;
+
+                $('table tbody').empty();
+                $('.pagination').empty();
+
+                $.each(instructors, function (index, instructor) {
+                    $('table tbody').append('<tr><td>' + instructor.jmeno + " " + instructor.prijmeni + '</td><td><button class="btn btn-warning btn-sm button-instructor-action" data-instructor-id="' + instructor.ID_osoba + '">Zobrazit</button></td><td><button class="btn btn-danger button-instructor-delete " data-instructor-id="' + instructor.ID_osoba + '">Odstranit</button></td></tr>');
+                });
+
+                for (var i = 1; i <= total_pages; i++) {
+                    $('.pagination').append('<li class="page-item ' + (i === current_page ? 'active' : '') + '"><a class="page-link" href="javascript:fetchInstructors(' + i + ')">' + i + '</a></li>');
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
     fetchInstructors(1);
 
     $('table').on('click', '.button-instructor-action', function () {
@@ -70,7 +70,8 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     alert("Instruktor byl úspěšně odstraněn.");
-                    $('#flash-messages').html(messageHtml);
+                    //messageHtml = "Instruktor byl úspěšně odstraněn."
+                    //$('#flash-messages').html(messageHtml);
                     setTimeout(function () { $('#flash-messages .alert').fadeOut(); }, 5000);
                 }
                 fetchInstructors(1);

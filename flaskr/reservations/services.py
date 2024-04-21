@@ -347,6 +347,7 @@ def handle_group_lesson_state(occupancy, capacity, ID_lesson):
         raise e
 
 def insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields):
+    student_count = len(client_name_fields)
     try:
         for i in range(student_count):
             if client_age_fields[i] is None:
@@ -360,6 +361,7 @@ def insert_students(student_count, reservation_id, client_name_fields, client_su
                 vek=client_age_fields[i]
             )
             database.session.add(new_student)
+        database.session.commit()
     
     except Exception as e:
         database.session.rollback()

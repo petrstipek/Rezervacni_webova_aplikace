@@ -28,19 +28,21 @@
                                 <img src="{{ url_for('static', filename='images/placeholder_wide.jpg') }}"  alt="A beautiful landscape" class="responsive-hero">
                             </section>
                             
-                            <section class="tile-gallery">
-                                {% for instructor in instructors %}
-                                    <div class="tile">
-                                        {% if instructor.image_path %}
-                                            <img src="{{ url_for('static', filename='uploads/' + instructor.image_path) }}" alt="Image description" class="responsive-image">
-                                        {% else %}
-                                            <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
-                                        {% endif %}
-                                        <p class="instructor-desc">Instruktor: {{ instructor.osoba.jmeno }}</p>
-                                        <p class="instructor-desc">{{ instructor.popis }}</p>
-                                    </div>
-                                {% endfor %}
-                            </section>
+                            <div class="scroll-container">
+                                <section class="tile-gallery">
+                                    {% for instructor in instructors %}
+                                        <div class="tile">
+                                            {% if instructor.image_path %}
+                                                <img src="{{ url_for('static', filename='uploads/' + instructor.image_path) }}" alt="Image description" class="responsive-image">
+                                            {% else %}
+                                                <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
+                                            {% endif %}
+                                            <p class="instructor-desc">Instruktor: {{ instructor.osoba.jmeno }}</p>
+                                            <p class="instructor-desc">{{ instructor.popis }}</p>
+                                        </div>
+                                    {% endfor %}
+                                </section>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -48,4 +50,5 @@
         </div>
     </div>
 </div>
+<script src="{{ url_for('static', filename='js/user_instructors.js') }}"></script>
 {% endblock %}

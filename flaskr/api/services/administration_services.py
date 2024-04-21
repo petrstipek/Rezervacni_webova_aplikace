@@ -38,7 +38,9 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         Rezervace.doba_vyuky.label('doba výuky'),
         InstruktorOsoba.jmeno.label('jméno instruktora'),
         InstruktorOsoba.prijmeni.label('příjmení instruktora'),
-        Rezervace.platba.label('stav platby')
+        Rezervace.platba.label('stav platby'),
+        Rezervace.typ_rezervace.label('typ rezervace'),
+        Rezervace.rezervacni_kod.label('rezervační kód'),
     ).join(KlientOsoba, Rezervace.ID_osoba == KlientOsoba.ID_osoba)\
     .outerjoin(MaVyuku, Rezervace.ID_rezervace == MaVyuku.ID_rezervace)\
     .outerjoin(InstruktorOsoba, MaVyuku.ID_osoba == InstruktorOsoba.ID_osoba)
@@ -56,6 +58,7 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         base_query = base_query.filter(Rezervace.termin == selected_date)
 
     total_items = base_query.count()
+    print(total_items)
     lessons = base_query.order_by(Rezervace.termin, Rezervace.cas_zacatku)\
                         .limit(per_page)\
                         .offset((page - 1) * per_page)\
@@ -69,7 +72,9 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
         'doba výuky': lesson[5],
         'jméno instruktora': lesson[6],
         'příjmení instruktora': lesson[7],
-        'stav platby': lesson[8]
+        'stav platby': lesson[8],
+        'typ rezervace' : lesson[9],
+        'rezervační kód' : lesson[10] 
     } for lesson in lessons]
 
     return {
@@ -82,6 +87,7 @@ def get_paginated_reservation_details(page, per_page, identifier=None, identifie
 
 def get_reservation_details(reservation_id):
     reservation_query = database.session.query(Rezervace).outerjoin(Osoba, Rezervace.ID_osoba==Osoba.ID_osoba).filter(Rezervace.ID_rezervace==reservation_id).first()
+    
     if reservation_query:
         reservation_detail = {
             'ID_rezervace': reservation_query.rezervacni_kod,
@@ -95,16 +101,27 @@ def get_reservation_details(reservation_id):
             'tel_cislo_klienta': reservation_query.klient.osoba.tel_cislo,
             'poznamka': reservation_query.poznamka,
             'pocet_zaku': reservation_query.pocet_zaku,
-            'jazyk' : reservation_query.jazyk
+            'jazyk' : reservation_query.jazyk,
+            'typ_rezervace': reservation_query.typ_rezervace,
         }
 
-    instructor_query = database.session.query(Instruktor).outerjoin(Osoba, Instruktor.ID_osoba==Osoba.ID_osoba).outerjoin(MaVyuku, Instruktor.ID_osoba==MaVyuku.ID_osoba).filter(MaVyuku.ID_rezervace==reservation_id).first()
+    instructor_query = database.session.query(Instruktor)\
+    .outerjoin(Osoba, Instruktor.ID_osoba == Osoba.ID_osoba)\
+    .outerjoin(MaVyuku, Instruktor.ID_osoba == MaVyuku.ID_osoba)\
+    .filter(MaVyuku.ID_rezervace == reservation_id)\
+    .all()
 
-    if instructor_query:
+    instructors_list_data = []
+
+    print(instructor_query)
+
+    for instructor in instructor_query:
         instructor_detail = {
-            'jmeno_instruktora': instructor_query.osoba.jmeno,
-            'prijmeni_instruktora' : instructor_query.osoba.prijmeni
+            'jmeno_instruktora': instructor.osoba.jmeno,
+            'prijmeni_instruktora': instructor.osoba.prijmeni
         }
+        instructors_list_data.append(instructor_detail)
+
 
     zaks = database.session.query(Zak).filter(Zak.ID_rezervace == reservation_id).all()
     zak_list = [{'ID_zak': zak.ID_zak, 'jmeno_zak': zak.jmeno, 'prijmeni_zak': zak.prijmeni, 'vek_zak': zak.vek, 'zkusenost_zak': zak.zkusenost} for zak in zaks]
@@ -112,9 +129,10 @@ def get_reservation_details(reservation_id):
     instructor_data = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace==reservation_id).first()
     instructor_list = [{'pohotovost': instructor_data.pohotovost} ]
 
+    print(instructors_list_data)
     combined_details = {
         **reservation_detail, 
-        'Instructor': instructor_detail,
+        'Instructor': instructors_list_data,
         'Zak': zak_list,
         'Instruktor_emergency': instructor_list
     }

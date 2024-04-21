@@ -28,22 +28,27 @@ def instructor_exists(email):
     return query_result is not None
 
 def add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password, file, text):
-    new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number,heslo=hash_password(password), prihl_jmeno=email)
-
-    if file:
-        if not allowed_file(file.filename):
-            return False
-        else:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
-    else:
-        filename = None
+    new_osoba = Osoba(jmeno=name, prijmeni=surname, email=email, tel_cislo=tel_number, heslo=hash_password(password), prihl_jmeno=email)
 
     database.session.add(new_osoba)
     database.session.flush()
 
-    new_instruktor = Instruktor(ID_osoba=new_osoba.ID_osoba, seniorita=experience, datum_narozeni=date_birth, datum_nastupu=date_started, image_path=filename, popis=text)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(f"{new_osoba.ID_osoba}_{file.filename}")
+        filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+    if not file:
+        filename = secure_filename(f"test_picture.jpg")
+
+    new_instruktor = Instruktor(
+        ID_osoba=new_osoba.ID_osoba, 
+        seniorita=experience, 
+        datum_narozeni=date_birth, 
+        datum_nastupu=date_started, 
+        image_path=filename,
+        popis=text
+    )
+
     database.session.add(new_instruktor)
     database.session.commit()
 
