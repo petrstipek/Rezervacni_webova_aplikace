@@ -9,12 +9,13 @@ from flaskr.auth.login_decorators import admin_required
 from flaskr.administration.services import get_reservation_details
 from flaskr.administration.services import process_reservation_change, get_available_lessons, lesson_capacity_change, lesson_instructor_change
 from flaskr.api.services.lessons_services import get_lesson_detail
+from flask_login import current_user
+
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
 
 @administration_bp.route('/reservation-change', methods=["GET", "POST"])
 @login_required
-@admin_required
 def reservation_change():
     form = ChangeReservation()
     
@@ -29,8 +30,6 @@ def reservation_change():
 
     time_reservation = reservation_details.get('cas_zacatku', '')
     form.time_reservation.choices = [(time_reservation, time_reservation)]
-
-    print("reservation_choices", form.time_reservation.choices)
 
     if request.method == "POST":
         date_str = form.date.data.strftime('%Y-%m-%d')
@@ -48,13 +47,17 @@ def reservation_change():
 
         if update_success:
             flash(update_message, category="success")
-            return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
+            if current_user.get_role() == "admin":
+                return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
+            else:
+                return redirect(url_for('users.reservation_change', reservation_id=reservation_id))
         else:
             flash(update_message, category="danger")
-            #return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
-            return
+            if current_user.get_role() == "admin":
+                return redirect(url_for('administration.reservation_change', reservation_id=reservation_id))
+            else:
+                return redirect(url_for('users.reservation_change', reservation_id=reservation_id))
     else:
-        print("form errors: ", form.errors)
         for field, errors in form.errors.items():
             for error in errors:
                 flash(f"{error}", category="danger")

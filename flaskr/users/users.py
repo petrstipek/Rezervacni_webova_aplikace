@@ -36,6 +36,7 @@ def reservation_change():
     if form.validate_on_submit():
         result = process_reservation_change(form, reservation_id)
 
+
         if len(result) == 3:
             update_success, update_message, reservation_id = result
         elif len(result) == 2:
@@ -46,9 +47,8 @@ def reservation_change():
             return redirect(url_for('users.reservation_change', reservation_id=reservation_id))
         else:
             flash(update_message, category="danger")
-            return
+            return redirect(url_for('users.reservation_change', reservation_id=reservation_id))
     else:
-        print(form.errors)
         for field, errors in form.errors.items():
             for error in errors:
                 flash(f"{error}", category="danger")

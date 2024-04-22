@@ -170,6 +170,16 @@ $(document).ready(function () {
         }
     });
 
+    $('#reservation-change-form').submit(function (event) {
+        var isStudentChecked = $('#student_client').is(':checked');
+        var isMoreStudentsChecked = $('#more_students').is(':checked');
+
+        if (!isStudentChecked && !isMoreStudentsChecked) {
+            alert('Musí zakšrtnout alespoň jednu možnost žáků!');
+            event.preventDefault();
+        }
+    });
+
     function checkboxes() {
         if ($('#age_client1').val() === '' && $('#age_client2').val() === '') {
             $('#more_students').prop('checked', false);
@@ -219,6 +229,21 @@ $(document).ready(function () {
     updateAvailableTimes(selectedDate);
 
     $('#student_client, #more_students').change(updateVisibility);
+
+    function copyAndValidate(sourceSelector, targetSelector) {
+        console.log("ano jsem spusten")
+        var value = $(sourceSelector).val();
+        $(targetSelector).val(value);
+    }
+    copyAndValidate('#name', '#name_client_hidden',);
+    copyAndValidate('#surname', '#surname_client_hidden');
+
+    $('#name').on('input', function () {
+        copyAndValidate('#name', '#name_client_hidden');
+    });
+    $('#surname').on('input', function () {
+        copyAndValidate('#surname', '#surname_client_hidden');
+    });
 });
 
 $(document).ready(function () {
