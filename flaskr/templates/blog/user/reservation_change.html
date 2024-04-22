@@ -9,7 +9,7 @@
 <div class="global-margin">
 <div class="flex-container">
     <div class="form-section left-section">
-    <form id="reservation-change-form" method="post" action="{{ url_for('administration.reservation_change', reservation_id=reservation_id) }}">
+    <form id="reservation-change-form" method="post" action="{{ url_for('users.reservation_change', reservation_id=reservation_id) }}">
         {{ form.hidden_tag() }}
                 <div class="container-reservation mt-3">
                     <h2>Změna rezervace</h2>

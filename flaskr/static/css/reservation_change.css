@@ -35,7 +35,6 @@ input[disabled] {
 }
 
 body {
-    background-color: #f4f7f6;
     color: #333;
     min-height: 100vh !important;
     display: flex;
@@ -158,4 +157,28 @@ input[type="submit"] {
 
 .container-small-overview {
     margin-left: 10px;
+}
+
+.btn-close {
+    padding: 0px !important;
+    margin: 0px !important;
+    margin-right: 10px !important;
+}
+
+@media (max-width:500px) {
+    .modal-content {
+        font-size: smaller !important;
+    }
+
+    .changeReservation {
+        font-size: smaller !important;
+    }
+
+    .deleteReservation {
+        font-size: smaller !important;
+    }
+
+    .container-reservation {
+        font-size: smaller !important;
+    }
 }

@@ -51,7 +51,7 @@ def process_reservation(form):
         return False, "Je potřeba vyplnit čas a datum lekce!", "danger"
     
     client_id = get_or_create_klient(name, surname, email, phone)
-    student_count = handle_number_student(student_client, more_students, client_name_fields)
+    student_count = handle_number_student(student_client, client_name_fields)
     identifier = generate_unique_reservation_identifier()
     
     termin_date = datetime.strptime(date, '%Y-%m-%d').date()
@@ -75,7 +75,7 @@ def process_reservation(form):
 
     reservation_id = new_reservation.ID_rezervace
 
-    insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields)
+    insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields, student_client, more_students)
 
     if lesson_type == "individual":
         result, message, message_type = individual_reservation(reservation_id, instructor_selected, lesson_length, student_count, date, time, time_plus_one)
@@ -254,7 +254,7 @@ def assign_instructor_lesson_2hour(instructor_id, lessons_id, reservation_id):
             new_prirazeno = Prirazeno(ID_rezervace=reservation_id, ID_hodiny=lesson_id)
             database.session.add(new_prirazeno)
 
-        database.session.commit()
+        #database.session.commit()
     
     except Exception as e:
         database.session.rollback()
@@ -266,7 +266,7 @@ def unique_instructors():
     return [row.ID_osoba for row in unique_ids]
 
 def assign_instructor_lesson_1hour(lesson_id, reservation_id):
-    lesson_id = lesson_id.ID_hodiny
+    lesson_id = lesson_id[0]
     try:
         database.session.query(DostupneHodiny)\
             .filter(DostupneHodiny.ID_hodiny == lesson_id)\
@@ -324,7 +324,7 @@ def group_reservation(reservation_id, student_count, date, time):
             database.session.add(new_ma_vyuku)
             database.session.add(new_prirazeno)
 
-        database.session.commit()
+        #database.session.commit()
         handle_group_lesson_state(lesson.obsazenost, lesson.kapacita, lesson_id)
         message, message_type = "Rezervace byla úspěšně uložena, detail najdete v emailu!", "success"
         return True, message, message_type
@@ -340,34 +340,53 @@ def handle_group_lesson_state(occupancy, capacity, ID_lesson):
                 .filter(DostupneHodiny.ID_hodiny == ID_lesson)\
                 .update({DostupneHodiny.stav: 'obsazeno'})
             
-            database.session.commit()
+            #database.session.commit()
 
     except SQLAlchemyError as e:
         database.session.rollback()
         raise e
 
-def insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields):
-    student_count = len(client_name_fields)
+def insert_students(student_count, reservation_id, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields, student_client, more_students):
+    #student_count = len(client_name_fields)
     try:
-        for i in range(student_count):
-            if client_age_fields[i] is None:
-                continue
-        
-            new_student = Zak(
-                ID_rezervace=reservation_id,
-                jmeno=client_name_fields[i],
-                prijmeni=client_surname_fields[i],
-                zkusenost=client_experience_fields[i],
-                vek=client_age_fields[i]
-            )
-            database.session.add(new_student)
-        database.session.commit()
+        if (student_client and more_students) or (student_client and not more_students):
+            for i in range(student_count):
+                if client_age_fields[i] is None:
+                    continue
+            
+                new_student = Zak(
+                    ID_rezervace=reservation_id,
+                    jmeno=client_name_fields[i],
+                    prijmeni=client_surname_fields[i],
+                    zkusenost=client_experience_fields[i],
+                    vek=client_age_fields[i]
+                )
+                database.session.add(new_student)
+        if not student_client:
+            client_name_fields = client_name_fields[1:]
+            client_surname_fields = client_surname_fields[1:]
+            client_age_fields = client_age_fields[1:]
+            client_experience_fields = client_experience_fields[1:]
+            for i in range(student_count):
+                if client_age_fields[i] is None:
+                    continue
+            
+                new_student = Zak(
+                    ID_rezervace=reservation_id,
+                    jmeno=client_name_fields[i],
+                    prijmeni=client_surname_fields[i],
+                    zkusenost=client_experience_fields[i],
+                    vek=client_age_fields[i]
+                )
+                database.session.add(new_student)
+
+        #database.session.commit()
     
     except Exception as e:
         database.session.rollback()
         raise e
     
-def handle_number_student(student_client, more_students, client_name_fields):
+def handle_number_student(student_client, client_name_fields):
     student_count = 0
     for name_field in client_name_fields:
         if name_field != "":

@@ -120,7 +120,7 @@ class ReservationInformationAdmin(FlaskForm):
 class RegistrationForm(FlaskForm):
     name = StringField(label="Jméno klienta", validators=[Length(min=2, max=30), DataRequired()])
     surname = StringField(label="Příjmení klienta", validators=[Length(min=2, max=30), DataRequired()])
-    password = PasswordField(label="Heslo:", validators=[DataRequired()])
+    password = PasswordField(label="Heslo:", validators=[DataRequired(), Length(min=6)])
     tel_number = StringField('Telefonní číslo', validators=[
         DataRequired(),
         Regexp(r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
@@ -198,7 +198,7 @@ class ChangeReservation(FlaskForm):
 
     reservation_id = HiddenField()
 
-    submit = SubmitField('Odeslat rezervaci')
+    submit = SubmitField('Aktualizovat rezervaci')
 
 class LessonChangeForm(FlaskForm):
     capacity = IntegerField('Kapacita', validators=[Optional(), NumberRange(min=0, max=20)])

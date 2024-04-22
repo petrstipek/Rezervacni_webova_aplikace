@@ -1,6 +1,7 @@
 from flask_mail import Message
 from flaskr.extensions import mail
 from flaskr.email.email_services import get_instructor_email, get_reservation_code
+from flask import url_for
 
 def send_email(subject, recipients, html_body):
     sender = "jl6701543@gmail.com"
@@ -48,14 +49,14 @@ def send_reservation_confirmation(user_email, reservation_details):
     return result
 
 def send_registration_confirmation(user_email):
-    
-    html_content = """
+    link = url_for('information.school_page', _external=True)
+    html_content = f"""
     <html>
         <body>
             <p>Dobrý den,</p>
             <p>vítejte v lyžařské škole. Do webové aplikace školy se můžete přihlásit pomocí svého emailu a hesla, které jste uvedli při registraci.<br>V případě zapomenutí hesla je heslo možné na přihlašovací stránce obnovit.</p>
             <p>Webová aplikace Vám umožňuje nahlížet na všechny Vaše rezervace spolu se všemi dostupnými detaily jako například termín, čas začátku, nebo zdali je rezervace zaplacena.<br>Rezervaci můžete v systému také upravovat a měnit její parametry.</p>
-            <p>V případě dalších otázek se prosím obraťte přímo na školu, kontakty najdete v sekci <a href="{{ url_for('information.contacts_page') }}">Kontakty</a> nebo <a href="{{ url_for('information.school_page') }}">O nás</a>.</p>
+            <p>V případě dalších otázek se prosím obraťte přímo na školu, kontakty najdete v sekci <a href="{link}">O nás</a>.</p>
             <p>Děkujeme za využívání rezervačního systému Ski školy Bublava.</p>
             <p>S přáním pěkného dne,<br>Rezervační systém.</p>
         </body>

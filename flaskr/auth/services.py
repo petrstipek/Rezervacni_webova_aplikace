@@ -35,26 +35,38 @@ def create_user_object(user_result):
     return None
 
 def register_new_user(form):
-    existing_user = database.session.query(Osoba).filter(Osoba.email == form.email.data).first()
+    existing_user = database.session.query(Osoba).filter(Osoba.prihl_jmeno == form.email.data).first()
 
     if existing_user:
-        return None, "Účet s tímto emailem existuje!"
+        return None, "Registrovaný účet s tímto emailem existuje!"
 
+    existing_non_registered_user = database.session.query(Osoba).filter(Osoba.email == form.email.data).first()
+    
+    if existing_non_registered_user:
+        user = existing_non_registered_user
     else:
-        hashed_password = hash_password(form.password.data)
-        new_osoba = Osoba(jmeno=form.name.data, prijmeni=form.surname.data, tel_cislo=form.tel_number.data, email=form.email.data, prihl_jmeno=form.email.data, heslo=hashed_password)
-        database.session.add(new_osoba)
+        user = Osoba(
+            jmeno=form.name.data,
+            prijmeni=form.surname.data,
+            tel_cislo=form.tel_number.data,
+            email=form.email.data,
+        )
+        database.session.add(user)
         database.session.flush()
 
-        new_client = Klient(ID_osoba=new_osoba.ID_osoba)
+        new_client = Klient(ID_osoba=user.ID_osoba)
         database.session.add(new_client)
-        user = new_osoba
+
+    user.prihl_jmeno = form.email.data
+    hashed_password = hash_password(form.password.data)
+    user.heslo = hashed_password
 
     try:
         database.session.commit()
         return user, "Registrace proběhla úspěšně!"
     except Exception as e:
         database.session.rollback()
+        print(f"Error during registration: {e}")
         return False, "Při registraci došlo k chybě!"
 
 def check_email(email):
