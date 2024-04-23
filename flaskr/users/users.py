@@ -3,12 +3,13 @@ from flask_login import login_required
 from flaskr.auth.login_decorators import client_required
 from flaskr.forms import PersonalInformationFormUser, ChangeReservation
 from flask_login import current_user
-from flaskr.users.users_services import validate_password, update_personal_information
+from flaskr.users.users_services import validate_password, update_personal_information, get_reservation_students_status
 from flaskr.api.services.instructor_services import get_all_instructors
 from flaskr.administration.services import get_reservation_details
 from flaskr.reservations.services import handle_all_instructors
 from datetime import datetime
 from flaskr.administration.services import process_reservation_change, get_available_lessons
+import json
 
 users_bp = Blueprint('users', __name__, template_folder='templates')
 
@@ -78,8 +79,15 @@ def reservation_change():
             form.surname_client2.data = reservation_details['Zak'][2].get('prijmeni_zak', '')
             form.age_client2.data = reservation_details['Zak'][2].get('vek_zak', '')
             form.experience_client2.data = reservation_details['Zak'][2].get('zkusenost_zak', '')
+
+        student_client, students_status = get_reservation_students_status(reservation_id)
+        student_client = json.dumps(student_client)
+        students_status = json.dumps(students_status)
+
+        print(student_client)
+        print(students_status)
     
-    return render_template('/blog/user/reservation_change.html', form=form, reservation_code=reservation_details.get("rez_kod"), reservation_date=reservation_details.get("termin_rezervace"), reservation_time=reservation_details.get("cas_zacatku"), reservation_payment=reservation_details.get("platba"), student_count=reservation_details.get("pocet_zaku"), reservation_duration=reservation_details.get("doba_vyuky"), active_page="reservation_change")
+    return render_template('/blog/user/reservation_change.html', form=form, student_client=student_client, students_status=students_status, reservation_code=reservation_details.get("rez_kod"), reservation_date=reservation_details.get("termin_rezervace"), reservation_time=reservation_details.get("cas_zacatku"), reservation_payment=reservation_details.get("platba"), student_count=reservation_details.get("pocet_zaku"), reservation_duration=reservation_details.get("doba_vyuky"), active_page="reservation_change")
 
 @users_bp.route('/reservations')
 @login_required
