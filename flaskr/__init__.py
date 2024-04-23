@@ -60,9 +60,12 @@ def create_application(test_config=None):
     application.config['MAIL_SERVER'] = 'smtp.gmail.com'
     application.config['MAIL_PORT'] = 587
     application.config['MAIL_USE_TLS'] = True
-    application.config['MAIL_USERNAME'] = 'jl6701543@gmail.com'
-    application.config['MAIL_PASSWORD'] = 'qqlg wnwf bsni lzqm '
-    application.config['MAIL_DEFAULT_SENDER'] = 'jl6701543@gmail.com'
+    #application.config['MAIL_USERNAME'] = 'jl6701543@gmail.com'
+    application.config['MAIL_USERNAME'] = 'noreply.skiressystem@gmail.com'
+    #application.config['MAIL_PASSWORD'] = 'qqlg wnwf bsni lzqm '
+    application.config['MAIL_PASSWORD'] = 'maeb dqtc vsuc ridg'
+    #application.config['MAIL_DEFAULT_SENDER'] = 'jl6701543@gmail.com'
+    application.config['MAIL_DEFAULT_SENDER'] = 'noreply.skiressystem@gmail.com'
 
     mail.init_app(application)
 

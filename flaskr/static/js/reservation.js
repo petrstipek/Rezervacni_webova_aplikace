@@ -425,4 +425,40 @@ $(document).ready(function () {
             $('#student_client_checkbox, #more_students_checkbox').css('outline', 'none');
         }
     });
+
+    $('#lesson_type').hover(
+        function () {
+            $(this).next('.tooltip-text').show();
+        },
+        function () {
+            $(this).next('.tooltip-text').hide();
+        }
+    );
+
+    function updateRedStars() {
+
+        if ($('#student_client_checkbox').is(':checked')) {
+            $('#red-star-age-student-client').show();
+        } else {
+            $('#red-star-age-student-client').hide();
+        }
+
+        if ($('#more_students_checkbox').is(':checked')) {
+            if ($('#name2').val().trim() !== '') {
+                $('.red-star-student2').show();
+            } else {
+                $('.red-star-student2').hide();
+            }
+            if ($('#name3').val().trim() !== '') {
+                $('.red-star-student3').show();
+            } else {
+                $('.red-star-student3').hide();
+            }
+        } else {
+            $('.red-star-student2').hide();
+            $('.red-star-student3').hide();
+        }
+    }
+    $('#student_client_checkbox, #age_client_main').on('change keyup', updateRedStars);
+    $('#more_students_checkbox, #name2, #name3').on('change keyup', updateRedStars);
 });

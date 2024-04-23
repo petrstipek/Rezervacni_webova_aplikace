@@ -65,7 +65,7 @@ class ReservationInformationCheckForm(FlaskForm):
     submit = SubmitField('Získat informace')
 
 class LoginForm(FlaskForm):
-    username = StringField(label="Přihlašovací jméno: ", validators=[DataRequired()])
+    username = StringField(label="Email/přihlašovací jméno: ", validators=[DataRequired()])
     password = PasswordField(label="Heslo:", validators=[DataRequired()])
     submit = SubmitField(label="Přihlásit se")
 

@@ -20,27 +20,27 @@
                     <h2 class="h2-headers">Nová registrace</h2>
                 <div class="form-row">
                     <div class="form-col">
-                        {{ form.name.label(class="login-label") }}
+                        {{ form.name.label(class="login-label") }}<span style="color: red;">  *</span>
                         {{ form.name(id="name", class="form-control login-fields", placeholder="Jméno") }}
                     </div>
                     <div class="form-col">
-                        {{ form.surname.label(class="login-label") }}
+                        {{ form.surname.label(class="login-label") }}<span style="color: red;">  *</span>
                         {{ form.surname(id="surname", class="form-control login-fields", placeholder="Příjmení") }}
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-col">
-                        {{ form.email.label(class="login-label") }}
+                        {{ form.email.label(class="login-label") }}<span style="color: red;">  *</span>
                         {{ form.email(id="email", class="form-control login-fields", placeholder="Email") }}
                     </div>
                     <div class="form-col">
-                        {{ form.tel_number.label(class="login-label") }}
+                        {{ form.tel_number.label(class="login-label") }}<span style="color: red;">  *</span>
                         {{ form.tel_number(id="tel_number", class="form-control login-fields", placeholder="Telefonní číslo") }}
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-col">
-                        {{ form.password.label(class="login-label") }}
+                        {{ form.password.label(class="login-label") }}<span style="color: red;">  *</span>
                         {{ form.password(id="password", class="form-control login-fields", placeholder="Heslo") }}
                     </div>
                 </div>

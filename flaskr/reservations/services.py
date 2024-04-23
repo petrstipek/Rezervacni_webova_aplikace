@@ -431,7 +431,7 @@ def handle_form(form):
     return name, surname, email, phone, experience, age, lesson_type, reservation_note, lesson_length, instructor_selected, language_selection, time_plus_one, student_client, more_students, client_name_fields, client_surname_fields, client_age_fields, client_experience_fields, date, time
 
 def handle_all_instructors(available_instructors):
-    return_instructors = [(0, "Instruktor")]
+    return_instructors = [(0, "Kdokoli volný")]
     for row in available_instructors:
         return_instructors.append((row["ID_osoba"], row["jmeno"]))
     return return_instructors
