@@ -179,14 +179,14 @@ class ChangeReservation(FlaskForm):
     age_client2 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
     age_client3 = IntegerField('Věk', validators=[Optional(), NumberRange(min=5, max=120)])
 
-    experience_client1 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
-    experience_client2 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
-    experience_client3 = SelectField('Zkušenosti', choices=[('value1', 'Začátečník'), ('value2', 'Středně pokročilý'), ('value3', 'Pokročilý')], validators=[Optional()])
+    experience_client1 = SelectField('Zkušenosti', choices=[('začátečník', 'Začátečník'), ('středně pokročilý', 'Středně pokročilý'), ('pokročilý', 'Pokročilý')], validators=[Optional()])
+    experience_client2 = SelectField('Zkušenosti', choices=[('začátečník', 'Začátečník'), ('středně pokročilý', 'Středně pokročilý'), ('pokročilý', 'Pokročilý')], validators=[Optional()])
+    experience_client3 = SelectField('Zkušenosti', choices=[('začátečník', 'Začátečník'), ('středně pokročilý', 'Středně pokročilý'), ('pokročilý', 'Pokročilý')], validators=[Optional()])
 
     lesson_type = SelectField('Výuka', choices=[('individual', 'Individuální'), ('group', 'Skupinová'),("group-ind", "Skupinová - 1 instruktor")], validators=[Optional()])
     lesson_length = SelectField("Délka výuky", choices=[("1hodina", "1 hodina"), ("2hodiny", "2 hodiny")])
     lesson_instructor_choices = SelectField("Instruktor", choices = [], validators=[Optional()])
-    language_selection = SelectField("Jazyk", choices=[("czech", "čeština"), ("deutsch", "deutsch"), ("english", "english")])
+    language_selection = SelectField("Jazyk", choices=[("čeština", "čeština"), ("němčina", "deutsch"), ("angličtina", "english")])
 
     note = TextAreaField('Note', render_kw={"placeholder": "Napište nám zprávu."}, validators=[Optional(), Length(min=0, max=300)])
 
