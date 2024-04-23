@@ -180,7 +180,21 @@ $(document).ready(function () {
         }
     });
 
+    var studentCount = $('#reservation-change-form').data('student-count');
+    console.log(studentCount);
+
+    var studentClient = $('#reservation-change-form').data('student-client');
+    console.log(studentClient, "studentClient");
+
     function checkboxes() {
+        if (studentClient == true) {
+            $('#student_client').prop('checked', true);
+        }
+        if (studentCount >= 2) {
+            $('#more_students').prop('checked', true);
+        }
+
+        /*
         if ($('#age_client1').val() === '' && $('#age_client2').val() === '') {
             $('#more_students').prop('checked', false);
         }
@@ -188,6 +202,7 @@ $(document).ready(function () {
         if ($('#age_client').val() !== '') {
             $('#student_client').prop('checked', true);
         }
+        */
     };
 
     function updateVisibility() {
@@ -196,14 +211,22 @@ $(document).ready(function () {
 
         if (showStudentClient && showMoreStudents) {
             $("#zak1-section, #zak2-section, #zak3-section").slideDown();
+            copyAndValidate('#name', '#name_client_hidden',);
+            copyAndValidate('#surname', '#surname_client_hidden');
         } else if (showStudentClient) {
             $("#zak1-section").slideDown();
             $("#zak2-section, #zak3-section").slideUp();
+            copyAndValidate('#name', '#name_client_hidden',);
+            copyAndValidate('#surname', '#surname_client_hidden');
         } else if (showMoreStudents) {
             $("#zak2-section, #zak3-section").slideDown();
             $("#zak1-section").slideUp();
+            copyAndValidate('#name', '#name_client_hidden',);
+            copyAndValidate('#surname', '#surname_client_hidden');
         } else {
             $("#zak1-section, #zak2-section, #zak3-section").slideUp();
+            copyAndValidate('#name', '#name_client_hidden',);
+            copyAndValidate('#surname', '#surname_client_hidden');
         }
     }
 
@@ -221,7 +244,6 @@ $(document).ready(function () {
 
     $('#student_client').change(updateHiddenFields);
 
-
     checkboxes();
     updateVisibility();
     updateHiddenFields();
@@ -231,10 +253,11 @@ $(document).ready(function () {
     $('#student_client, #more_students').change(updateVisibility);
 
     function copyAndValidate(sourceSelector, targetSelector) {
-        console.log("ano jsem spusten")
+
         var value = $(sourceSelector).val();
         $(targetSelector).val(value);
-    }
+    };
+
     copyAndValidate('#name', '#name_client_hidden',);
     copyAndValidate('#surname', '#surname_client_hidden');
 

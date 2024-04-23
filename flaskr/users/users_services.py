@@ -1,6 +1,6 @@
 from flaskr.extensions import database
 from flask_login import current_user
-from flaskr.models import Osoba
+from flaskr.models import Osoba, Rezervace, Zak
 from flaskr.auth.auth import check_password, hash_password
 
 def validate_password(old_password):
@@ -33,3 +33,20 @@ def update_personal_information(name, surname, email, tel_number, password):
     except Exception as e:
         database.session.rollback()
         return (False, f"An error occurred: {e}")
+
+def get_reservation_students_status(reservation_id):
+    query_result = database.session.query(Rezervace).filter(Rezervace.ID_rezervace==reservation_id).first()
+
+    query_result_client = database.session.query(Osoba).filter(Osoba.ID_osoba==query_result.ID_osoba).first()
+    query_result_students = database.session.query(Zak).filter(Zak.ID_rezervace==reservation_id).all()
+
+    client_status = False
+    student_status = False
+
+    for student in query_result_students:
+        if student.jmeno == query_result_client.jmeno and student.prijmeni == query_result_client.prijmeni:
+            client_status = True
+        elif student.jmeno == query_result_client.jmeno or student.prijmeni == query_result_client.prijmeni:
+            student_status = False
+
+    return client_status, student_status
