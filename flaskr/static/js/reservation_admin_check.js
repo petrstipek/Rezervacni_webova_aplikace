@@ -6,16 +6,19 @@ $(document).ready(function () {
     var currentPageSecondTable = 1;
     var perPageSecondTable = 5;
     var totalPagesSecondTable = 0;
+    var selectedDate = null;
 
     $(document).on('change', '#reservationDate', function () {
         selectedDate = $('#reservationDate').val();
         fetchReservationsAll(1, selectedDate)
+        selectedDate = selectedDate
     });
 
     $('#allReservations').click(function () {
         selectedDate = null;
         $('#reservationDate').val('');
         fetchReservationsAll(1, null)
+        selectedDate = null
 
     });
 
@@ -165,7 +168,7 @@ $(document).ready(function () {
                 $('#reservationDetailsAll').append(table);
 
                 totalPagesSecondTable = response.total_pages;
-                updatePaginationControlsFirstTable(totalPagesSecondTable, currentPageSecondTable);
+                updatePaginationControlsFirstTableAll(totalPagesSecondTable, currentPageSecondTable);
             },
             error: function (xhr, status, error) {
                 console.error("Error: " + status + " - " + error);
@@ -174,6 +177,27 @@ $(document).ready(function () {
         });
     }
 
+    function updatePaginationControlsFirstTableAll(totalPagesSecondTable, currentPageSecondTable) {
+        $('#paginationControlsFirstTableAll').empty();
+
+
+        let prevDisabled = currentPageSecondTable <= 1 ? "disabled" : "";
+        $('#paginationControlsFirstTableAll').append(`<button id="prevPage" ${prevDisabled} onclick="${currentPageSecondTable - 1}">Předchozí</button>`);
+
+        let nextDisabled = currentPageSecondTable >= totalPagesSecondTable ? "disabled" : "";
+        $('#paginationControlsFirstTableAll').append(`<button id="nextPage" ${nextDisabled} onclick="${currentPageSecondTable + 1}">Další</button>`);
+
+    }
+
+    $('#paginationControlsFirstTableAll').on('click', '#prevPage:not([disabled])', function () {
+        fetchReservationsAll(--currentPageSecondTable, selectedDate);
+    });
+
+    $('#paginationControlsFirstTableAll').on('click', '#nextPage:not([disabled])', function () {
+        fetchReservationsAll(++currentPageSecondTable, selectedDate);
+    });
+
+    //-----
 
     function updatePaginationControlsFirstTable(totalPagesFirstTable, currentPageFirstTable) {
         $('#paginationControlsFirstTable').empty();
@@ -186,6 +210,7 @@ $(document).ready(function () {
     }
 
     $('#paginationControlsFirstTable').on('click', '#prevPage:not([disabled])', function () {
+
         fetchReservations(--currentPageFirstTable);
     });
 

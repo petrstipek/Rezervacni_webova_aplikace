@@ -21,8 +21,8 @@ def mark_reservation_as_paid(reservation_id):
     database.session.commit()
 
 def delete_lesson(lesson_id):
-    database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_id).delete()
     database.session.query(MaVypsane).filter_by(ID_hodiny=lesson_id).delete()
+    database.session.query(DostupneHodiny).filter_by(ID_hodiny=lesson_id).delete()
     database.session.commit()
 
 def get_paginated_reservation_details(page, per_page, identifier=None, identifier_type=None, selected_date=None):

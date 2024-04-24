@@ -4,7 +4,8 @@ from flaskr.email.email_services import get_instructor_email, get_reservation_co
 from flask import url_for
 
 def send_email(subject, recipients, html_body):
-    sender = "jl6701543@gmail.com"
+    #sender = "jl6701543@gmail.com"
+    sender = "noreply.skiressystem@gmail.com"
     msg = Message(subject, sender=sender, recipients=[recipients])
     msg.html = html_body
     mail.send(msg)

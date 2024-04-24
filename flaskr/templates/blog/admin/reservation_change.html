@@ -9,7 +9,7 @@
 <div class="global-margin">
 <div class="flex-container">
     <div class="form-section left-section">
-    <form id="reservation-change-form" method="post" action="{{ url_for('administration.reservation_change', reservation_id=reservation_id) }}">
+    <form data-student-client="{{ student_client }}" data-students-status="{{ students_status }}" data-student-count="{{ student_count }}" id="reservation-change-form" method="post" action="{{ url_for('administration.reservation_change', reservation_id=reservation_id) }}">
         {{ form.hidden_tag() }}
                 <div class="container-reservation mt-3">
                     <h2>Změna rezervace</h2>
@@ -38,10 +38,6 @@
                 <div class="form-group">
                     {{ form.lesson_length.label(class="form-label") }}
                     {{ form.lesson_length(class="form-control") }}
-                </div>
-                <div class="form-group">
-                    {{ form.lesson_instructor_choices.label(class="form-label") }}
-                    {{ form.lesson_instructor_choices(class="form-control") }}
                 </div>
                 <div class="form-group">
                     {{ form.language_selection.label(class="form-label") }}

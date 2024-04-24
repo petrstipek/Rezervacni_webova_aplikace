@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField
+from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional, ValidationError
 from flask_wtf.file import FileField, FileAllowed
 
@@ -65,7 +65,7 @@ class ReservationInformationCheckForm(FlaskForm):
     submit = SubmitField('Získat informace')
 
 class LoginForm(FlaskForm):
-    username = StringField(label="Přihlašovací jméno: ", validators=[DataRequired()])
+    username = StringField(label="Email/přihlašovací jméno: ", validators=[DataRequired()])
     password = PasswordField(label="Heslo:", validators=[DataRequired()])
     submit = SubmitField(label="Přihlásit se")
 
@@ -76,7 +76,10 @@ def validate_on_the_hour(form, field):
 
 class LessonInsertForm(FlaskForm):
     date = DateField('Datum', validators=[DataRequired()], format='%Y-%m-%d')
-    time_start = SelectField("Čas začátku", validators=[DataRequired()], choices=[(f'{i:02d}:00', f'{i:02d}:00') for i in range(24)])
+    #time_start = SelectField("Čas začátku", validators=[DataRequired()], choices=[(f'{i:02d}:00', f'{i:02d}:00') for i in range(24)])
+
+    time_start = SelectMultipleField("Čas začátku", validators=[DataRequired()], choices=[(f'{i:02d}:00', f'{i:02d}:00') for i in range(9, 19)])
+
     lesson_type = SelectField('Typ lekce', choices=[('ind', 'Individuální'), ('group', 'Skupinová')], validators=[Optional()])
     capacity = IntegerField('Kapacita', validators=[Optional(), NumberRange(min=0, max=20)])
     lesson_instructor_choices = SelectField("Hlavní Instruktor", choices = [], validators=[DataRequired()])
@@ -102,7 +105,7 @@ class InstructorInsertForm(FlaskForm):
     image = FileField('obrázek', validators=[Optional(),
         FileAllowed(['jpg', 'png', 'jpeg', 'gif'], 'Images only!')
     ])
-    text = StringField('Popis instruktora:', validators=[Optional()])
+    text = StringField('Popis instruktora:', validators=[Optional(), Length(min=0, max=50) ])
 
     submit = SubmitField(label="Uložit instruktora")
 

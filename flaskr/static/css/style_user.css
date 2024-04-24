@@ -579,10 +579,12 @@ hr {
 
 .horizontal-fields-container-header-test .field-container .form-select {
     width: calc(100% - 10px);
+    text-align: center;
 }
 
 .horizontal-fields-container-header-test .field-container label {
     margin-bottom: 8px;
+    font-weight: 600;
 }
 
 .horizontal-fields-container-header-test {

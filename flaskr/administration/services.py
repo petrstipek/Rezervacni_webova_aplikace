@@ -95,7 +95,7 @@ def add_individual_lesson(date_str, time_start, instructor_id, lesson_type, capa
     database.session.add(new_ma_vypsane)
     database.session.commit()
     
-    return True, "Hodina úspěšně přidána!"
+    return True, "Požadavek byl systémem úspešně zpracován!"
 
 def add_group_lesson(date_str, time_start, instructor_ids, lesson_type, capacity):
     for instructor_id in instructor_ids:
@@ -110,7 +110,7 @@ def add_group_lesson(date_str, time_start, instructor_ids, lesson_type, capacity
             )).first()
         
         if query_result:
-            return False, "Lesson already exists for these parameters - instructor: " + instructor_id
+            return False, "Hodina s těmito parametry již existuje - instruktor: " + instructor_id
         
     new_lesson = DostupneHodiny(
         datum=date_str,
@@ -131,7 +131,7 @@ def add_group_lesson(date_str, time_start, instructor_ids, lesson_type, capacity
         )
         database.session.add(new_ma_vypsane)
     database.session.commit()
-    return True, "Lesson added successfully"
+    return True, "Požadavek byl systémem úspešně zpracován!"
 
 def get_reservations():
     query_result = database.session.query(Rezervace).join(Klient, Rezervace.ID_osoba == Klient.ID_osoba).all()
@@ -215,6 +215,8 @@ def prepare_data_reservations_graph():
 
 def process_reservation_change(form, reservation_id):
     query_result = database.session.query(Rezervace).filter(Rezervace.ID_rezervace == reservation_id).first()
+    instructor_query = database.session.query(MaVyuku).filter(MaVyuku.ID_rezervace == reservation_id).first()
+
     not_changed_time = query_result.cas_zacatku
     not_changed_date = query_result.termin
     initial_reservation_id = query_result.ID_rezervace
@@ -253,6 +255,7 @@ def process_reservation_change(form, reservation_id):
         formatted_time = datetime_obj.time()
 
     if not form.change_time.data and query_result.pocet_zaku == length:
+        print("prvni if")
         form_students = [
             {"name" : form.name.data , "surname" : form.surname.data, "age": form.age_client.data, "experience": form.experience_client.data},
             {"name" : form.name_client1.data, "surname" : form.surname_client1.data, "age": form.age_client1.data, "experience": form.experience_client1.data},
@@ -288,6 +291,7 @@ def process_reservation_change(form, reservation_id):
                     student.zkusenost = form_student["experience"]
                     updated = True
     else:
+        print("else")
         old_reservation_code = query_result.rezervacni_kod
         old_reservation_student_count = query_result.pocet_zaku
 
@@ -306,6 +310,7 @@ def process_reservation_change(form, reservation_id):
         form.date.data = form.date.data.strftime('%Y-%m-%d')
 
         if not form.change_time.data:
+            print("jo jsem tady")
             form.time_reservation.data = not_changed_time.strftime('%H:%M')
             result = process_reservation(form)
         else:
@@ -456,6 +461,13 @@ def lesson_instructor_change(lesson_id, instructor_id):
 
     database.session.commit()
     return status, message
+
+def check_instructor_client(email):
+    client = database.session.query(Osoba).filter(Osoba.email == email).first()
+    instructor_in_instructors = database.session.query(Instruktor).filter(Instruktor.ID_osoba == client.ID_osoba).first()
+    if instructor_in_instructors:
+        return False
+    return True
 
 def change_instructor_check(email):
     instructor = database.session.query(Osoba).join(Instruktor, Instruktor.ID_osoba == Osoba.ID_osoba).filter(Osoba.email == email).first()
@@ -611,3 +623,20 @@ def generate_reservations_overview():
     response.headers['Content-Disposition'] = 'attachment; filename="reservations.csv"'
 
     return response
+
+def get_reservation_students_status(reservation_id):
+    query_result = database.session.query(Rezervace).filter(Rezervace.ID_rezervace==reservation_id).first()
+
+    query_result_client = database.session.query(Osoba).filter(Osoba.ID_osoba==query_result.ID_osoba).first()
+    query_result_students = database.session.query(Zak).filter(Zak.ID_rezervace==reservation_id).all()
+
+    client_status = False
+    student_status = False
+
+    for student in query_result_students:
+        if student.jmeno == query_result_client.jmeno and student.prijmeni == query_result_client.prijmeni:
+            client_status = True
+        elif student.jmeno == query_result_client.jmeno or student.prijmeni == query_result_client.prijmeni:
+            student_status = False
+
+    return client_status, student_status

@@ -20,7 +20,6 @@ html {
 }
 
 .tile {
-    width: calc(33.333% - 40px);
     margin: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -34,18 +33,6 @@ html {
 
 .tile p {
     padding: 15px;
-}
-
-@media (max-width: 800px) {
-    .tile {
-        width: calc(50% - 40px);
-    }
-}
-
-@media (max-width: 500px) {
-    .tile {
-        width: calc(100% - 40px);
-    }
 }
 
 .responsive-hero {
@@ -90,4 +77,76 @@ html {
 .container-instructors {
     width: 100% !important;
     max-width: 2000px !important;
+}
+
+/* new style tryout */
+
+.tile {
+    margin: 0 auto;
+}
+
+/* Additional styling if needed */
+
+.responsive-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.instructor-desc {
+    text-align: center;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .tile-gallery {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* End of new style tryout */
+
+.tile-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.responsive-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.instructor-desc {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 600px) {
+    .tile-gallery {
+        grid-template-columns: 1fr;
+    }
+}
+
+.instructor-desc {
+    width: 100%;
+    text-align: center;
+    overflow: hidden;
+    word-wrap: break-word !important;
+    margin-top: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }

@@ -17,7 +17,83 @@
 }
 
 .add-lesson {
-    min-width: 400px;
+    min-width: 300px;
     margin: 0 auto;
     max-width: 600px;
+}
+
+.modal-lessons {
+    width: 80% !important;
+}
+
+.dropdown-menu {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1050;
+}
+
+.dropdown-item {
+    padding: .25rem 1.5rem;
+    font-size: .875rem;
+}
+
+.dropdown-item .custom-control-input {
+    width: 1rem;
+    height: 1rem !important;
+}
+
+.dropdown-menu input {
+    height: 1em;
+
+}
+
+.multiselect-container .multiselect-all,
+.multiselect-container .multiselect-group,
+.multiselect-container .multiselect-option {
+    padding: .25rem .25rem .25rem .75rem !important;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: .25rem 1.5rem;
+    font-size: .875rem;
+}
+
+.dropdown-item .custom-control-input {
+    margin-right: .5rem;
+}
+
+.custom-control {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-menu .dropdown-item .custom-control .custom-control-input {
+    margin-top: 0;
+    margin-right: .5rem;
+    align-self: center;
+}
+
+.dropdown-menu .dropdown-item .custom-control .custom-control-label {
+    margin-bottom: 0;
+}
+
+.multiselect-container .multiselect-all .form-check,
+.multiselect-container .multiselect-group .form-check,
+.multiselect-container .multiselect-option .form-check {
+    display: flex;
+    align-items: center;
+}
+
+.multiselect {
+    padding: 0px !important;
 }

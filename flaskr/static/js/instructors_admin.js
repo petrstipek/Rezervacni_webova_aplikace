@@ -26,6 +26,8 @@ $(document).ready(function () {
             }
         });
     }
+    window.fetchInstructors = fetchInstructors;
+
     fetchInstructors(1);
 
     $('table').on('click', '.button-instructor-action', function () {

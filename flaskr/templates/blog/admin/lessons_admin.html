@@ -9,12 +9,20 @@
     <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style_admin_lessons.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/pop-up.css') }}" rel="stylesheet">
+
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Bootstrap Multiselect CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-multiselect/dist/css/bootstrap-multiselect.css">
+    
 {% endblock %}
 
 {% block body %}
 <div class="global-margin">
     <div id="detailModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content modal-lessons">
             <span class="close">&times;</span>
             <form method="post" action="{{ url_for('administration.lessons_admin') }}">
                 <input type="hidden" name="form_type" value="lesson_change">
@@ -117,7 +125,13 @@
                             </div>
                             <div class="containers-lessons">
                                 <label for="time_start">{{ form.time_start.label }}</label>
-                                {{ form.time_start }}
+
+                                <select id="time_start" name="time_start" multiple="multiple" class="form-control my-dropdown lessons-time-field">
+                                    {% for i in range(9, 19) %}
+                                    <option class="admin-lessons-dropdown-options" value="{{ '%02d' % i }}:00">{{ '%02d' % i }}:00</option>
+                                    {% endfor %}
+                                </select>
+
                                 {% if form.time_start.errors %}
                                 <div class="errors">{{ form.time_start.errors[0] }}</div>
                                 {% endif %}
@@ -163,20 +177,16 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+<!-- Bootstrap Multiselect JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-multiselect/dist/js/bootstrap-multiselect.min.js"></script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript">
     var changeReservationUrl = "{{ url_for('administration.reservation_change') }}";
 </script>
 <script src="{{ url_for('static', filename='js/admin_pages.js') }}"></script>
-{% if request.args.get('show_modal') == 'true' and request.args.get('lesson_id') %}
-<script>
-    $(document).ready(function() {
-        var lessonId = "{{ request.args.get('lesson_id') }}";
-        loadAndShowLessonDetails(lessonId);
-
-        var newUrl = window.location.href.split('?')[0];
-        window.history.replaceState({}, document.title, newUrl);
-    });
-</script>
-{% endif %}
 {% endblock %}

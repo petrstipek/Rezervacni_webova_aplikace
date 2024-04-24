@@ -58,15 +58,12 @@ def delete_reservation_by_id(reservation_id):
 @login_required
 @admin_required
 def delete_lesson_admin(lesson_id):
-    try:
-        lesson_status = get_lesson_status(lesson_id)
-        if lesson_status and lesson_status[0] == "obsazeno":
-            return jsonify({"error": True, "message": "Hodina je obsazena, nelze smazat, nejdřív smažte rezervaci."}), 400
-        elif lesson_status and lesson_status[0] == "volno":
-            delete_lesson(lesson_id)
-            return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
-    except Exception as e:
-        return jsonify({"error": True, "message": "Nastala chyba."}), 500
+    lesson_status = get_lesson_status(lesson_id)
+    if lesson_status and lesson_status[0] == "obsazeno":
+        return jsonify({"error": True, "message": "Hodina je obsazena, nelze smazat, nejdřív smažte rezervaci."}), 400
+    elif lesson_status and lesson_status[0] == "volno":
+        delete_lesson(lesson_id)
+        return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
     
 #nove - funguje
 @administration_api.route('/reservations', methods=['GET'])

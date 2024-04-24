@@ -191,6 +191,17 @@ function loadAndShowLessonDetails(lessonId) {
     });
 }
 
+$('#time_start').multiselect({
+    enableFiltering: false,
+    includeSelectAllOption: true,
+    nonSelectedText: 'Select Times',
+    buttonWidth: '100%',
+    selectAllText: 'Vybrat vše',
+    nonSelectedText: 'Vyberte termín',
+    allSelectedText: 'Vše vybráno',
+    nSelectedText: 'termíny zvoleny',
+});
+
 $(document).ready(function () {
     function toggleAdditionalParameters() {
         var selectedType = $('#lesson_type').val();
