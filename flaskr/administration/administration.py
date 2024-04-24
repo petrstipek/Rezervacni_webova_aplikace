@@ -63,6 +63,7 @@ def reservation_change():
             for error in errors:
                 flash(f"{error}", category="danger")
 
+    reservation_detail =  get_reservation_details_proper(reservation_id)
     if request.method == "GET" and reservation_details:
         form.name.data = reservation_details.get('jmeno_klienta', '')
         form.surname.data = reservation_details.get('prijmeni_klienta', '')
@@ -70,6 +71,8 @@ def reservation_change():
         form.tel_number.data = reservation_details.get('tel_cislo_klienta', '')
         form.age_client.data = reservation_details['Zak'][0].get('vek_zak', '')
         form.experience_client.data = reservation_details['Zak'][0].get('zkusenost_zak', '')
+        form.lesson_type.data = reservation_detail.typ_rezervace
+
 
         date_str = reservation_details.get('termin_rezervace', '')
         form.date.data = datetime.strptime(date_str, '%Y-%m-%d').date()

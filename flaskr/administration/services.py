@@ -640,3 +640,7 @@ def get_reservation_students_status(reservation_id):
             student_status = False
 
     return client_status, student_status
+
+def get_reservation_details_proper(reservation_id):
+    query_result = database.session.query(Rezervace).filter(Rezervace.ID_rezervace==reservation_id).first()
+    return query_result
