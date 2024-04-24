@@ -3,7 +3,7 @@ from flask_login import login_required
 from flaskr.auth.login_decorators import client_required
 from flaskr.forms import PersonalInformationFormUser, ChangeReservation
 from flask_login import current_user
-from flaskr.users.users_services import validate_password, update_personal_information, get_reservation_students_status
+from flaskr.users.users_services import validate_password, update_personal_information, get_reservation_students_status, get_reservation_details_proper
 from flaskr.api.services.instructor_services import get_all_instructors
 from flaskr.administration.services import get_reservation_details
 from flaskr.reservations.services import handle_all_instructors
@@ -54,6 +54,7 @@ def reservation_change():
             for error in errors:
                 flash(f"{error}", category="danger")
 
+    reservation_detail =  get_reservation_details_proper(reservation_id)
     if request.method == "GET" and reservation_details:
         form.name.data = reservation_details.get('jmeno_klienta', '')
         form.surname.data = reservation_details.get('prijmeni_klienta', '')
@@ -61,6 +62,7 @@ def reservation_change():
         form.tel_number.data = reservation_details.get('tel_cislo_klienta', '')
         form.age_client.data = reservation_details['Zak'][0].get('vek_zak', '')
         form.experience_client.data = reservation_details['Zak'][0].get('zkusenost_zak', '')
+        form.lesson_type.data = reservation_detail.typ_rezervace
 
         date_str = reservation_details.get('termin_rezervace', '')
         form.date.data = datetime.strptime(date_str, '%Y-%m-%d').date()

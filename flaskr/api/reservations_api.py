@@ -19,7 +19,7 @@ def get_reservation(reservation_identifier):
     data = get_reservation_detail(reservation_identifier)
     if data:
         return jsonify(data)
-    else: 
+    else:
         return jsonify({"error": "Při hledání rezervace nastala chyba"}), 404
 
 @reservations_api_bp.route('/lessons/<int:instructor_id>/available-times')

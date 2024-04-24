@@ -21,9 +21,9 @@ $(document).ready(function () {
                 $('#reservationDetails').empty();
                 var response = JSON.parse(xhr.responseText);
                 if (response && response.error) {
-                    $('#reservationDetails').text(response.error);
+                    alert("Rezervace nebyla nalezena.");
                 } else {
-                    $('#reservationDetails').text("Error!");
+                    alert("Rezervace nebyla nalezena.");
                 }
             }
         });
