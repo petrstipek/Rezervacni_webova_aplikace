@@ -10,6 +10,7 @@ from flaskr.administration.services import get_reservation_details
 from flaskr.administration.services import process_reservation_change, get_available_lessons, lesson_capacity_change, lesson_instructor_change
 from flaskr.api.services.lessons_services import get_lesson_detail
 from flask_login import current_user
+import json
 
 
 administration_bp = Blueprint('administration', __name__, template_folder='templates')
@@ -88,7 +89,11 @@ def reservation_change():
             form.age_client2.data = reservation_details['Zak'][2].get('vek_zak', '')
             form.experience_client2.data = reservation_details['Zak'][2].get('zkusenost_zak', '')
     
-    return render_template('/blog/admin/reservation_change.html', form=form, reservation_code=reservation_details.get("rez_kod"), reservation_date=reservation_details.get("termin_rezervace"), reservation_time=reservation_details.get("cas_zacatku"), reservation_payment=reservation_details.get("platba"), student_count=reservation_details.get("pocet_zaku"), reservation_duration=reservation_details.get("doba_vyuky"), active_page="reservation_change")
+    student_client, students_status = get_reservation_students_status(reservation_id)
+    student_client = json.dumps(student_client)
+    students_status = json.dumps(students_status)
+    
+    return render_template('/blog/admin/reservation_change.html', form=form, student_client=student_client, students_status=students_status, reservation_code=reservation_details.get("rez_kod"), reservation_date=reservation_details.get("termin_rezervace"), reservation_time=reservation_details.get("cas_zacatku"), reservation_payment=reservation_details.get("platba"), student_count=reservation_details.get("pocet_zaku"), reservation_duration=reservation_details.get("doba_vyuky"), active_page="reservation_change")
 
 @administration_bp.route('/reservations-overview')
 @login_required
@@ -133,7 +138,13 @@ def instructors_admin():
 
         changes = False
         instructor = change_instructor_check(email)
-        if instructor:
+        check_instructor_clinent = check_instructor_client(email)
+        instructor_client = False
+        if check_instructor_clinent:
+            instructor_client = True
+            flash("Email instruktora je shodný s emailem klienta! Zkontrolujte prosím zda se nejedná o stejnou osobu.", category="warning")
+
+        elif instructor and not instructor_client:
             state, message =  update_instructor(instructor.ID_osoba, form)      
             if state:
                 flash(message, category="success")
@@ -142,9 +153,9 @@ def instructors_admin():
                 flash(message, category="danger")
                 changes = True
 
-        if instructor_exists(email) and changes == False:
+        if instructor_exists(email) and changes == False and not instructor_client:
             flash("Instruktor již je veden v databázi! V případě změn byla provedena aktualizace.", category="warning")
-        elif changes == False:
+        elif changes == False and not instructor_client:
             add_instructor(name, surname, email, tel_number, experience, date_birth, date_started, password, file, text)
             redirect(url_for("administration.instructors_admin"))
             flash("Instruktor byl úspěšně přidán, můžete vkládat dostupné hodiny.", category="success")
@@ -203,8 +214,16 @@ def lessons_admin():
         print("form errors: ", form_lesson_change.errors)
 
     if form_type == 'lesson_insert' and form.validate_on_submit():
+        #time handling
+        times_selected = request.form.getlist('time_start')
+        result_time_list = []
+
+        for time in times_selected:
+            time_obj = datetime.strptime(time, '%H:%M').time()
+            result_time_list.append(time_obj)
+
         date = form.date.data
-        time_start = form.time_start.data
+        #time_start = form.time_start.data
         lesson_type = form.lesson_type.data
         capacity = form.capacity.data
         instructor_id = form.lesson_instructor_choices.data
@@ -217,13 +236,16 @@ def lessons_admin():
                 flash("Stejný instruktor je vybrán více krát!", category="danger")
                 return redirect(url_for("administration.lessons_admin"))
 
-        date_str = date.strftime("%Y-%m-%d")
-        time_obj = datetime.strptime(time_start, '%H:%M').time()
+        #date_str = date.strftime("%Y-%m-%d")
+        #time_obj = datetime.strptime(time_start, '%H:%M').time()
 
         if lesson_type == "ind":
-            success, message = add_individual_lesson(date, time_obj, instructor_id, lesson_type, capacity)
+            for time in result_time_list:
+                success, message = add_individual_lesson(date, time, instructor_id, lesson_type, capacity)
+            #success, message = add_individual_lesson(date, time_obj, instructor_id, lesson_type, capacity)
         elif lesson_type == "group":
-            success, message = add_group_lesson(date, time_obj, instructor_ids, lesson_type, capacity)
+            for time in result_time_list:
+                success, message = add_group_lesson(date, time, instructor_ids, lesson_type, capacity)
 
         if success:
             flash(message, category="success")

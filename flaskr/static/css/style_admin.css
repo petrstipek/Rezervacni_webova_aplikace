@@ -135,6 +135,13 @@ select {
     cursor: not-allowed;
 }
 
+#paginationControlsFirstTableAll button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+
 .table-all-reservations {
     height: 390px;
 }

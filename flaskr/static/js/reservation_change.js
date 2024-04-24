@@ -277,4 +277,9 @@ $(document).ready(function () {
             $('#date-time-fields').slideUp();
         }
     });
+
+    $(document).on('click', '.close', function () {
+        $('#detailModal').css('display', 'none');
+        $('body').removeClass('body-no-scroll');
+    });
 });

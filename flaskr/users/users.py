@@ -83,9 +83,6 @@ def reservation_change():
         student_client, students_status = get_reservation_students_status(reservation_id)
         student_client = json.dumps(student_client)
         students_status = json.dumps(students_status)
-
-        print(student_client)
-        print(students_status)
     
     return render_template('/blog/user/reservation_change.html', form=form, student_client=student_client, students_status=students_status, reservation_code=reservation_details.get("rez_kod"), reservation_date=reservation_details.get("termin_rezervace"), reservation_time=reservation_details.get("cas_zacatku"), reservation_payment=reservation_details.get("platba"), student_count=reservation_details.get("pocet_zaku"), reservation_duration=reservation_details.get("doba_vyuky"), active_page="reservation_change")
 

@@ -19,27 +19,27 @@
                     <div class="form-section">
                         <h2>Osobní údaje</h2>
                         <div class="form-group">     
-                            {{ form.name.label }}
+                            {{ form.name.label }}<span style="color: red;">*</span>
                             {{ form.name(id="name", class="form-control") }}
                         </div>
                         <div class="form-group">
-                            <label for="surname">{{ form.surname.label(class="form-label") }}</label>
+                            <label for="surname">{{ form.surname.label(class="form-label") }}</label><span style="color: red;">*</span>
                             {{ form.surname(id="surname", class="form-control") }}
                         </div>
                         <div class="form-group">
-                            <label for="tel_number">{{ form.tel_number.label(class="form-label") }}</label>
+                            <label for="tel_number">{{ form.tel_number.label(class="form-label") }}</label><span style="color: red;">*</span>
                             {{ form.tel_number(id="tel_number", class="form-control") }}
                         </div>
                         <div class="form-group">
-                            <label for="email">{{ form.email.label(class="form-label") }}</label>
+                            <label for="email">{{ form.email.label(class="form-label") }}</label><span style="color: red;">*</span>
                             {{ form.email(id="email", class="form-control") }}
                         </div>
                         <div class="form-group">
-                            <label for="date_birth">{{ form.date_birth.label }}</label>
+                            <label for="date_birth">{{ form.date_birth.label }}</label><span style="color: red;">*</span>
                             {{ form.date_birth(id="date_birth", class="form-control") }}
                         </div>
                         <div class="form-group">
-                            <label for="date_started">{{ form.date_started.label(class="form-label") }}</label>
+                            <label for="date_started">{{ form.date_started.label(class="form-label") }}</label><span style="color: red;">*</span>
                             {{ form.date_started(id="date_started", class="form-control") }}
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                     <div class="form-section">
                         <h2>Registrační informace</h2>
                         <div class="form-group">
-                            <label for="email">{{ form.password.label(class="form-label") }}</label>
+                            <label for="password">{{ form.password.label(class="form-label") }}</label>
                             {{ form.password(id="password", class="form-control") }}
                         </div>
                     </div>
