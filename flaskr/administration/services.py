@@ -297,10 +297,12 @@ def process_reservation_change(form, reservation_id):
 
         deleted_reservation = False
         if student_count == initial_student_count:
+            print("delete1")
             delete_reservation_by_reservation_id(reservation_id)
             deleted_reservation = True
 
         if not form.change_time.data and initial_student_count != length:
+            print("delete2")
             check_available_lessons = database.session.query(DostupneHodiny).filter(DostupneHodiny.datum == not_changed_date, DostupneHodiny.cas_zacatku == not_changed_time, DostupneHodiny.stav == "volno").all()
             if len(check_available_lessons) >= length-1 and not deleted_reservation:
                 delete_reservation_by_reservation_id(reservation_id)
@@ -314,12 +316,18 @@ def process_reservation_change(form, reservation_id):
             form.time_reservation.data = not_changed_time.strftime('%H:%M')
             result = process_reservation(form)
         else:
+            print("jsem bych se měl dostat")
+            form.lesson_instructor_choices.data = "0"
             result = process_reservation(form)
 
         if len(result) == 3:
             message, message_type, reservation_code = result
         elif len(result) == 2:
             message, message_type = result
+
+        print("message", message)
+        print("message type", message_type)
+
 
         if message_type == "success":
             reservation = database.session.query(Rezervace).filter(Rezervace.rezervacni_kod == reservation_code).first()

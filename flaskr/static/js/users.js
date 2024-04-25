@@ -157,13 +157,25 @@ $(document).ready(function () {
                 var deleteButton = $('<button class="btn btn-warning deleteReservation" data-id="' + reservationId + '">Storno</button>');
                 var changeButton = $('<button class="btn btn-primary changeReservation" data-id="' + reservationId + '">Změnit rezervaci</button>');
 
-                var reservationDate = new Date(response.termin_rezervace);
-                var today = new Date();
-                today.setHours(0, 0, 0, 0);
+                var reservationDateTime = new Date(response.termin_rezervace + 'T' + response.cas_zacatku);
+                var now = new Date();
+                var twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+                var message = '';
 
-                if (reservationDate < today) {
+                if (reservationDateTime <= twoHoursLater) {
                     deleteButton.prop('disabled', true);
                     changeButton.prop('disabled', true);
+                    message = '<p class="reservation-warning">Reservations can only be changed or deleted more than two hours prior to the reservation time.</p>';
+
+
+                    var reservationDate = new Date(response.termin_rezervace);
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    if (reservationDate < today) {
+                        deleteButton.prop('disabled', true);
+                        changeButton.prop('disabled', true);
+                    }
                 }
 
                 detailsHtml += '<table class="action-buttons-table">';

@@ -176,11 +176,14 @@ def fetch_available_times_for_individual_instructor(instructor_id=None, date=Non
         func.count().label('count')
     ).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny)\
     .filter(DostupneHodiny.stav == 'volno', DostupneHodiny.typ_hodiny == 'ind').filter(DostupneHodiny.datum >= today).filter(DostupneHodiny.datum==date)
-    
+    print("---base query")
+    print(base_query)
     if instructor_id and instructor_id != 0:
         base_query = base_query.filter(MaVypsane.ID_osoba == instructor_id)
 
     query_result = base_query.group_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).order_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).all()
+    print("--- query result")
+    print(query_result)
     return query_result
 
 def get_reservation_detail(identifier):
