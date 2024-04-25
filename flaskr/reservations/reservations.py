@@ -79,8 +79,14 @@ def main_page():
             'surname': 'Doplňte Vaše příjmení.',
             'tel_number': 'Doplňte vaše telefonní číslo.',
             'email': 'Doplňte vaší emailovou adresu.',
-            'age_client': 'Doplňte věk.',
+            'age_client': 'Doplňte správně věk (rozmezí 5 - 120).',
             'time_reservation': 'Doplňte čas výuky.',
+            'name_client1' : 'Doplňte jméno klienta 1',
+            'name_client2' : 'Doplňte jméno klienta 2',
+            'surname_client1' : 'Doplňte příjmení klienta 1',
+            'surname_client2' : 'Doplňte příjmení klienta 2',
+            'age_client1' : 'Doplňte správně věk (rozmezí 5 - 120).',
+            'age_client2': 'Doplňte správně věk (rozmezí 5 - 120).',
             }
         
             error_messages = []

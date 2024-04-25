@@ -166,16 +166,10 @@
                     <div class="field-container-pi">
                         <label class="info-headline" for="age_client1">{{  form.age_client1.label }} <span class="red-star red-star-student2" style="display: none; color: red;">*</span></label>
                         {{ form.age_client1(class_="age-field", id="age2") }}
-                        {% for error in form.age_client1.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client1.label (class="info-headline") }}
                         {{ form.experience_client1(class_="form-select") }}
-                        {% for error in form.experience_client1.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
                     </div>
                 </div>
                 <div class="horizontal-fields-container-info">  
@@ -190,16 +184,10 @@
                     <div class="field-container-pi">
                         <label class="info-headline" for="age_client2">{{  form.age_client2.label }} <span class="red-star red-star-student3" style="display: none; color: red;">*</span></label>
                         {{ form.age_client2(class_="age-field", id="age3") }}
-                        {% for error in form.age_client2.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
                     </div>
                     <div class="field-container-pi">
                         {{ form.experience_client2.label (class="info-headline") }}
                         {{ form.experience_client2(class_="form-select") }}
-                        {% for error in form.experience_client2.errors %}
-                            <span style="color: red;">{{ error }}</span>
-                        {% endfor %}
                     </div>
                 </div>
             </div> 
