@@ -35,10 +35,12 @@
                                             {% if instructor.image_path %}
                                                 <img src="{{ url_for('static', filename='uploads/' + instructor.image_path) }}" alt="Image description" class="responsive-image">
                                             {% else %}
-                                                <img src="{{ url_for('static', filename='images/placeholder_image.jpeg') }}" alt="Image description" class="responsive-image">
+                                                <img src="{{ url_for('static', filename='images/test_picture.jpeg') }}" alt="Image description" class="responsive-image">
                                             {% endif %}
-                                            <p class="instructor-desc">Instruktor: {{ instructor.osoba.jmeno }}</p>
-                                            <p class="instructor-desc">{{ instructor.popis }}</p>
+                                            <p class="instructor-desc">
+                                                Instruktor: {{ instructor.osoba.jmeno }}<br>
+                                                {{ instructor.popis }}
+                                            </p>
                                         </div>
                                     {% endfor %}
                                 </section>

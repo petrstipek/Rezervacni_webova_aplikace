@@ -1,35 +1,25 @@
 .nav-buttons {
     display: flex;
     justify-content: center;
-    /* Center buttons horizontally */
     flex-wrap: wrap;
-    /* Wrap buttons to the next line on small screens */
     gap: 10px;
-    /* Space between buttons */
     padding: 20px 0;
-    /* Padding above and below the button row */
 }
 
 .button {
     background-color: #FBC639;
-    /* Bootstrap primary color */
     color: black;
     text-decoration: none;
-    /* Remove underline */
     padding: 10px 20px;
     border-radius: 5px;
-    /* Rounded corners */
-    /* Smooth transition for hover effect */
 }
 
 @media (max-width: 768px) {
     .nav-buttons {
         justify-content: space-around;
-        /* Spread buttons more evenly on small screens */
     }
 
     .button {
         padding: 8px 16px;
-        /* Slightly smaller padding on small screens */
     }
 }

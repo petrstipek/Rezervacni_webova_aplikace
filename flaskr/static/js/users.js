@@ -129,7 +129,7 @@ $(document).ready(function () {
                 detailsHtml += '<tr><th>Kontakt na klienta</th><td> email: ' + response.email_klienta + ', tel. číslo: ' + response.tel_cislo_klienta + '</td></tr>';
                 detailsHtml += '<tr><th>Datum rezervace</th><td>' + response.termin_rezervace + '</td></tr>';
                 detailsHtml += '<tr><th>Začátek výuky</th><td>' + response.cas_zacatku + '</td></tr>';
-                detailsHtml += '<tr><th>Doba výuky</th><td>' + response.doba_vyuky + '</td></tr>';
+                detailsHtml += '<tr><th>Doba výuky [počet hodin]</th><td>' + response.doba_vyuky + '</td></tr>';
                 detailsHtml += '<tr><th>Stav Platby</th><td>' + response.platba + '</td></tr>';
 
                 if (Array.isArray(response.Instructor)) {

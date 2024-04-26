@@ -6,6 +6,7 @@ from flaskr.extensions import recaptcha_private
 import requests
 from flaskr.extensions import verify_url
 from flask_login import current_user
+from flaskr.email.email import send_registration_confirmation
 
 reservations_bp = Blueprint('reservations', __name__, template_folder='templates')
 
@@ -49,8 +50,11 @@ def main_page():
             register_without = form.submit_without_register.data
             register_with = form.submit_with_register.data
 
+            print(register_without, register_with, "Register without, register with")
             if register_with:
+                print("Register with")
                 status_reg, message_reg = process_submit_registration(form)
+                print(status_reg)
 
             result = process_reservation(form)
 
@@ -61,6 +65,7 @@ def main_page():
             
             if register_with and message and status_reg:
                 flash("Rezervace proběhla úspěšně! " + message_reg, category="success")
+                send_registration_confirmation(form.email.data)
                 return redirect(url_for('reservations.main_page'))
             if register_with and message and not status_reg:
                 flash("Rezervace proběhla úspěšně, ale registrace selhala. Zkuste to znovu.", category="warning")

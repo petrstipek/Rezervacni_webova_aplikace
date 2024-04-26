@@ -1,6 +1,8 @@
 from flaskr.extensions import database
 from flaskr.models import Osoba, Instruktor, MaVyuku, MaVypsane, DostupneHodiny
 from datetime import datetime
+import os
+from flask import current_app
 
 def instructor_has_lessons(instructor_id):
     today = datetime.today()
@@ -8,6 +10,8 @@ def instructor_has_lessons(instructor_id):
     return query_result is not None
 
 def delete_instructor_by_id(instructor_id):
+    instructor = database.session.query(Instruktor).filter_by(ID_osoba=instructor_id).first()
+    filename = instructor.image_path
     try:
         ma_vypsane_query = database.session.query(MaVypsane).filter_by(ID_osoba=instructor_id).all()
         for entry in ma_vypsane_query:
@@ -15,7 +19,6 @@ def delete_instructor_by_id(instructor_id):
                 database.session.query(DostupneHodiny).filter_by(ID_hodiny=entry.ID_hodiny).delete()
             else:
                 return False
-
         database.session.query(Instruktor).filter_by(ID_osoba=instructor_id).delete()
         database.session.query(Osoba).filter_by(ID_osoba=instructor_id).delete()
 
@@ -23,6 +26,12 @@ def delete_instructor_by_id(instructor_id):
     except Exception as e:
         database.session.rollback()
         return False, e
+    
+    filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(filepath):
+        os.remove(filepath)
+    else:
+        print("Soubor nebyl nalezen!")
     return True
 
 def get_all_paginated_instructors(page, per_page):
