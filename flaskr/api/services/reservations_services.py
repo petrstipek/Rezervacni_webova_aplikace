@@ -169,6 +169,10 @@ def format_available_times(query_results):
     return available_times
 
 def fetch_available_times_for_individual_instructor(instructor_id=None, date=None):
+    now_server = datetime.now()
+
+    now_cet = now_server + timedelta(hours=2)
+    now_cet_time = now_cet.time()
     today = datetime.now().date()
     current_time = datetime.now().time()
     base_query = database.session.query(
@@ -179,7 +183,7 @@ def fetch_available_times_for_individual_instructor(instructor_id=None, date=Non
     .filter(DostupneHodiny.stav == 'volno', DostupneHodiny.typ_hodiny == 'ind').filter(DostupneHodiny.datum==date)
     current_date_specified = datetime.strptime(date, '%Y-%m-%d').date()
     if current_date_specified == today:
-        base_query = base_query.filter(DostupneHodiny.cas_zacatku > current_time)
+        base_query = base_query.filter(DostupneHodiny.cas_zacatku > now_cet_time)
     if instructor_id and instructor_id != 0:
         base_query = base_query.filter(MaVypsane.ID_osoba == instructor_id)
 
