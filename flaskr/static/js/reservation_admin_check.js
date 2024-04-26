@@ -340,7 +340,7 @@ $(document).ready(function () {
                 detailsHtml += '<tr><th>Datum rezervace</th><td>' + response.termin_rezervace + '</td></tr>';
                 detailsHtml += '<tr><th>Typ rezervace</th><td>' + response.typ_rezervace + '</td></tr>';
                 detailsHtml += '<tr><th>Začátek výuky</th><td>' + response.cas_zacatku + '</td></tr>';
-                detailsHtml += '<tr><th>Doba výuky</th><td>' + response.doba_vyuky + '</td></tr>';
+                detailsHtml += '<tr><th>Doba výuky [počet hodin]</th><td>' + response.doba_vyuky + '</td></tr>';
                 detailsHtml += '<tr><th>Stav Platby</th><td>' + response.platba + '</td></tr>';
                 //detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + response.Instructor.jmeno_instruktora + ' ' + response.Instructor.prijmeni_instruktora + '</td></tr>';
 

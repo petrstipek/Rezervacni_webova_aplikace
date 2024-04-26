@@ -3,7 +3,7 @@ $(document).ready(function () {
     var is_logged_in = $('section').data('logged-in');
 
     //localStorage.setItem("modalShown", "false");
-    //$("#registrationModal").show();
+    $("#registrationModal").show();
 
     $('#continueWithReg').change(function () {
         if ($(this).is(':checked')) {
@@ -24,13 +24,6 @@ $(document).ready(function () {
     $('.close-button').click(function () {
         $('#registrationModal').hide();
     });
-
-    console.log("tady jsem")
-    if (is_logged_in == false) {
-        console.log("nejsem prihlasen")
-    } else {
-        console.log("jsem prihlasen")
-    }
 
     $("#reservation-form").on("submit", function (event) {
         if (submission == false && localStorage.getItem("modalShown") !== "true" && is_logged_in == false) {

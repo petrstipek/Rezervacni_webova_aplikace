@@ -29,6 +29,8 @@ html {
     width: 100%;
     height: auto;
     display: block;
+    max-height: 80%;
+    border: 4px solid #E0F4FF;
 }
 
 .tile p {

@@ -472,10 +472,13 @@ def lesson_instructor_change(lesson_id, instructor_id):
 
 def check_instructor_client(email):
     client = database.session.query(Osoba).filter(Osoba.email == email).first()
-    instructor_in_instructors = database.session.query(Instruktor).filter(Instruktor.ID_osoba == client.ID_osoba).first()
-    if instructor_in_instructors:
-        return False
-    return True
+    instructor_in_instructors = None
+    if client: 
+        return True
+    #instructor_in_instructors = database.session.query(Instruktor).filter(Instruktor.ID_osoba == client.ID_osoba).first()
+    #if instructor_in_instructors:
+    #    return False
+    return False
 
 def change_instructor_check(email):
     instructor = database.session.query(Osoba).join(Instruktor, Instruktor.ID_osoba == Osoba.ID_osoba).filter(Osoba.email == email).first()
@@ -593,7 +596,7 @@ def generate_instructors_overview():
     csv_content = "\ufeff" + si.getvalue()
 
     response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
-    response.headers['Content-Disposition'] = 'attachment; filename="instructors_data.csv"'
+    response.headers['Content-Disposition'] = 'attachment; filename="instructors_overview.csv"'
 
     return response
 
@@ -628,7 +631,7 @@ def generate_reservations_overview():
     csv_content = "\ufeff" + si.getvalue()
 
     response = Response(csv_content, mimetype='text/csv', content_type='text/csv; charset=utf-8')
-    response.headers['Content-Disposition'] = 'attachment; filename="reservations.csv"'
+    response.headers['Content-Disposition'] = 'attachment; filename="reservations_overview.csv"'
 
     return response
 

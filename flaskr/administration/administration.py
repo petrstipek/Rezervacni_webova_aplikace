@@ -141,9 +141,9 @@ def instructors_admin():
 
         changes = False
         instructor = change_instructor_check(email)
-        check_instructor_clinent = check_instructor_client(email)
+        check_instructor_client_state = check_instructor_client(email)
         instructor_client = False
-        if check_instructor_clinent:
+        if check_instructor_client_state and not instructor:
             instructor_client = True
             flash("Email instruktora je shodný s emailem klienta! Zkontrolujte prosím zda se nejedná o stejnou osobu.", category="warning")
 
