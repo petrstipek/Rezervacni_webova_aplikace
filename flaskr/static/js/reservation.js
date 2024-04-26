@@ -119,7 +119,7 @@ $(document).ready(function () {
                     updateAvailableTimes(data);
                 },
                 error: function (error) {
-                    console.error('Error fetching available times:', error);
+                    console.error('Při aktualizaci hodin nastala chyba', error);
                 }
             });
         }

@@ -169,21 +169,21 @@ def format_available_times(query_results):
     return available_times
 
 def fetch_available_times_for_individual_instructor(instructor_id=None, date=None):
-    today = datetime.today()
+    today = datetime.now().date()
+    current_time = datetime.now().time()
     base_query = database.session.query(
         DostupneHodiny.datum,
         DostupneHodiny.cas_zacatku,
         func.count().label('count')
     ).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny)\
-    .filter(DostupneHodiny.stav == 'volno', DostupneHodiny.typ_hodiny == 'ind').filter(DostupneHodiny.datum >= today).filter(DostupneHodiny.datum==date)
-    print("---base query")
-    print(base_query)
+    .filter(DostupneHodiny.stav == 'volno', DostupneHodiny.typ_hodiny == 'ind').filter(DostupneHodiny.datum==date)
+    current_date_specified = datetime.strptime(date, '%Y-%m-%d').date()
+    if current_date_specified == today:
+        base_query = base_query.filter(DostupneHodiny.cas_zacatku > current_time)
     if instructor_id and instructor_id != 0:
         base_query = base_query.filter(MaVypsane.ID_osoba == instructor_id)
 
     query_result = base_query.group_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).order_by(DostupneHodiny.datum, DostupneHodiny.cas_zacatku).all()
-    print("--- query result")
-    print(query_result)
     return query_result
 
 def get_reservation_detail(identifier):
