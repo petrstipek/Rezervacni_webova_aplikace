@@ -3,7 +3,7 @@ $(document).ready(function () {
     var is_logged_in = $('section').data('logged-in');
 
     //localStorage.setItem("modalShown", "false");
-    $("#registrationModal").show();
+    //$("#registrationModal").show();
 
     $('#continueWithReg').change(function () {
         if ($(this).is(':checked')) {
