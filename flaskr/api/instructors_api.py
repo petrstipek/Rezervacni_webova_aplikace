@@ -14,10 +14,11 @@ def delete_instructor_admin():
     if instructor_has_lessons(instructor_id):
         return jsonify({"error": "Instruktor má hodiny s aktivní budoucí rezervací!"}), 400
     else:
+        print("ne jsem tady")
         if delete_instructor_by_id(instructor_id):
             return jsonify({"success": "Instruktor úspěšně odstraněn z databáze!"})
         else:
-            return jsonify({"error": "An error occurred during deletion"}), 500
+            return jsonify({"error": "Proces nebyl zpracován! Opakujte akci znovu."}), 500
 
 @instructors_api_bp.route('/reservations', methods=['GET'])
 @login_required

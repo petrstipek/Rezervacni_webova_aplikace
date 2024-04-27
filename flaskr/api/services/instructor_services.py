@@ -1,5 +1,5 @@
 from flaskr.extensions import database
-from flaskr.models import Osoba, Instruktor, MaVyuku, MaVypsane, DostupneHodiny
+from flaskr.models import Osoba, Instruktor, MaVyuku, MaVypsane, DostupneHodiny, Prirazeno
 from datetime import datetime
 import os
 from flask import current_app
@@ -10,26 +10,35 @@ def instructor_has_lessons(instructor_id):
     return query_result is not None
 
 def delete_instructor_by_id(instructor_id):
+    today = datetime.today()
     instructor = database.session.query(Instruktor).filter_by(ID_osoba=instructor_id).first()
     filename = instructor.image_path
     try:
         ma_vypsane_query = database.session.query(MaVypsane).filter_by(ID_osoba=instructor_id).all()
+        prirazeno_query = database.session.query(Prirazeno).join(DostupneHodiny, DostupneHodiny.ID_hodiny==Prirazeno.ID_hodiny).join(MaVypsane, MaVypsane.ID_hodiny==DostupneHodiny.ID_hodiny).filter(MaVypsane.ID_osoba==instructor_id).all()
+        ma_vyuku_query = database.session.query(MaVyuku).filter(MaVyuku.ID_osoba==instructor_id).all()
+        for entry in ma_vyuku_query:
+            database.session.query(MaVyuku).filter_by(ID_osoba=instructor_id).delete()
+        for entry in prirazeno_query:
+            if entry is not None:
+                database.session.query(Prirazeno).filter_by(ID_hodiny=entry.ID_hodiny).delete()
         for entry in ma_vypsane_query:
-            if database.session.query(DostupneHodiny).filter_by(ID_hodiny=entry.ID_hodiny).filter_by(typ_hodiny="ind").first():
+            if database.session.query(DostupneHodiny).filter_by(ID_hodiny=entry.ID_hodiny).first():
+                database.session.query(MaVypsane).filter_by(ID_hodiny=entry.ID_hodiny).delete()
                 database.session.query(DostupneHodiny).filter_by(ID_hodiny=entry.ID_hodiny).delete()
-            else:
-                return False
         database.session.query(Instruktor).filter_by(ID_osoba=instructor_id).delete()
         database.session.query(Osoba).filter_by(ID_osoba=instructor_id).delete()
 
         database.session.commit()
     except Exception as e:
+        print(e)
         database.session.rollback()
         return False, e
     
-    filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
-    if os.path.exists(filepath):
-        os.remove(filepath)
+    if filename != "test_picture.jpg":
+        filepath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'], filename)
+        if os.path.exists(filepath):
+            os.remove(filepath)
     else:
         print("Soubor nebyl nalezen!")
     return True
