@@ -3,7 +3,7 @@ from flask_login import login_required
 from flaskr.auth.login_decorators import instructor_required
 from flask_login import current_user
 from flaskr.extensions import database
-from flaskr.models import Osoba
+from flaskr.models.user import Osoba
 
 instructors_bp = Blueprint('instructor', __name__, template_folder='templates')
 

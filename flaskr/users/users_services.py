@@ -1,7 +1,11 @@
 from flaskr.extensions import database
 from flask_login import current_user
-from flaskr.models import Osoba, Rezervace, Zak
+#from flaskr.models import Osoba, Rezervace, Zak
 from flaskr.auth.auth import check_password, hash_password
+
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace
+from flaskr.models.student import Zak
 
 def validate_password(old_password):
     user = database.session.query(Osoba).filter(Osoba.ID_osoba==current_user.get_id()).first()

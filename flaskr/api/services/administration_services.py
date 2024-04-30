@@ -1,7 +1,12 @@
 from flaskr.extensions import database
-from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba, Zak, Instruktor
 from sqlalchemy.orm import aliased
 from datetime import datetime
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku
+from flaskr.models.student import Zak
+from flaskr.models.available_times import DostupneHodiny
 
 def get_client_details(reservation_id):
     reservation = database.session.query(Rezervace).filter_by(ID_rezervace=reservation_id).first()

@@ -1,9 +1,17 @@
 import os
 import hashlib
-from flaskr.models import Osoba, Klient
+#from flaskr.models import Osoba, Klient
 from flaskr.extensions import database
 from flask_login import login_user
 from flask import request
+
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
+from flaskr.models.client import Klient
+from flaskr.models.student import Zak
+from flaskr.models.available_times import DostupneHodiny
 
 def hash_password(password):
     salt = os.urandom(16)

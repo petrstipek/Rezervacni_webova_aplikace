@@ -1,7 +1,8 @@
 from flaskr.extensions import database
-from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba, Zak, Instruktor
 from sqlalchemy.orm import aliased
 from flask_login import current_user
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVyuku
 
 def get_paginated_reservation_details(page, per_page, identifier=None, identifier_type=None, selected_date=None):
     KlientOsoba = aliased(Osoba)
