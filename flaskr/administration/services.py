@@ -19,7 +19,6 @@ import calendar
 import plotly.graph_objects as go
 from collections import defaultdict
 
-
 from flaskr.models.instructor import Instruktor
 from flaskr.models.user import Osoba
 from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
