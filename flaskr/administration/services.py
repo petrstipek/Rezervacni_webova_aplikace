@@ -1,5 +1,5 @@
 from flaskr.extensions import database
-from flaskr.models import Instruktor, Osoba, MaVypsane, DostupneHodiny, Rezervace, Klient, Zak, MaVyuku, Prirazeno
+#from flaskr.models import Instruktor, Osoba, MaVypsane, DostupneHodiny, Rezervace, Klient, Zak, MaVyuku, Prirazeno
 from datetime import datetime
 from sqlalchemy.orm import joinedload
 from sqlalchemy import and_
@@ -18,6 +18,13 @@ from sqlalchemy.inspection import inspect
 import calendar
 import plotly.graph_objects as go
 from collections import defaultdict
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
+from flaskr.models.client import Klient
+from flaskr.models.student import Zak
+from flaskr.models.available_times import DostupneHodiny
 
 def instructor_exists(email):
     query_result = database.session.query(Instruktor) \

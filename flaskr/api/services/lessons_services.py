@@ -1,7 +1,11 @@
 from flaskr.db import get_db
 from flaskr.extensions import database
-from flaskr.models import DostupneHodiny, MaVypsane, Instruktor, Osoba
 from datetime import date, time
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import MaVypsane
+from flaskr.models.available_times import DostupneHodiny
 
 def get_paginated_lessons(page, per_page, selected_date=None):
     distinct_ids_subquery = database.session.query(

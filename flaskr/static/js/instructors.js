@@ -47,7 +47,6 @@ $(document).ready(function () {
                     var rowHtml = `<tr>
                         <td>${reservation['termín rezervace'] || 'N/A'}</td>
                         <td>${reservation['čas začátku'] || 'N/A'}</td>
-                        <td>${reservation['pocet_zaku'] || 'N/A'}</td>
                         <td>${reservation['doba výuky'] || 'N/A'}</td>
                         <td>${reservation['stav platby'] || 'N/A'}</td>
                         <td>${instructorFullName || 'N/A'}</td>
@@ -113,7 +112,6 @@ $(document).ready(function () {
                 detailsHtml += '<tr><th>Začátek výuky</th><td>' + response.cas_zacatku + '</td></tr>';
                 detailsHtml += '<tr><th>Doba výuky</th><td>' + response.doba_vyuky + '</td></tr>';
                 detailsHtml += '<tr><th>Stav Platby</th><td>' + response.platba + '</td></tr>';
-                detailsHtml += '<tr><th>Jméno a příjmení instruktora</th><td>' + response.Instructor.jmeno_instruktora + ' ' + response.Instructor.prijmeni_instruktora + '</td></tr>';
                 detailsHtml += '<tr><th>Poznámka</th><td>' + response.poznamka + '</td></tr>';
                 detailsHtml += '<tr><th>Jazyk lekce</th><td>' + response.jazyk + '</td></tr>';
                 detailsHtml += '<tr><th>Počet žáků</th><td>' + response.pocet_zaku + '</td></tr>';

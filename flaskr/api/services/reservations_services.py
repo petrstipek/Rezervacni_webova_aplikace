@@ -2,11 +2,17 @@ from flaskr.db import get_db
 import sqlite3
 from datetime import datetime, timedelta, date, time
 from flaskr.extensions import database
-from flaskr.models import Klient, Rezervace, Instruktor, MaVyuku, Osoba, Prirazeno, DostupneHodiny, MaVypsane, Zak
 from sqlalchemy.orm import aliased
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 from flaskr.email.email import send_reservation_cancelation
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
+from flaskr.models.client import Klient
+from flaskr.models.student import Zak
+from flaskr.models.available_times import DostupneHodiny
 
 def delete_reservation_by_reservation_code(reservation_id):
     try:

@@ -1,8 +1,12 @@
 from flaskr.extensions import database
-from flaskr.models import Osoba, Instruktor, MaVyuku, MaVypsane, DostupneHodiny, Prirazeno
 from datetime import datetime
 import os
 from flask import current_app
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
+from flaskr.models.available_times import DostupneHodiny
 
 def instructor_has_lessons(instructor_id):
     today = datetime.today()
@@ -77,7 +81,16 @@ def get_all_instructors():
     return instructors_list
 
 from flaskr.extensions import database
-from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba, Zak, Instruktor
+#from flaskr.models import Rezervace, DostupneHodiny, MaVypsane, MaVyuku, Osoba, Zak, Instruktor
+
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
+from flaskr.models.client import Klient
+from flaskr.models.student import Zak
+from flaskr.models.available_times import DostupneHodiny
+
 from sqlalchemy.orm import aliased
 from flask_login import current_user
 

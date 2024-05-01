@@ -1,9 +1,12 @@
 import os
 import hashlib
-from flaskr.models import Osoba, Klient
+#from flaskr.models import Osoba, Klient
 from flaskr.extensions import database
 from flask_login import login_user
 from flask import request
+
+from flaskr.models.user import Osoba
+from flaskr.models.client import Klient
 
 def hash_password(password):
     salt = os.urandom(16)

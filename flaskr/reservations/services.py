@@ -2,13 +2,21 @@ import random, string
 from flask_mail import Message
 from flaskr.extensions import mail
 from datetime import datetime, timedelta
-from flaskr.models import Rezervace, Osoba, Klient, Instruktor, DostupneHodiny, MaVypsane, MaVyuku, Prirazeno, Zak
+#from flaskr.models import Rezervace, Osoba, Klient, Instruktor, DostupneHodiny, MaVypsane, MaVyuku, Prirazeno, Zak
 from flaskr.extensions import database
 from sqlalchemy.orm.exc import NoResultFound 
 from sqlalchemy import and_
 from sqlalchemy.exc import SQLAlchemyError
 from flaskr.auth.services import register_new_user
 from flaskr.email.email import send_reservation_confirmation
+
+
+from flaskr.models.instructor import Instruktor
+from flaskr.models.user import Osoba
+from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
+from flaskr.models.client import Klient
+from flaskr.models.student import Zak
+from flaskr.models.available_times import DostupneHodiny
 
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=[recipients])
@@ -119,13 +127,15 @@ def individual_group_reservation_1hour(reservation_id, instructor_selected, stud
         if lesson_id == None:
                 message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
                 return False, message, message_type
-        assign_instructor_lesson_1hour(lesson_id, reservation_id)
+        specific_instructor = False
+        assign_instructor_lesson_1hour(lesson_id, reservation_id, specific_instructor)
     elif instructor_selected != "0":
         lesson = database.session.query(DostupneHodiny).outerjoin(MaVypsane, DostupneHodiny.ID_hodiny == MaVypsane.ID_hodiny).filter(and_(MaVypsane.ID_osoba==instructor_selected, DostupneHodiny.datum==termin_date, DostupneHodiny.cas_zacatku==cas_zacatku_time, DostupneHodiny.stav=="volno", DostupneHodiny.typ_hodiny=="ind")).first()
         if lesson == None:
             message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
             return False, message, message_type
-        assign_instructor_lesson_1hour(lesson.ID_hodiny, reservation_id)
+        specific_instructor = True
+        assign_instructor_lesson_1hour(lesson.ID_hodiny, reservation_id, specific_instructor)
 
     message, message_type = "Rezervace proběhla úspěšně!", "success"
     return True, message, message_type
@@ -167,7 +177,8 @@ def individual_reservation_1hour(reservation_id, instructor_selected, student_co
             if lesson_id == None:
                 message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
                 return False, message, message_type
-            assign_instructor_lesson_1hour(lesson_id, reservation_id)
+            specific_instructor = False
+            assign_instructor_lesson_1hour(lesson_id, reservation_id, specific_instructor)
             found_number += 1
         if found_number < student_count:
             message, message_type = "Nedostatečný počet dostupných hodin pro zvolený počet žáků!", "danger"
@@ -180,7 +191,8 @@ def individual_reservation_1hour(reservation_id, instructor_selected, student_co
         if lesson == None:
             message, message_type = "Pro zvolená kritéria dostupná hodina neexistuje", "danger"
             return False, message, message_type
-        assign_instructor_lesson_1hour(lesson.ID_hodiny, reservation_id)
+        specific_instructor = True
+        assign_instructor_lesson_1hour(lesson.ID_hodiny, reservation_id, specific_instructor)
     
     message, message_type = "Rezervace proběhla úspěšně!", "success"
     return True, message, message_type
@@ -265,8 +277,9 @@ def unique_instructors():
     unique_ids = database.session.query(MaVypsane.ID_osoba).distinct().all()
     return [row.ID_osoba for row in unique_ids]
 
-def assign_instructor_lesson_1hour(lesson_id, reservation_id):
-    lesson_id = lesson_id[0]
+def assign_instructor_lesson_1hour(lesson_id, reservation_id, specific_instructor):
+    if not specific_instructor:
+        lesson_id = lesson_id[0]
     try:
         database.session.query(DostupneHodiny)\
             .filter(DostupneHodiny.ID_hodiny == lesson_id)\
