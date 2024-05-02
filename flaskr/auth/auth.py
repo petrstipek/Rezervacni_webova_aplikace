@@ -1,9 +1,13 @@
+# FileName: auth.py
+# Description: Main file for login and logout handling. Role loading with user loader.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Blueprint, render_template, flash, redirect, url_for
 from flaskr.forms import LoginForm
 from flask_login import logout_user
 from flaskr.extensions import login_manager
 from flaskr.auth.services import *
-from functools import wraps
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates')
 from flaskr.auth.renew_password import renew_password

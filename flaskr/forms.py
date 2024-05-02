@@ -1,3 +1,8 @@
+# FileName: forms.py
+# Description: Defines the forms used in the application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask_wtf import FlaskForm, CSRFProtect
 from wtforms import StringField, SubmitField, SelectField, IntegerField, TextAreaField, BooleanField, HiddenField, PasswordField, DateField, TimeField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange, Optional, ValidationError

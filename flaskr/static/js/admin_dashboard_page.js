@@ -1,3 +1,10 @@
+/**
+ * FileName: admin_dashboard_page.js
+ * Description: Script for the admin grapsh dashboard page.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     function school_information() {
         $.ajax({

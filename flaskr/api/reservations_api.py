@@ -1,6 +1,10 @@
+# FileName: reservations_api.py
+# Description: Defines the API routes and endpoints for the reservations API.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Blueprint, jsonify, request
 from flaskr.api.services.reservations_services import *
-from flaskr.api.administration_api import administration_api
 from flaskr.email.email import send_reservation_cancelation
 
 reservations_api_bp = Blueprint('reservations_api', __name__, template_folder='templates')

@@ -1,3 +1,10 @@
+/* 
+ * FileName: style_user_res_page.css
+ * Description: Styles for the user reservation page. Defines the layout of the reservation page.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 header {
     display: flex;
     align-items: center;

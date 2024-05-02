@@ -1,3 +1,8 @@
+# FileName: users_services.py
+# Description: Handles the API logic for users (reservations for user page) in the web application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flaskr.extensions import database
 from sqlalchemy.orm import aliased
 from flask_login import current_user

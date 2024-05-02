@@ -1,5 +1,9 @@
+# FileName: services.py
+# Description: Handles the administration logic and database for the web application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flaskr.extensions import database
-#from flaskr.models import Instruktor, Osoba, MaVypsane, DostupneHodiny, Rezervace, Klient, Zak, MaVyuku, Prirazeno
 from datetime import datetime
 from sqlalchemy.orm import joinedload
 from sqlalchemy import and_

@@ -1,3 +1,10 @@
+/**
+ * FileName: registration_modal.js
+ * Description: Script for handling of the registration modal for the reservation form.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     var submission = false;
     var is_logged_in = $('section').data('logged-in');

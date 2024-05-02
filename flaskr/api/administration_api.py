@@ -1,4 +1,9 @@
-from flask import Blueprint, jsonify, request, render_template
+# FileName: administration_api.py
+# Description: File handles the administration API routes and defines the endpoints.
+# Author: Petr Štípek
+# Date: 2024
+
+from flask import Blueprint, jsonify, request
 from flask_login import login_required
 from flaskr.api.services.administration_services import *
 from flaskr.api.services.reservations_services import delete_reservation_by_reservation_id
@@ -44,7 +49,6 @@ def reservation_payment_status():
     elif payment_status == "zaplaceno":
         return jsonify({'status': 'warning', 'message': 'Rezervace již je zaplacena'}), 200
     
-#nove-funguje
 @administration_api.route('/reservation/<reservation_id>', methods=['DELETE'])
 def delete_reservation_by_id(reservation_id):
     success, message = delete_reservation_by_reservation_id(reservation_id)
@@ -53,7 +57,6 @@ def delete_reservation_by_id(reservation_id):
     else:
         return jsonify({"error": message}), 400 
     
-#nove-funguje
 @administration_api.route('/lesson/<int:lesson_id>', methods=["DELETE"])
 @login_required
 @admin_required
@@ -65,7 +68,6 @@ def delete_lesson_admin(lesson_id):
         delete_lesson(lesson_id)
         return jsonify({"success": True, "message": "Dostupná hodina byla úspěšně smazána!"})
     
-#nove - funguje
 @administration_api.route('/reservations', methods=['GET'])
 @login_required
 @admin_required

@@ -1,3 +1,10 @@
+/**
+ * FileName: reservation_change.js
+ * Description: Script for the reservation change page. Field and checkboxes validation.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
 
     $('#reservation_tel_number').on('input', function () {

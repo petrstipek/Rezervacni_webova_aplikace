@@ -1,4 +1,8 @@
-from flaskr.db import get_db
+# FileName: lessons_services.py
+# Description: Handles the API logic for lessons in the web application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flaskr.extensions import database
 from datetime import date, time
 

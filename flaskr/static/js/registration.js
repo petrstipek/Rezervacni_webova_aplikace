@@ -1,3 +1,10 @@
+/**
+ * FileName: registration.js
+ * Description: Script for the registration form validation.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     function validateNameFields(fieldSelector) {
         $(fieldSelector).on('input', function () {

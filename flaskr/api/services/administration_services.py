@@ -1,3 +1,8 @@
+# FileName: administration_services.py
+# Description: Handles the administration API logic and database for the web application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flaskr.extensions import database
 from sqlalchemy.orm import aliased
 from datetime import datetime

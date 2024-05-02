@@ -1,3 +1,10 @@
+/**
+ * FileName: reservation_check.js
+ * Description: Script for the reservation check page. Building the reservation details table.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     $('#reservationForm').submit(function (event) {
         event.preventDefault();

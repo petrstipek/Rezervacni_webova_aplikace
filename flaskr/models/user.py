@@ -1,4 +1,9 @@
-from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey, UniqueConstraint, DateTime
+# FileName: user.py
+# Description: Defines the database model for users.
+# Author: Petr Štípek
+# Date: 2024
+
+from sqlalchemy import Column, Integer, String, DateTime
 from flaskr.database_models import Base
 
 from flaskr.models.instructor import Instruktor

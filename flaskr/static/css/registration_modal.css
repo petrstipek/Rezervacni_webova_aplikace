@@ -1,3 +1,10 @@
+/* 
+ * FileName: registration_modal.css
+ * Description: Styles for thre registration modal upon first visit and placement of the reservation.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .modal {
     display: none;
     position: fixed;

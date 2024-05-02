@@ -1,4 +1,9 @@
-from flask import Blueprint, redirect, flash, url_for, request, jsonify
+# FileName: instructors_api.py
+# Description: Defines the routes and endpoints for the instructors API.
+# Author: Petr Štípek
+# Date: 2024
+
+from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from flaskr.api.services.instructor_services import *
 from flaskr.api.administration_api import administration_api
@@ -6,7 +11,6 @@ from flaskr.api.administration_api import administration_api
 admin_instructors_bp = Blueprint('admin_api_instructors', __name__, template_folder='templates')
 instructors_api_bp = Blueprint('instructors_api', __name__, template_folder='templates')
 
-#nove
 @instructors_api_bp.route("/instructors", methods=["DELETE"])
 @login_required
 def delete_instructor_admin():

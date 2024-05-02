@@ -1,3 +1,8 @@
+# FileName: users_api.py
+# Description: Defines and handles the API routes and endpoints for the users API.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Blueprint, jsonify, request
 from flaskr.api.services.reservations_services import *
 from flaskr.api.services.users_services import get_paginated_reservation_details

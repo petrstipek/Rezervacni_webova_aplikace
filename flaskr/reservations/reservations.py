@@ -1,3 +1,8 @@
+# FileName: reservations.py
+# Description: Controller file for the reservation routes and form handlings.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Blueprint, render_template, flash, redirect, url_for, session, request, abort
 from flaskr.forms import ReservationInformationForm, ReservationInformationCheckForm
 from flaskr.reservations.services import *

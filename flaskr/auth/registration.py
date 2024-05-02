@@ -1,10 +1,13 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+# FileName: registration.py
+# Description: Handles the registration route for regsitration.
+# Author: Petr Štípek
+# Date: 2024
+
+from flask import render_template, request, flash, redirect, url_for
 from flaskr.forms import RegistrationForm
 from flaskr.auth.services import register_new_user
 from flaskr.email.email import send_registration_confirmation
 from flaskr.auth.auth import auth_bp
-
-#registration_bp = Blueprint('registration', __name__, template_folder='templates')
 
 @auth_bp.route("/registration", methods=["GET", "POST"])
 def registration_user():

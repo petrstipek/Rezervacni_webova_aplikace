@@ -1,6 +1,10 @@
+# FileName: users.py
+# Description: Provides Model of users with information from database.
+# Author: Petr Štípek
+# Date: 2024
+
 from flaskr.extensions import database
 from flask_login import current_user
-#from flaskr.models import Osoba, Rezervace, Zak
 from flaskr.auth.auth import check_password, hash_password
 
 from flaskr.models.user import Osoba

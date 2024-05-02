@@ -1,3 +1,10 @@
+/**
+ * FileName: reservation.js
+ * Description: Main script for the reservation form. Handling validation, datepicker, and time slots.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     var selectedDate = '';
 

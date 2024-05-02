@@ -1,6 +1,10 @@
-import os
-import hashlib
-#from flaskr.models import Osoba, Klient
+# FileName: services.py
+# Description: Utilizes the auth controller files and handles the business logic for the authentication, registering,
+# and password change.
+# Author: Petr Štípek
+# Date: 2024
+
+import hashlib, os
 from flaskr.extensions import database
 from flask_login import login_user
 from flask import request

@@ -1,3 +1,10 @@
+/* 
+ * FileName: school_information.css
+ * Description: Styles for the school information page. Defines the containes for the school information.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .school-container {
     background-color: white;
     border-radius: 8px;

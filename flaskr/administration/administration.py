@@ -1,3 +1,8 @@
+# FileName: administration.py
+# Description: Handles the administration routes for the web application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Blueprint, render_template, redirect, flash, url_for, request
 from flask_login import login_required
 from flaskr.forms import InstructorInsertForm, LessonInsertForm, ReservationInformationAdmin, ChangeReservation, LessonChangeForm

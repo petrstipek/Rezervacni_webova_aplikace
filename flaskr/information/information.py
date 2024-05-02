@@ -1,3 +1,8 @@
+# FileName: information.py
+# Description: Defines the routes and endpoints for the information pages in application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import render_template, Blueprint
 from flaskr.information.services import get_all_instructors
 

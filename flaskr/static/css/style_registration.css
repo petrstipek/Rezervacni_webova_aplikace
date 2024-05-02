@@ -1,3 +1,10 @@
+/* 
+ * FileName: style_registration.css
+ * Description: Styles for the registraiton page. Mainly the enhanced login container.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .form-signin .form-row {
     display: flex;
     flex-wrap: wrap;

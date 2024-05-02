@@ -1,8 +1,12 @@
+# FileName: services.py
+# Description: Model file for handling reservation logic, database communication and all form reservation validation.
+# Author: Petr Štípek
+# Date: 2024
+
 import random, string
 from flask_mail import Message
 from flaskr.extensions import mail
 from datetime import datetime, timedelta
-#from flaskr.models import Rezervace, Osoba, Klient, Instruktor, DostupneHodiny, MaVypsane, MaVyuku, Prirazeno, Zak
 from flaskr.extensions import database
 from sqlalchemy.orm.exc import NoResultFound 
 from sqlalchemy import and_
@@ -10,8 +14,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from flaskr.auth.services import register_new_user
 from flaskr.email.email import send_reservation_confirmation
 
-
-from flaskr.models.instructor import Instruktor
 from flaskr.models.user import Osoba
 from flaskr.models.reservation import Rezervace, MaVypsane, MaVyuku, Prirazeno
 from flaskr.models.client import Klient

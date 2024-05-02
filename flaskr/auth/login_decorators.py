@@ -1,3 +1,8 @@
+# FileName: login_decorators.py
+# Description: Decorators for login required roles.
+# Author: Petr Štípek
+# Date: 2024
+
 from functools import wraps
 from flask_login import current_user
 from flask import flash, redirect, url_for

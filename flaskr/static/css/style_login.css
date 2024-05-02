@@ -1,3 +1,10 @@
+/* 
+ * FileName: style_login.css
+ * Description: Styles for the login page and the following registration page and renew password page.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .form-container {
     display: flex;
     justify-content: center;

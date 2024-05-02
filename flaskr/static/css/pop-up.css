@@ -1,20 +1,20 @@
+/* 
+ * FileName: pop-up.css
+ * Description: Styles for the details pop-up.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .modal {
     display: none;
-
     position: fixed;
-
     z-index: 1;
-
     left: 0;
     top: 0;
     width: 100%;
-
     height: 100%;
-
     overflow: auto;
-
     background-color: rgb(0, 0, 0);
-
     background-color: rgba(0, 0, 0, 0.4);
 
 }
@@ -22,7 +22,6 @@
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
-
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
@@ -45,9 +44,7 @@
 
 .reservation-details-table {
     width: 100%;
-
     border-collapse: collapse;
-
     margin-top: 20px;
 
 }
@@ -55,16 +52,13 @@
 .reservation-details-table th,
 .reservation-details-table td {
     border: 1px solid #ddd;
-
     padding: 8px;
-
     text-align: left;
 
 }
 
 .reservation-details-table th {
     background-color: #f2f2f2;
-
     color: black;
 
 }
@@ -79,9 +73,7 @@
 
 .reservation-details-table thead th {
     background-color: #4CAF50;
-
     color: white;
-
     font-weight: bold;
 
 }
@@ -95,18 +87,14 @@
 .table-all-reservations th,
 .table-all-reservations td {
     text-align: center;
-
     padding: 10px;
 
 }
 
 .action-buttons-table {
     width: 100%;
-
     margin-top: 20px;
-
     border-collapse: collapse;
-
     background-color: #f4f4f4;
 
 }
@@ -114,9 +102,7 @@
 .action-buttons-table th,
 .action-buttons-table td {
     text-align: center;
-
     padding: 15px;
-
     border: 1px solid #ddd;
 
 }
@@ -132,20 +118,15 @@
 
 .action-buttons-table button {
     padding: 10px 20px;
-
     border: none;
-
     border-radius: 5px;
-
     cursor: pointer;
-
     font-size: 1em;
 
 }
 
 .action-buttons-table .deleteReservation {
     background-color: #ff6b6b;
-
     color: white;
 
 }
@@ -157,7 +138,6 @@
 
 .action-buttons-table .markAsPaid {
     background-color: #4caf50;
-
     color: white;
 }
 

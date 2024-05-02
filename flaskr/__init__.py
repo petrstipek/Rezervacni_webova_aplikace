@@ -1,3 +1,8 @@
+# FileName: __init__.py
+# Description: Initializes the Flask application and registers the blueprints. Sets the email configuration and the database URI.
+# Author: Petr Štípek
+# Date: 2024
+
 import os, secrets
 from flask import Flask
 from flask_bootstrap import Bootstrap5
@@ -31,7 +36,7 @@ def create_application(test_config=None):
     #application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(application.instance_path, 'database.sqlite')
     #application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    #Produkční databáze
+    #Produkční UAT databáze
     application.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://felixgrent:woxdep-pypxo0-woqdyW@rds-mysql-skiressys.c9sa6ogi4a00.eu-north-1.rds.amazonaws.com/rds-mysql-skiressys'
     
     database.init_app(application)

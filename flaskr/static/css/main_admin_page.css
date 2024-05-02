@@ -1,3 +1,10 @@
+/* 
+ * FileName: main_admin_page.css
+ * Description: Styles for the main admin page.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .nav-buttons {
     display: flex;
     justify-content: center;
