@@ -89,7 +89,7 @@ def send_password_reset(user_email, reset_link):
 
 def send_reservation_cancelation(user_email, reservation_code, payment):
     if payment == "zaplaceno":
-        text_payment = "Vaše rezervace byla zaplacena! Pro vrácení peněz se prosím stavte osobně na pokladně školy, případně kontaktujte školu pro vrácení penět na účet."
+        text_payment = "Vaše rezervace byla zaplacena! Pro vrácení peněz se prosím stavte osobně na pokladně školy, případně kontaktujte školu pro vrácení peněz na účet."
     else:
         text_payment = ""
     html_content = f"""
