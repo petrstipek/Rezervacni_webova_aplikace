@@ -132,14 +132,14 @@ $(document).ready(function () {
                 var keyOrder = ["termín rezervace", "čas začátku", "doba výuky", "stav platby"];
 
                 headerRow.append($('<th></th>').text("rezeravační kód"));
-                headerRow.append($('<th></th>').text('Klient'));
+                headerRow.append($('<th></th>').text('klient'));
                 $.each(keyOrder, function (index, key) {
                     headerRow.append($('<th></th>').text(key));
                 });
 
 
-                headerRow.append($('<th></th>').text('Instruktor'));
-                headerRow.append($('<th></th>').text('Detail rezervace'));
+                headerRow.append($('<th></th>').text('instruktor'));
+                headerRow.append($('<th></th>').text('detail rezervace'));
                 thead.append(headerRow);
 
                 $.each(response.reservations, function (index, reservation) {
