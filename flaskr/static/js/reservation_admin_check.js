@@ -1,3 +1,10 @@
+/**
+ * FileName: reservation_admin_check.js
+ * Description: Script for the reservation admin check page (reservation search). API calling for reservations and reservation details.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     var currentPageFirstTable = 1;
     var perPageFirstTable = 10;

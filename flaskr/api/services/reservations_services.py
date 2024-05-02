@@ -1,9 +1,11 @@
-from flaskr.db import get_db
+# FileName: reservation_services.py
+# Description: Handles the API logic for reservations in the web application.
+# Author: Petr Štípek
+# Date: 2024
+
 import sqlite3
 from datetime import datetime, timedelta, date, time
 from flaskr.extensions import database
-from sqlalchemy.orm import aliased
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import func
 from flaskr.email.email import send_reservation_cancelation
 

@@ -1,3 +1,8 @@
+# FileName: instructor_services.py
+# Description: Handles the API logic for instructors in the web application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flaskr.extensions import database
 from datetime import datetime
 import os

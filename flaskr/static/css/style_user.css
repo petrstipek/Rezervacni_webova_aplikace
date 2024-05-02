@@ -1,3 +1,10 @@
+/* 
+ * FileName: style_user.css
+ * Description: Main default styles for the user pages.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 header {
     display: flex;
     align-items: center;

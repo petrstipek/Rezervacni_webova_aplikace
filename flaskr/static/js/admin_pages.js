@@ -1,3 +1,10 @@
+/**
+ * FileName: admin_page.js
+ * Description: Script for the admin pages. API calling for lessons and lesson details.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     var currentPage = 1;
     var perPage = 7;

@@ -1,3 +1,8 @@
+# FileName: available_times.py
+# Description: Defines the database model for available times.
+# Author: Petr Štípek
+# Date: 2024
+
 from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey, UniqueConstraint, DateTime
 from flaskr.database_models import Base
 

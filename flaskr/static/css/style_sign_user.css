@@ -1,3 +1,10 @@
+/* 
+ * FileName: style_sign_user.css
+ * Description: Styles for the sign user page. Defines the containers for the sign user page.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .reservation-table {
     width: 100%;
     border-collapse: separate;

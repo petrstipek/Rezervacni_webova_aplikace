@@ -1,3 +1,10 @@
+/**
+ * FileName: user_profile.js
+ * Description: Script for the user profile page. Page for updating user information.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     function restrictInputToText(event) {
         var regex = /^[a-zA-ZáéíóúýčďěňřšťžůÁÉÍÓÚÝČĎĚŇŘŠŤŽŮ\s]*$/;

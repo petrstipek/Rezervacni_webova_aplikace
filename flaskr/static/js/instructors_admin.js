@@ -1,3 +1,10 @@
+/**
+ * FileName: instructors_admin.js
+ * Description: Script for the instructors admin page. API calling for instructors and instructor details. Deleting instructors API call.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
 
     function fetchInstructors(page) {

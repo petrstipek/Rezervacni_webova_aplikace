@@ -1,3 +1,10 @@
+/* 
+ * FileName: reservation_page.css
+ * Description: Styles for the reservation_page.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .valid {
     border: 2px solid green;
 }

@@ -1,3 +1,10 @@
+/**
+ * FileName: users.js
+ * Description: Script for the users page. Handling the reservation details, pagination and reservation deletion.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     var currentPageFirstTable = 1;
     var perPageFirstTable = 5;

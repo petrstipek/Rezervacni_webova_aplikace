@@ -1,3 +1,8 @@
+# FileName: instructors.py
+# Description: Defines the routes and endpoints for the instructor pages (instructor accessed page) in application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Blueprint, render_template
 from flask_login import login_required
 from flaskr.auth.login_decorators import instructor_required

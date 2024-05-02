@@ -1,3 +1,10 @@
+/* 
+ * FileName: base_user.css
+ * Description: Styles for the base sections in user layout.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .header-section {
     margin-bottom: 0px !important;
     background-color: #e0f3ff;

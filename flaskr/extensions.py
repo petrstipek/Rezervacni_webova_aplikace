@@ -1,3 +1,8 @@
+# FileName: extenstions.py
+# Description: Defines the extensions used in the application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask_mail import Mail
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy

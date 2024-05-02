@@ -1,3 +1,10 @@
+/* 
+ * FileName: style_user_reservation_check.css
+ * Description: Styles for the user reservation check. User does not have to be logged in.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .reservation-check-section {
     height: 450px;
 }

@@ -1,10 +1,18 @@
+<!-- 
+    FileName: lessons_admin.html
+    Description: Admin page for lessons. Admin can add, edit and delete lessons.
+    Special import for Bootstrap multiselect option
+    Author: Petr Štípek
+    Date Created: 2024
+-->
+
 {% extends "base_admin.html" %}
 
 {% block head %}
 <title>Dostupné hodiny - admin | Ski škola Bublava</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ url_for('static', filename='css/reservation_change.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/reservation_overview.css') }}" rel="stylesheet">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ url_for('static', filename='css/reservation_search.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style_admin.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style_admin_lessons.css') }}" rel="stylesheet">

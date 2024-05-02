@@ -1,3 +1,8 @@
+# FileName: email.py
+# Description: Defines all email messages send via the application. Uses the send_email to send confirmation emails.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask_mail import Message
 from flaskr.extensions import mail
 from flaskr.email.email_services import get_instructor_email, get_reservation_code

@@ -1,4 +1,9 @@
-from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey, UniqueConstraint, DateTime
+# FileName: school_admin.py
+# Description: Defines the database model for school administrators.
+# Author: Petr Štípek
+# Date: 2024
+
+from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from flaskr.database_models import Base
 

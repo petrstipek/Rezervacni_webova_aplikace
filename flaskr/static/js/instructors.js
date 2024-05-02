@@ -1,3 +1,10 @@
+/**
+ * FileName: instructors.js
+ * Description: Script for the instructors only page (instructors logged in). API calling for reservations and reservation details for instructors.
+ * Author: Petr Štípek
+ * Date Created: 2024
+ */
+
 $(document).ready(function () {
     var currentPageFirstTable = 1;
     var perPageFirstTable = 10;

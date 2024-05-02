@@ -1,3 +1,10 @@
+/* 
+ * FileName: style_admin_lessons.css
+ * Description: Styles for the administration page with lessons handling.
+ * Author: Petr Štípek
+ * Creation Date: 2024
+ */
+
 .right-section {
     flex: 60% !important;
 }

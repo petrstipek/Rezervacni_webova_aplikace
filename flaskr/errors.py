@@ -1,3 +1,8 @@
+# FileName: errors.py
+# Description: Error handling for the application.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Flask, redirect, url_for, flash
 
 app = Flask(__name__)

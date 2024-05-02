@@ -1,3 +1,8 @@
+# FileName: users.py
+# Description: Handles the user routes for users.
+# Author: Petr Štípek
+# Date: 2024
+
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required
 from flaskr.auth.login_decorators import client_required
